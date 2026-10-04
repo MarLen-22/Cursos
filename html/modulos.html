@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulos | Lógica Visual ABP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+    <header
+        class="flex justify-between items-center px-8 py-4 border-b border-slate-700/50 bg-[#0a1128] text-white sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="bg-cyan-400 text-slate-900 font-bold px-2 py-1 rounded text-sm">{}</div>
+            <span class="font-semibold text-xl">Lógica Visual ABP</span>
+        </div>
+        <nav class="hidden md:flex gap-8 text-sm font-medium">
+            <a href="../index.html" class="text-slate-300 hover:text-white transition">Inicio</a>
+            <a href="modulos.html" class="text-white border-b-2 border-cyan-400 pb-1">Módulos Interactivos</a>
+            <a href="metodologia.html" class="text-slate-300 hover:text-white transition">Metodología ABP</a>
+            <a href="evaluacion.html" class="text-slate-300 hover:text-white transition">Evaluación</a>
+        </nav>
+        <button
+            class="bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold px-6 py-2.5 rounded-full text-sm transition">
+            Comenzar
+        </button>
+    </header>
+
+    <main class="flex-grow">
+
+        <section id="modulos" class="py-20 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-8">
+                <p class="text-cyan-500 font-bold text-sm tracking-wider uppercase mb-2">Rutas de Aprendizaje</p>
+                <h2 class="text-3xl font-bold mb-4">Aprende desde la exploración</h2>
+                <p class="text-slate-500 mb-10">Elige un módulo, manipula modelos y conecta cada reto con una estrategia
+                    de solución.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <div
+                        class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition group cursor-pointer">
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center text-cyan-500 font-bold text-xl">
+                                &lt;/&gt;</div>
+                            <span class="text-cyan-500 opacity-0 group-hover:opacity-100 transition">↗</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Fundamentos de Programación</h3>
+                        <p class="text-slate-500 text-sm mb-6">Piensa en secuencias, decisiones y patrones antes de
+                            escribir una sola línea de código.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="bg-cyan-50 text-cyan-600 text-xs font-semibold px-3 py-1 rounded-full">Nivel
+                                inicial</span>
+                            <span class="text-cyan-500 text-sm font-semibold">Explorar módulo</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition group cursor-pointer">
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-500 font-bold text-xl">
+                                📈</div>
+                            <span class="text-cyan-500 opacity-0 group-hover:opacity-100 transition">↗</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Cálculo Diferencial e Integral</h3>
+                        <p class="text-slate-500 text-sm mb-6">Haz visible el cambio: interpreta funciones, pendientes,
+                            áreas y comportamiento de gráficas.</p>
+                        <div class="flex justify-between items-center">
+                            <span
+                                class="bg-indigo-50 text-indigo-600 text-xs font-semibold px-3 py-1 rounded-full">Nivel
+                                inicial</span>
+                            <span class="text-cyan-500 text-sm font-semibold">Explorar módulo</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition group cursor-pointer">
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-500 font-bold text-xl">
+                                ⛖</div>
+                            <span class="text-cyan-500 opacity-0 group-hover:opacity-100 transition">↗</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Matemáticas Discretas</h3>
+                        <p class="text-slate-500 text-sm mb-6">Descubre cómo la lógica, los conjuntos y las redes ayudan
+                            a resolver problemas complejos.</p>
+                        <div class="flex justify-between items-center">
+                            <span
+                                class="bg-purple-50 text-purple-600 text-xs font-semibold px-3 py-1 rounded-full">Nivel
+                                inicial</span>
+                            <span class="text-cyan-500 text-sm font-semibold">Explorar módulo</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition group cursor-pointer">
+                        <div class="flex justify-between items-start mb-6">
+                            <div
+                                class="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center text-sky-500 font-bold text-xl">
+                                ⚛</div>
+                            <span class="text-cyan-500 opacity-0 group-hover:opacity-100 transition">↗</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Física</h3>
+                        <p class="text-slate-500 text-sm mb-6">Relaciona movimiento, fuerzas y energía con situaciones
+                            que puedes modelar y comprobar.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="bg-sky-50 text-sky-600 text-xs font-semibold px-3 py-1 rounded-full">Nivel
+                                inicial</span>
+                            <span class="text-cyan-500 text-sm font-semibold">Explorar módulo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <footer class="bg-[#0a1128] text-white pt-16 pb-8 px-8 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+            <div>
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="bg-cyan-400 text-slate-900 font-bold px-2 py-1 rounded text-sm">{}</div>
+                    <span class="font-semibold text-lg">Lógica Visual ABP</span>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Instituto Tecnológico de Ciudad Victoria – Ingeniería en Sistemas Computacionales
+                </p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-6">Contacto de ejemplo</h4>
+                <p class="text-sm text-slate-400 mb-1">hola@logicavisual.edu.mx</p>
+                <p class="text-sm text-slate-400 mb-1">(834) 000 0000</p>
+                <p class="text-sm text-slate-400">Ciudad Victoria, Tamaulipas</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-6">Explora</h4>
+                <div class="flex flex-col gap-3 text-sm text-slate-400">
+                    <a href="#" class="hover:text-cyan-400 transition">Privacidad</a>
+                    <a href="#" class="hover:text-cyan-400 transition">Términos</a>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <a href="#" class="text-slate-400 hover:text-white transition">in</a>
+                    <a href="#" class="text-slate-400 hover:text-white transition">▶</a>
+                    <a href="#" class="text-slate-400 hover:text-white transition">◎</a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-800 text-xs text-slate-500">
+            © 2026 Lógica Visual ABP - Aprender es investigar, experimentar y explicar.
+        </div>
+    </footer>
+</body>
+
+</html>

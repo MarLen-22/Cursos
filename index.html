@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio | Lógica Visual ABP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+    <header
+        class="flex justify-between items-center px-8 py-4 border-b border-slate-700/50 bg-[#0a1128] text-white sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="bg-cyan-400 text-slate-900 font-bold px-2 py-1 rounded text-sm">{}</div>
+            <span class="font-semibold text-xl">Lógica Visual ABP</span>
+        </div>
+        <nav class="hidden md:flex gap-8 text-sm font-medium">
+            <a href="index.html" class="text-white border-b-2 border-cyan-400 pb-1">Inicio</a>
+            <a href="html/modulos.html" class="text-slate-300 hover:text-white transition">Módulos Interactivos</a>
+            <a href="html/metodologia.html" class="text-slate-300 hover:text-white transition">Metodología ABP</a>
+            <a href="html/evaluacion.html" class="text-slate-300 hover:text-white transition">Evaluación</a>
+        </nav>
+        <button
+            class="bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold px-6 py-2.5 rounded-full text-sm transition">
+            Comenzar
+        </button>
+    </header>
+
+    <main class="flex-grow">
+
+        <section id="inicio" class="bg-[#0a1128] text-white relative overflow-hidden">
+            <div class="absolute inset-0 bg-grid pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-8 py-20 flex flex-col md:flex-row items-center gap-12 relative z-10">
+
+                <div class="w-full md:w-1/2">
+                    <div
+                        class="w-10 h-10 bg-slate-800/80 rounded-xl flex items-center justify-center mb-6 border border-slate-700">
+                        <span class="text-cyan-400 font-bold">#</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                        Desarrolla el razonamiento lógico, no la memorización mecánica
+                    </h1>
+                    <p class="text-slate-400 text-lg mb-8 max-w-lg leading-relaxed">
+                        Nuestros simuladores te permiten visualizar conceptos abstractos, experimentar con decisiones y
+                        resolver problemas paso a paso para construir una comprensión que sí puedes aplicar.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="modulos.html"
+                            class="bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold px-7 py-3 rounded-lg transition shadow-[0_0_15px_rgba(34,211,238,0.4)]">
+                            Explorar Simuladores
+                        </a>
+                        <a href="metodologia.html"
+                            class="border border-slate-600 hover:border-slate-400 text-white font-semibold px-7 py-3 rounded-lg transition">
+                            Conocer la metodología
+                        </a>
+                    </div>
+                    <div class="flex gap-6 mt-10 text-sm text-slate-400 font-medium">
+                        <span class="flex items-center gap-2"><span class="text-cyan-400">⊙</span> Aprende
+                            haciendo</span>
+                        <span class="flex items-center gap-2"><span class="text-cyan-400">⊙</span> Razonamiento
+                            visible</span>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2">
+                    <div
+                        class="bg-[#0f172a]/90 border border-slate-700/60 rounded-xl overflow-hidden shadow-2xl backdrop-blur-md">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-700/50 bg-slate-800/40">
+                            <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-cyan-500"></div>
+                            <span
+                                class="ml-auto text-[10px] text-slate-500 font-mono tracking-wider">simulador.logica</span>
+                        </div>
+                        <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-[#1e293b]/70 border border-slate-700/50 rounded-lg p-4">
+                                <div class="flex justify-between items-center mb-6">
+                                    <span class="text-xs text-slate-300 font-medium">Algoritmo</span>
+                                    <span class="text-slate-400 text-xs">▷</span>
+                                </div>
+                                <div class="space-y-3 mb-8">
+                                    <div
+                                        class="h-1.5 bg-cyan-400 rounded-full w-full shadow-[0_0_8px_rgba(34,211,238,0.5)]">
+                                    </div>
+                                    <div class="h-1.5 bg-slate-600 rounded-full w-4/5"></div>
+                                    <div class="h-1.5 bg-slate-600 rounded-full w-3/4"></div>
+                                </div>
+                                <div
+                                    class="bg-[#0f172a]/80 rounded-md p-2.5 text-[11px] text-cyan-300 font-mono mt-auto">
+                                    if problema → hipótesis
+                                </div>
+                            </div>
+                            <div
+                                class="bg-[#1e293b]/70 border border-slate-700/50 rounded-lg p-4 relative min-h-[140px] flex flex-col">
+                                <div class="flex justify-between items-start w-full">
+                                    <span class="text-xs text-slate-300 font-medium">Red de ideas</span>
+                                    <span class="text-slate-400 text-xs">☍</span>
+                                </div>
+                                <div class="relative w-full flex-1 flex items-center justify-center mt-2">
+                                    <svg class="absolute w-full h-full" style="pointer-events: none;">
+                                        <line x1="30%" y1="30%" x2="50%" y2="50%" stroke="#475569" stroke-width="1.5" />
+                                        <line x1="70%" y1="30%" x2="50%" y2="50%" stroke="#475569" stroke-width="1.5" />
+                                        <line x1="50%" y1="50%" x2="65%" y2="75%" stroke="#475569" stroke-width="1.5" />
+                                    </svg>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full border-[1.5px] border-slate-300 absolute top-2 left-6">
+                                    </div>
+                                    <div
+                                        class="w-3 h-3 rounded-full border-[1.5px] border-slate-300 absolute top-2 right-8">
+                                    </div>
+                                    <div
+                                        class="w-3.5 h-3.5 rounded-full border-[1.5px] border-slate-300 absolute bottom-3 right-10">
+                                    </div>
+                                    <div
+                                        class="w-4 h-4 rounded-full border-2 border-cyan-400 bg-cyan-400/20 absolute shadow-[0_0_12px_rgba(34,211,238,0.6)] z-10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="mx-5 mb-5 bg-[#1e293b]/70 border border-slate-700/50 rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-[11px] text-slate-300 font-mono mb-1.5">∫ f(x) dx = comprensión</div>
+                                <div class="text-[11px] text-slate-400">Observa el cambio, prueba una decisión y explica
+                                    tu resultado.</div>
+                            </div>
+                            <div class="text-2xl text-cyan-400 font-serif">Σ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white py-12 border-b border-slate-100">
+            <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 border border-slate-100 rounded-2xl shadow-sm">
+                    <div class="w-8 h-8 rounded-full bg-cyan-50 flex items-center justify-center mb-4 text-cyan-500">◎
+                    </div>
+                    <h3 class="font-bold mb-2">Conceptos que se ven</h3>
+                    <p class="text-sm text-slate-500">Convierte variables, algoritmos y modelos matemáticos en
+                        experiencias explorables.</p>
+                </div>
+                <div class="p-6 border border-slate-100 rounded-2xl shadow-sm">
+                    <div class="w-8 h-8 rounded-full bg-cyan-50 flex items-center justify-center mb-4 text-cyan-500">☍
+                    </div>
+                    <h3 class="font-bold mb-2">Decisiones con sentido</h3>
+                    <p class="text-sm text-slate-500">Construye estrategias, comprueba hipótesis y aprende de cada
+                        intento.</p>
+                </div>
+                <div class="p-6 border border-slate-100 rounded-2xl shadow-sm">
+                    <div class="w-8 h-8 rounded-full bg-cyan-50 flex items-center justify-center mb-4 text-cyan-500">🎓
+                    </div>
+                    <h3 class="font-bold mb-2">Progreso acompañado</h3>
+                    <p class="text-sm text-slate-500">Recibe pistas y retroalimentación para argumentar mejor tus
+                        soluciones.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <footer class="bg-[#0a1128] text-white pt-16 pb-8 px-8 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+            <div>
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="bg-cyan-400 text-slate-900 font-bold px-2 py-1 rounded text-sm">{}</div>
+                    <span class="font-semibold text-lg">Lógica Visual ABP</span>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Instituto Tecnológico de Ciudad Victoria – Ingeniería en Sistemas Computacionales
+                </p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-6">Contacto de ejemplo</h4>
+                <p class="text-sm text-slate-400 mb-1">hola@logicavisual.edu.mx</p>
+                <p class="text-sm text-slate-400 mb-1">(834) 000 0000</p>
+                <p class="text-sm text-slate-400">Ciudad Victoria, Tamaulipas</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-6">Explora</h4>
+                <div class="flex flex-col gap-3 text-sm text-slate-400">
+                    <a href="#" class="hover:text-cyan-400 transition">Privacidad</a>
+                    <a href="#" class="hover:text-cyan-400 transition">Términos</a>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <a href="#" class="text-slate-400 hover:text-white transition">in</a>
+                    <a href="#" class="text-slate-400 hover:text-white transition">▶</a>
+                    <a href="#" class="text-slate-400 hover:text-white transition">◎</a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-800 text-xs text-slate-500">
+            © 2026 Lógica Visual ABP - Aprender es investigar, experimentar y explicar.
+        </div>
+    </footer>
+</body>
+
+</html>
