@@ -1,0 +1,21 @@
+# =====================================================================
+# Root .htaccess · Redirección transparente a public/
+# Protege src/, docs/, .env y redirige todo el tráfico a public/
+# =====================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Si la petición no empieza con public/, redirige internamente a public/
+    RewriteCond %{REQUEST_URI} !^/Cursos/public/ [NC]
+    RewriteCond %{REQUEST_URI} !^/public/ [NC]
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
+
+# Proteger archivos sensibles de lectura externa directa
+<FilesMatch "^\.env|\.git|\.md|composer\.(json|lock)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+Options -Indexes
