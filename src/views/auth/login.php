@@ -4,7 +4,7 @@
             <div class="text-center mb-4">
                 <span class="brand-badge fs-4 mb-3 d-inline-block">{ }</span>
                 <h1 class="h3 fw-bold text-navy mb-1">Iniciar Sesión</h1>
-                <p class="text-slate-500 small">Ingresa tus credenciales para acceder a la plataforma</p>
+                <p class="text-slate-500 small">Ingresa tus credenciales para acceder a tu aprendizaje</p>
             </div>
 
             <form action="<?= url('/login') ?>" method="POST" novalidate>
@@ -23,18 +23,23 @@
                     <?php endif; ?>
                 </div>
 
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between">
-                        <label for="password" class="form-label small fw-semibold text-slate-700">Contraseña</label>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="password" class="form-label small fw-semibold text-slate-700 m-0">Contraseña</label>
                     </div>
-                    <input type="password" class="form-control<?= invalid_class('password') ?>" id="password" name="password"
-                           required autocomplete="current-password" placeholder="••••••••">
+                    <div class="input-group">
+                        <input type="password" class="form-control<?= invalid_class('password') ?>" id="password" name="password"
+                               required autocomplete="current-password" placeholder="••••••••">
+                        <button class="btn btn-outline-secondary" type="button" data-toggle-password="password" aria-label="Ver u ocultar contraseña">
+                            <?= icon('eye', 'icon-sm') ?>
+                        </button>
+                    </div>
                     <?php if ($error = field_error('password')): ?>
-                        <div class="invalid-feedback"><?= e($error) ?></div>
+                        <div class="invalid-feedback d-block"><?= e($error) ?></div>
                     <?php endif; ?>
                 </div>
 
-                <button type="submit" class="btn btn-cyan w-100 fw-bold py-2 mt-2 shadow-cyan">
+                <button type="submit" class="btn btn-cyan w-100 fw-bold py-2 shadow-cyan">
                     Ingresar a la Plataforma
                 </button>
             </form>
@@ -44,8 +49,8 @@
             </div>
 
             <div class="mt-3 p-3 bg-slate-100 rounded-3 small text-slate-600">
-                <div class="fw-semibold mb-1">ℹ Acceso Administrativo</div>
-                <div>Solo los usuarios con rol autorizado en la base de datos (tabla <code>administrador</code>) tienen acceso al panel de administración.</div>
+                <div class="fw-semibold mb-1">ℹ Acceso para Alumnos y Docentes</div>
+                <div>Al iniciar sesión podrás acceder directamente a <strong>Mi aprendizaje</strong>, gestionar tus módulos inscritos y descargar constancias oficiales.</div>
             </div>
         </div>
     </div>

@@ -1,41 +1,56 @@
-<footer class="app-footer bg-navy text-white pt-5 pb-4 px-4 px-md-5 border-top border-navy-light mt-auto">
+<footer class="app-footer mt-auto pt-5 pb-4 px-3 px-md-4" aria-labelledby="footerTitle">
     <div class="container-fluid max-w-7xl mx-auto">
-        <div class="row g-4 mb-4">
-            <div class="col-12 col-md-4">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="brand-badge">{ }</span>
-                    <span class="fw-semibold fs-5">Lógica Visual ABP</span>
+        <h2 id="footerTitle" class="visually-hidden">Pie de página</h2>
+
+        <div class="footer-card">
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Lógica Visual ABP</h3>
+                    <a href="<?= url('/quienes-somos') ?>" class="footer-link">Sobre nosotros <?= icon('chevron-right', 'icon-xs') ?></a>
+                    <a href="<?= url('/blog') ?>" class="footer-link">Blog <?= icon('chevron-right', 'icon-xs') ?></a>
                 </div>
-                <p class="text-slate-400 small leading-relaxed">
-                    Instituto Tecnológico de Ciudad Victoria – Ingeniería en Sistemas Computacionales.
-                    Plataforma para el razonamiento lógico y la resolución de problemas mediante ABP.
-                </p>
+                <div class="footer-col">
+                    <h3 class="footer-heading">Catálogo</h3>
+                    <a href="<?= url('/modulos') ?>" class="footer-link">Módulos <?= icon('chevron-right', 'icon-xs') ?></a>
+                    <a href="<?= url('/videopodcast') ?>" class="footer-link">Videopodcast <?= icon('chevron-right', 'icon-xs') ?></a>
+                    <a href="<?= url('/metodologia') ?>" class="footer-link">Metodología ABP <?= icon('chevron-right', 'icon-xs') ?></a>
+                    <a href="<?= url('/evaluacion') ?>" class="footer-link">Evaluación <?= icon('chevron-right', 'icon-xs') ?></a>
+                </div>
+                <div class="footer-col">
+                    <h3 class="footer-heading">Sitios institucionales</h3>
+                    <a href="https://www.tecnm.mx" class="footer-link" target="_blank" rel="noopener noreferrer">TecNM <?= icon('chevron-right', 'icon-xs') ?></a>
+                    <a href="https://cdvictoria.tecnm.mx" class="footer-link" target="_blank" rel="noopener noreferrer">Tec de Ciudad Victoria <?= icon('chevron-right', 'icon-xs') ?></a>
+                    <a href="<?= url('/ayuda#contacto') ?>" class="footer-link">Contacto institucional <?= icon('chevron-right', 'icon-xs') ?></a>
+                </div>
             </div>
-            <div class="col-12 col-md-4">
-                <h6 class="fw-bold text-uppercase tracking-wider text-cyan fs-7 mb-3">Contacto Institucional</h6>
-                <p class="small text-slate-400 mb-1">hola@logicavisual.edu.mx</p>
-                <p class="small text-slate-400 mb-1">(834) 000 0000</p>
-                <p class="small text-slate-400">Ciudad Victoria, Tamaulipas</p>
-            </div>
-            <div class="col-12 col-md-4">
-                <h6 class="fw-bold text-uppercase tracking-wider text-cyan fs-7 mb-3">Navegación Rápida</h6>
-                <div class="d-flex flex-column gap-2 small">
-                    <a href="<?= url('/modulos') ?>" class="text-slate-400 text-decoration-none hover-cyan">Módulos Interactivos</a>
-                    <a href="<?= url('/metodologia') ?>" class="text-slate-400 text-decoration-none hover-cyan">Metodología ABP</a>
-                    <a href="<?= url('/evaluacion') ?>" class="text-slate-400 text-decoration-none hover-cyan">Evaluación Formativa</a>
-                </div>
-                <div class="d-flex gap-3 mt-3 text-slate-400">
-                    <span class="hover-cyan cursor-pointer">in</span>
-                    <span class="hover-cyan cursor-pointer">▶</span>
-                    <span class="hover-cyan cursor-pointer">◎</span>
-                </div>
+            <div class="footer-help">
+                <h3 class="footer-heading footer-heading-plain">¿Necesitas ayuda?</h3>
+                <p class="small mb-3">Revisa nuestras preguntas frecuentes y, si tienes dudas, contacta con nosotros.</p>
+                <a href="<?= url('/ayuda') ?>" class="btn btn-light btn-sm rounded-pill fw-bold px-4 text-navy">Ir a soporte y ayuda</a>
             </div>
         </div>
-        <div class="pt-4 border-top border-navy-light d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 small text-slate-500">
-            <div>© <?= date('Y') ?> Lógica Visual ABP · Aprender es investigar, experimentar y explicar.</div>
-            <div class="d-flex gap-3">
-                <span class="badge bg-navy-light text-slate-400">Ambiente: <?= e(App\Core\Env::get('APP_ENV', 'produccion')) ?></span>
-                <span class="badge bg-navy-light text-slate-400">MySQL / Azure Ready</span>
+
+        <div class="footer-bottom">
+            <div>
+                <a class="d-inline-flex align-items-center gap-2 fw-bold text-decoration-none mb-3 footer-brand" href="<?= url('/') ?>">
+                    <span class="brand-badge">{ }</span> Lógica Visual ABP
+                </a>
+                <nav aria-label="Enlaces legales" class="footer-legal">
+                    <a href="<?= url('/ayuda#terminos') ?>">Condiciones generales</a>
+                    <a href="<?= url('/ayuda#aviso-legal') ?>">Aviso legal</a>
+                    <a href="<?= url('/ayuda#privacidad') ?>">Privacidad</a>
+                    <a href="<?= url('/ayuda#cookies') ?>">Cookies</a>
+                    <a href="<?= url('/ayuda#accesibilidad') ?>">Accesibilidad</a>
+                    <a href="<?= url('/ayuda') ?>">Soporte y ayuda</a>
+                </nav>
+                <p class="small mt-2 mb-0 footer-copy">© <?= date('Y') ?> Lógica Visual ABP · Instituto Tecnológico de Ciudad Victoria. Todos los derechos reservados.</p>
+            </div>
+            <div class="footer-social" aria-label="Redes sociales">
+                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><?= icon('instagram') ?></a>
+                <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><?= icon('linkedin') ?></a>
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X"><?= icon('x-social') ?></a>
+                <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><?= icon('facebook') ?></a>
+                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><?= icon('youtube') ?></a>
             </div>
         </div>
     </div>

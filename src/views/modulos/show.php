@@ -120,7 +120,46 @@
                             <span class="fw-semibold">Aprendizaje Basado en Problemas</span>
                         </li>
                     </ul>
-                    <a href="<?= url('/evaluacion') ?>" class="btn btn-outline-primary btn-sm mt-3 w-100">
+                    <?php if (App\Core\Auth::check()): ?>
+                        <?php if ($inscripcion !== null): ?>
+                            <div class="mt-3 p-3 bg-light rounded-3 border">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="small fw-bold">Tu estado:</span>
+                                    <span class="badge-status-outline status-<?= e($inscripcion->estado->value) ?>">
+                                        <?= e(strtoupper($inscripcion->estado->etiqueta())) ?>
+                                    </span>
+                                </div>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-cyan" style="width: <?= (int) $inscripcion->avance ?>%"></div>
+                                </div>
+                                <?php if ($inscripcion->finalizado()): ?>
+                                    <a href="<?= url('/mi-aprendizaje/' . $inscripcion->id . '/constancia') ?>" class="btn btn-sm btn-cyan w-100 fw-bold" target="_blank">
+                                        Ver mi constancia 🏅
+                                    </a>
+                                <?php else: ?>
+                                    <form action="<?= url('/modulos/' . $modulo->slug . '/avance') ?>" method="POST" class="m-0">
+                                        <?= csrf_field() ?>
+                                        <input type="hidden" name="accion" value="finalizar">
+                                        <button type="submit" class="btn btn-sm btn-outline-success w-100 fw-bold">
+                                            Completar reto y finalizar ✓
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
+                            </div>
+                        <?php else: ?>
+                            <form action="<?= url('/modulos/' . $modulo->slug . '/inscripcion') ?>" method="POST" class="mt-3">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="btn btn-cyan btn-sm fw-bold w-100 py-2 shadow-cyan">
+                                    Inscribirme en este módulo ▷
+                                </button>
+                            </form>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <a href="<?= url('/login?next=' . rawurlencode('/modulos/' . $modulo->slug)) ?>" class="btn btn-outline-cyan btn-sm mt-3 w-100 fw-bold">
+                            Inicia sesión para guardar tu avance
+                        </a>
+                    <?php endif; ?>
+                    <a href="<?= url('/evaluacion') ?>" class="btn btn-outline-primary btn-sm mt-2 w-100">
                         Ir a la Evaluación del Módulo ↗
                     </a>
                 </div>

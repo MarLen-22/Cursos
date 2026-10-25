@@ -30,6 +30,21 @@ final class ModuloRepository
         return array_map(Modulo::fromRow(...), $stmt->fetchAll());
     }
 
+    /** @return list<Modulo> Active modules whose title, description or content match the term. */
+    public function search(string $term): array
+    {
+        $like = '%' . addcslashes($term, '%_\\') . '%';
+        $stmt = $this->db->prepare(
+            'SELECT ' . self::COLUMNS . ' FROM modulo
+              WHERE activo = 1 AND (titulo LIKE :t1 OR descripcion LIKE :t2 OR contenido LIKE :t3)
+           ORDER BY (titulo LIKE :t4) DESC, orden, titulo
+              LIMIT 20'
+        );
+        $stmt->execute(['t1' => $like, 't2' => $like, 't3' => $like, 't4' => $like]);
+
+        return array_map(Modulo::fromRow(...), $stmt->fetchAll());
+    }
+
     public function findActiveBySlug(string $slug): ?Modulo
     {
         $stmt = $this->db->prepare('SELECT ' . self::COLUMNS . ' FROM modulo WHERE slug = :slug AND activo = 1');

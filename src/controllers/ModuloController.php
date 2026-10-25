@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\HttpException;
+use App\Models\InscripcionRepository;
 use App\Models\ModuloRepository;
 
 final class ModuloController extends Controller
@@ -31,10 +33,16 @@ final class ModuloController extends Controller
             throw new HttpException(404, 'El módulo interactivo solicitado no existe o está deshabilitado.');
         }
 
+        $usuario = Auth::user();
+        $inscripcion = $usuario !== null
+            ? (new InscripcionRepository($this->db()))->findByModulo($usuario->id, $modulo->id)
+            : null;
+
         $this->render('modulos/show', [
-            'title'     => e($modulo->titulo) . ' | Lógica Visual ABP',
-            'activeNav' => 'modulos',
-            'modulo'    => $modulo,
+            'title'       => $modulo->titulo . ' | Lógica Visual ABP',
+            'activeNav'   => 'modulos',
+            'modulo'      => $modulo,
+            'inscripcion' => $inscripcion,
         ]);
     }
 }

@@ -1,0 +1,1145 @@
+/* =====================================================================
+   Lógica Visual ABP · Estilos del Portal del Alumno e Interactividad
+   Inspirado en interfaz Santander Open Academy + modo oscuro + ABP
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1. Variables y tokens de diseño
+   --------------------------------------------------------------------- */
+:root {
+    --lv-santander-red: #cc0000;
+    --lv-santander-dark-red: #990000;
+    --lv-teal: #008489;
+    --lv-teal-hover: #006c70;
+    --lv-teal-light: #e6f6f6;
+    --lv-cream-card: #f9f6f2;
+    --lv-cream-border: #ede6de;
+    --lv-help-box: #f4c29e;
+    --lv-help-box-hover: #ebb087;
+    --lv-border-color: #e5e7eb;
+    --lv-text-muted: #6b7280;
+    --lv-bg-table-header: #fff6ee;
+    --lv-avatar-red: #8f0e0e;
+}
+
+[data-bs-theme="dark"] {
+    --lv-cream-card: #151d30;
+    --lv-cream-border: #22304d;
+    --lv-help-box: #2d2621;
+    --lv-help-box-hover: #3a322b;
+    --lv-border-color: #334155;
+    --lv-text-muted: #94a3b8;
+    --lv-bg-table-header: #1e293b;
+    --lv-teal-light: rgba(0, 132, 137, 0.18);
+    --lv-teal: #22d3ee;
+    --lv-teal-hover: #67e8f9;
+
+    /* Bootstrap dark overrides */
+    --bs-body-bg: #090e1a;
+    --bs-body-color: #f1f5f9;
+    --bs-card-bg: #0f172a;
+    --bs-card-border-color: #1e293b;
+    --bs-tertiary-bg: #1e293b;
+    --bs-secondary-bg: #162036;
+}
+
+/* ---------------------------------------------------------------------
+   2. Accesibilidad & Skip link
+   --------------------------------------------------------------------- */
+.skip-link {
+    position: absolute;
+    top: -50px;
+    left: 1rem;
+    background: var(--color-cyan, #22d3ee);
+    color: #0a1128;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    border-radius: 0 0 6px 6px;
+    z-index: 9999;
+    transition: top 0.2s ease;
+}
+.skip-link:focus {
+    top: 0;
+}
+
+/* Iconos SVG consistentes */
+.icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    display: inline-block;
+    vertical-align: -0.15em;
+    stroke-width: 1.8;
+}
+.icon-sm {
+    width: 0.95rem;
+    height: 0.95rem;
+}
+.icon-xs {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+/* ---------------------------------------------------------------------
+   3. Encabezado y Mega Menú "Explora"
+   --------------------------------------------------------------------- */
+.btn-icon {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+[data-bs-theme="dark"] .theme-icon-light { display: none; }
+[data-bs-theme="dark"] .theme-icon-dark { display: inline-block; color: #fbbf24; }
+[data-bs-theme="light"] .theme-icon-light { display: inline-block; }
+[data-bs-theme="light"] .theme-icon-dark { display: none; }
+
+.btn-ghost-light {
+    color: #e2e8f0;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+.btn-ghost-light:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-user-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 9999px;
+    padding: 0.2rem 0.65rem 0.2rem 0.25rem;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+.btn-user-pill:hover,
+.btn-user-pill[aria-expanded="true"] {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: var(--color-cyan, #22d3ee);
+}
+
+.avatar-circle.avatar-lg {
+    width: 44px;
+    height: 44px;
+    font-size: 1rem;
+}
+
+/* Barra de búsqueda en el header */
+.header-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem 0.25rem 1rem;
+    width: 100%;
+    max-width: 320px;
+    transition: all 0.2s ease;
+}
+.header-search:focus-within {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--color-cyan, #22d3ee);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+}
+.header-search input {
+    background: transparent;
+    border: 0;
+    color: #ffffff;
+    font-size: 0.875rem;
+    width: 100%;
+    outline: none;
+}
+.header-search input::placeholder {
+    color: #94a3b8;
+}
+.header-search button {
+    background: transparent;
+    border: 0;
+    color: #94a3b8;
+    padding: 0;
+    margin-left: 0.35rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+.header-search button:hover {
+    color: var(--color-cyan, #22d3ee);
+}
+.search-kbd {
+    background: rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    margin-right: 0.35rem;
+}
+
+/* Mega Menú "Explora" */
+.explora-toggle {
+    color: #cbd5e1 !important;
+    font-weight: 500;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    background: transparent;
+    border: 0;
+    transition: all 0.2s;
+}
+.explora-toggle:hover,
+.explora-toggle[aria-expanded="true"] {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08);
+}
+.explora-chevron {
+    transition: transform 0.2s ease;
+}
+.explora-toggle[aria-expanded="true"] .explora-chevron {
+    transform: rotate(180deg);
+}
+
+.explora-menu {
+    min-width: 580px;
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+[data-bs-theme="dark"] .explora-menu {
+    background: #0f172a;
+    border: 1px solid #1e293b !important;
+}
+.explora-left {
+    background: #ffffff;
+}
+[data-bs-theme="dark"] .explora-left {
+    background: #0f172a;
+}
+.explora-right {
+    background: #f8fafc;
+    border-left: 1px solid #e2e8f0;
+}
+[data-bs-theme="dark"] .explora-right {
+    background: #090e1a;
+    border-left-color: #1e293b;
+}
+
+.explora-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    color: #0f172a;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.925rem;
+    margin-bottom: 0.25rem;
+    transition: all 0.15s ease;
+}
+[data-bs-theme="dark"] .explora-item {
+    color: #e2e8f0;
+}
+.explora-item:hover,
+.explora-item.is-active {
+    background: #f1f5f9;
+    color: #0284c7;
+}
+[data-bs-theme="dark"] .explora-item:hover,
+[data-bs-theme="dark"] .explora-item.is-active {
+    background: #1e293b;
+    color: #38bdf8;
+}
+
+.explora-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    margin-bottom: 0.4rem;
+}
+.explora-link {
+    display: block;
+    padding: 0.35rem 0.5rem;
+    color: #334155;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.15s;
+}
+[data-bs-theme="dark"] .explora-link {
+    color: #cbd5e1;
+}
+.explora-link:hover {
+    color: #0284c7;
+    padding-left: 0.75rem;
+}
+[data-bs-theme="dark"] .explora-link:hover {
+    color: #38bdf8;
+}
+
+.explora-panel {
+    display: none;
+}
+.explora-panel.is-active {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.explora-feature {
+    background: #e0f2fe;
+    border-radius: 10px;
+    padding: 1.1rem;
+    color: #0369a1;
+}
+[data-bs-theme="dark"] .explora-feature {
+    background: rgba(2, 132, 199, 0.15);
+    color: #7dd3fc;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+.link-cyan {
+    color: #0284c7;
+    text-decoration: none;
+}
+.link-cyan:hover {
+    text-decoration: underline;
+}
+
+/* Menú de Perfil (3 opciones) */
+.profile-menu {
+    min-width: 260px;
+    background: #ffffff;
+    border-radius: 12px;
+}
+[data-bs-theme="dark"] .profile-menu {
+    background: #0f172a;
+    border: 1px solid #1e293b !important;
+}
+.profile-menu-head {
+    background: #f8fafc;
+    border-radius: 8px;
+}
+[data-bs-theme="dark"] .profile-menu-head {
+    background: #1e293b;
+}
+.profile-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 6px;
+    color: #334155;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+[data-bs-theme="dark"] .profile-item {
+    color: #cbd5e1;
+}
+.profile-item:hover,
+.profile-item.active {
+    background: #f1f5f9;
+    color: #0891b2;
+}
+[data-bs-theme="dark"] .profile-item:hover,
+[data-bs-theme="dark"] .profile-item.active {
+    background: #1e293b;
+    color: #22d3ee;
+}
+.profile-item-logout {
+    color: #dc2626 !important;
+    background: transparent;
+    border: 0;
+    width: 100%;
+    text-align: left;
+}
+.profile-item-logout:hover {
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+}
+[data-bs-theme="dark"] .profile-item-logout:hover {
+    background: rgba(220, 38, 38, 0.15) !important;
+    color: #f87171 !important;
+}
+
+/* ---------------------------------------------------------------------
+   4. Vista "Mi aprendizaje" (Tabla réplica de imagen 1)
+   --------------------------------------------------------------------- */
+.learning-section {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+.learning-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+}
+[data-bs-theme="dark"] .learning-title {
+    color: #ffffff;
+}
+
+.learning-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+.learning-select {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 0.55rem 2.25rem 0.55rem 1rem;
+    font-size: 0.925rem;
+    font-weight: 500;
+    color: #374151;
+    background-color: #ffffff;
+    min-width: 220px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+[data-bs-theme="dark"] .learning-select {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+.learning-select:focus {
+    border-color: var(--lv-teal, #008489);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 132, 137, 0.2);
+}
+
+/* Cabecera beige de la tabla como en imagen 1 */
+.table-learning {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.table-learning thead th {
+    background-color: var(--lv-bg-table-header, #fff6ee);
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.95rem 1.25rem;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    white-space: nowrap;
+}
+[data-bs-theme="dark"] .table-learning thead th {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+.table-learning thead th:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.table-learning thead th:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.table-learning tbody td {
+    padding: 1.4rem 1.25rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.925rem;
+}
+[data-bs-theme="dark"] .table-learning tbody td {
+    border-bottom-color: #1e293b;
+}
+.table-learning tbody tr:hover td {
+    background-color: rgba(0, 132, 137, 0.025);
+}
+[data-bs-theme="dark"] .table-learning tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Badge de Estado: INSCRITO, FINALIZADO (oval outline badge como en imagen) */
+.badge-status-outline {
+    display: inline-block;
+    padding: 0.25rem 0.85rem;
+    border-radius: 9999px;
+    border: 1.5px solid #1f2937;
+    color: #1f2937;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: transparent;
+}
+[data-bs-theme="dark"] .badge-status-outline {
+    border-color: #94a3b8;
+    color: #e2e8f0;
+}
+.badge-status-outline.status-finalizado {
+    border-color: #374151;
+}
+.badge-status-outline.status-en-curso {
+    border-color: #0284c7;
+    color: #0284c7;
+}
+
+/* Enlace a módulo y acciones */
+.module-link-title {
+    font-weight: 700;
+    color: #111827;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    display: inline-block;
+    transition: color 0.15s;
+}
+[data-bs-theme="dark"] .module-link-title {
+    color: #f1f5f9;
+}
+.module-link-title:hover {
+    color: var(--lv-teal, #008489);
+}
+.module-provider-subtitle {
+    font-size: 0.825rem;
+    color: #6b7280;
+    margin-top: 0.2rem;
+}
+[data-bs-theme="dark"] .module-provider-subtitle {
+    color: #94a3b8;
+}
+
+.action-link-certificate {
+    color: var(--lv-teal, #008489);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.15s;
+}
+.action-link-certificate:hover {
+    color: var(--lv-teal-hover, #006c70);
+    text-decoration: underline;
+}
+[data-bs-theme="dark"] .action-link-certificate {
+    color: #22d3ee;
+}
+[data-bs-theme="dark"] .action-link-certificate:hover {
+    color: #67e8f9;
+}
+
+.btn-dot-menu {
+    background: transparent;
+    border: 0;
+    color: #9ca3af;
+    padding: 0.35rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.btn-dot-menu:hover {
+    color: #111827;
+    background: #f3f4f6;
+}
+[data-bs-theme="dark"] .btn-dot-menu:hover {
+    color: #ffffff;
+    background: #1e293b;
+}
+
+/* ---------------------------------------------------------------------
+   5. Vista "Mi cuenta" (Perfil Alumno réplica imagen 4)
+   --------------------------------------------------------------------- */
+.account-sidebar-card {
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid var(--lv-border-color, #e5e7eb);
+    padding: 1.75rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+[data-bs-theme="dark"] .account-sidebar-card {
+    background: #0f172a;
+    border-color: #1e293b;
+}
+.account-sidebar-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: #f4a261; /* Color coral suave de acento de la barra superior */
+}
+
+/* Avatar circular rojo burdeos "JC" de la imagen 4 */
+.avatar-profile-red {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background-color: var(--lv-avatar-red, #8f0e0e);
+    color: #ffffff;
+    font-size: 1.65rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(143, 14, 14, 0.25);
+}
+
+.account-user-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+[data-bs-theme="dark"] .account-user-name {
+    color: #ffffff;
+}
+
+.account-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 0.35rem;
+}
+[data-bs-theme="dark"] .account-meta-item {
+    color: #cbd5e1;
+}
+
+.account-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0 0;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 1.25rem;
+}
+[data-bs-theme="dark"] .account-nav-list {
+    border-top-color: #1e293b;
+}
+
+.account-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border-radius: 8px;
+    background: transparent;
+    border: 0;
+    color: #374151;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+[data-bs-theme="dark"] .account-nav-btn {
+    color: #cbd5e1;
+}
+.account-nav-btn:hover {
+    background: #f8fafc;
+    color: #111827;
+}
+[data-bs-theme="dark"] .account-nav-btn:hover {
+    background: #1e293b;
+    color: #ffffff;
+}
+.account-nav-btn.is-active {
+    color: #cc0000;
+    font-weight: 700;
+    background: rgba(204, 0, 0, 0.05);
+}
+[data-bs-theme="dark"] .account-nav-btn.is-active {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+}
+
+.account-nav-btn-logout {
+    color: var(--lv-teal, #008489) !important;
+    font-weight: 600;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+[data-bs-theme="dark"] .account-nav-btn-logout {
+    color: #22d3ee !important;
+    border-top-color: #1e293b;
+}
+.account-nav-btn-logout:hover {
+    background: var(--lv-teal-light, #e6f6f6);
+}
+
+/* Tarjeta principal con datos del alumno */
+.account-main-card {
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid var(--lv-border-color, #e5e7eb);
+    padding: 2rem;
+}
+[data-bs-theme="dark"] .account-main-card {
+    background: #0f172a;
+    border-color: #1e293b;
+}
+
+.account-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 1.75rem;
+}
+[data-bs-theme="dark"] .account-section-header {
+    border-bottom-color: #1e293b;
+}
+.account-section-title {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+[data-bs-theme="dark"] .account-section-title {
+    color: #ffffff;
+}
+
+.btn-edit-pencil {
+    background: transparent;
+    border: 0;
+    color: var(--lv-teal, #008489);
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.btn-edit-pencil:hover {
+    background: var(--lv-teal-light, #e6f6f6);
+    color: var(--lv-teal-hover, #006c70);
+}
+
+/* Grid de campos: Label y Value */
+.data-item {
+    margin-bottom: 1.5rem;
+}
+.data-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+[data-bs-theme="dark"] .data-label {
+    color: #94a3b8;
+}
+.data-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+    word-break: break-word;
+}
+[data-bs-theme="dark"] .data-value {
+    color: #f1f5f9;
+}
+.data-value-empty {
+    color: #9ca3af;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.account-subheading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 1.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed #e2e8f0;
+}
+[data-bs-theme="dark"] .account-subheading {
+    color: #94a3b8;
+    border-bottom-color: #1e293b;
+}
+
+/* ---------------------------------------------------------------------
+   6. Pie de página Santander Open Academy (réplica imagen 3)
+   --------------------------------------------------------------------- */
+.app-footer {
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+}
+[data-bs-theme="dark"] .app-footer {
+    background: #070d1f;
+    border-top-color: #162447;
+}
+
+.footer-card {
+    background: var(--lv-cream-card, #f9f6f2);
+    border: 1px solid var(--lv-cream-border, #ede6de);
+    border-radius: 20px;
+    padding: 2.5rem 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.footer-cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    flex: 1 1 500px;
+}
+
+.footer-col {
+    min-width: 150px;
+}
+
+.footer-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.25rem;
+    position: relative;
+    padding-bottom: 0.4rem;
+}
+[data-bs-theme="dark"] .footer-heading {
+    color: #ffffff;
+}
+.footer-heading::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 24px;
+    height: 2px;
+    background: #d97706;
+}
+.footer-heading.footer-heading-plain::after {
+    display: none;
+}
+
+.footer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #4b5563;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 0.65rem;
+    transition: all 0.15s;
+}
+[data-bs-theme="dark"] .footer-link {
+    color: #cbd5e1;
+}
+.footer-link:hover {
+    color: #cc0000;
+    padding-left: 0.25rem;
+}
+[data-bs-theme="dark"] .footer-link:hover {
+    color: #38bdf8;
+}
+
+/* Caja anaranjada "¿Necesitas ayuda?" */
+.footer-help {
+    background: var(--lv-help-box, #f4c29e);
+    border-radius: 14px;
+    padding: 2rem;
+    max-width: 300px;
+    flex: 1 1 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #1f2937;
+}
+[data-bs-theme="dark"] .footer-help {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+}
+.footer-help h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+}
+
+.footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    padding-top: 1rem;
+}
+
+.footer-brand {
+    color: #111827;
+    font-size: 1.2rem;
+}
+[data-bs-theme="dark"] .footer-brand {
+    color: #ffffff;
+}
+
+.footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.25rem;
+    font-size: 0.825rem;
+}
+.footer-legal a {
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.footer-legal a:hover {
+    color: #111827;
+    text-decoration: underline;
+}
+[data-bs-theme="dark"] .footer-legal a {
+    color: #94a3b8;
+}
+[data-bs-theme="dark"] .footer-legal a:hover {
+    color: #ffffff;
+}
+
+.footer-copy {
+    color: #9ca3af;
+}
+
+.footer-social {
+    display: flex;
+    gap: 0.85rem;
+}
+.footer-social a {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #d1d5db;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #374151;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+[data-bs-theme="dark"] .footer-social a {
+    border-color: #334155;
+    color: #cbd5e1;
+}
+.footer-social a:hover {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    transform: translateY(-2px);
+}
+[data-bs-theme="dark"] .footer-social a:hover {
+    background: #22d3ee;
+    color: #0a1128;
+    border-color: #22d3ee;
+}
+
+/* ---------------------------------------------------------------------
+   7. Botón "Volver arriba"
+   --------------------------------------------------------------------- */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-cyan, #22d3ee);
+    color: #0a1128;
+    border: 0;
+    box-shadow: 0 4px 15px rgba(34, 211, 238, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+    z-index: 1000;
+}
+.back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.back-to-top:hover {
+    background: #67e8f9;
+    transform: translateY(-3px);
+}
+
+/* ---------------------------------------------------------------------
+   8. Constancia oficial de aprendizaje imprimible
+   --------------------------------------------------------------------- */
+.certificate-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: #ffffff;
+    border: 12px double #0a1128;
+    padding: 3.5rem 3rem;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    color: #0a1128;
+}
+.certificate-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 8rem;
+    color: rgba(10, 17, 40, 0.03);
+    font-weight: 900;
+    pointer-events: none;
+    user-select: none;
+}
+
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+    .certificate-container {
+        border-color: #000000;
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
+        max-width: none;
+    }
+}
+
+/* =====================================================================
+   Modal "Actualizar datos del alumno": Scrollbar vertical y altura óptima
+   Permite navegar fluidamente todo el contenido sin reducir el zoom de ventana
+   ===================================================================== */
+#modalEditarPerfil .modal-dialog {
+    max-height: calc(100vh - 2rem);
+    margin: 1rem auto;
+    display: flex;
+    align-items: center;
+}
+
+#modalEditarPerfil .modal-content {
+    max-height: calc(100vh - 2rem);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+#modalEditarPerfil form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+    min-height: 0;
+}
+
+#modalEditarPerfil .modal-header {
+    flex-shrink: 0;
+    z-index: 2;
+}
+
+#modalEditarPerfil .modal-body {
+    flex: 1 1 auto;
+    overflow-y: scroll !important; /* Forzar barra de desplazamiento visible */
+    max-height: calc(100vh - 210px) !important;
+    padding: 1.5rem !important;
+    scrollbar-width: thin;
+    scrollbar-color: #008489 #e2e8f0;
+}
+
+/* Scrollbar estilizada de alta visibilidad para Chrome, Edge, Safari */
+#modalEditarPerfil .modal-body::-webkit-scrollbar {
+    width: 10px;
+    display: block !important;
+}
+
+#modalEditarPerfil .modal-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 8px;
+    margin: 4px 0;
+}
+
+#modalEditarPerfil .modal-body::-webkit-scrollbar-thumb {
+    background: #008489;
+    border-radius: 8px;
+    border: 2px solid #f1f5f9;
+}
+
+#modalEditarPerfil .modal-body::-webkit-scrollbar-thumb:hover {
+    background: #006c70;
+}
+
+[data-bs-theme="dark"] #modalEditarPerfil .modal-body::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+[data-bs-theme="dark"] #modalEditarPerfil .modal-body::-webkit-scrollbar-thumb {
+    background: #22d3ee;
+    border: 2px solid #1e293b;
+}
+
+#modalEditarPerfil .modal-footer {
+    flex-shrink: 0;
+    z-index: 2;
+    border-top: 1px solid var(--lv-border-color, #e5e7eb);
+}
+
+/* Estilos de notificaciones y alertas de validación */
+.form-notification-toast {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 1060;
+    max-width: 420px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.75rem;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+

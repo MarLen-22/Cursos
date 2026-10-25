@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 use App\Controllers\AdminController;
 use App\Controllers\AdminModuloController;
+use App\Controllers\AprendizajeController;
 use App\Controllers\AssetController;
 use App\Controllers\AuthController;
+use App\Controllers\BuscarController;
+use App\Controllers\CuentaController;
 use App\Controllers\EvaluacionController;
 use App\Controllers\HomeController;
+use App\Controllers\InfoController;
 use App\Controllers\MetodologiaController;
 use App\Controllers\ModuloController;
 use App\Core\Router;
@@ -19,6 +23,11 @@ return static function (Router $r): void {
     $r->get('/modulos/{slug:[a-z0-9]+(?:-[a-z0-9]+)*}', [ModuloController::class, 'show']);
     $r->get('/metodologia', [MetodologiaController::class, 'index']);
     $r->get('/evaluacion', [EvaluacionController::class, 'index']);
+    $r->get('/buscar', [BuscarController::class, 'index']);
+    $r->get('/videopodcast', [InfoController::class, 'videopodcast']);
+    $r->get('/blog', [InfoController::class, 'blog']);
+    $r->get('/quienes-somos', [InfoController::class, 'quienesSomos']);
+    $r->get('/ayuda', [InfoController::class, 'ayuda']);
 
     // Autenticación
     $r->get('/login', [AuthController::class, 'showLogin'], ['guest']);
@@ -26,6 +35,16 @@ return static function (Router $r): void {
     $r->get('/registro', [AuthController::class, 'showRegistro'], ['guest']);
     $r->post('/registro', [AuthController::class, 'registro'], ['guest']);
     $r->post('/logout', [AuthController::class, 'logout'], ['auth']);
+
+    // Área del alumno
+    $slug = '{slug:[a-z0-9]+(?:-[a-z0-9]+)*}';
+    $r->get('/mi-aprendizaje', [AprendizajeController::class, 'index'], ['auth']);
+    $r->get('/mi-aprendizaje/{id:\d+}/constancia', [AprendizajeController::class, 'constancia'], ['auth']);
+    $r->post('/mi-aprendizaje/{id:\d+}/baja', [AprendizajeController::class, 'baja'], ['auth']);
+    $r->post('/modulos/' . $slug . '/inscripcion', [AprendizajeController::class, 'inscribir'], ['auth']);
+    $r->post('/modulos/' . $slug . '/avance', [AprendizajeController::class, 'avance'], ['auth']);
+    $r->get('/mi-cuenta', [CuentaController::class, 'show'], ['auth']);
+    $r->post('/mi-cuenta', [CuentaController::class, 'update'], ['auth']);
 
     // Administración (solo usuarios presentes en la tabla administrador)
     $r->get('/admin', [AdminController::class, 'dashboard'], ['admin']);

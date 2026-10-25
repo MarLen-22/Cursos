@@ -34,7 +34,7 @@ final class Middleware
     private static function requireGuest(): void
     {
         if (Auth::check()) {
-            Response::redirect(Url::to(Auth::isAdmin() ? '/admin' : '/'));
+            Response::redirect(Url::to(Auth::isAdmin() ? '/admin' : '/mi-aprendizaje'));
         }
     }
 

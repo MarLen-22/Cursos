@@ -7,7 +7,7 @@ namespace App\Core;
 /**
  * Declarative input validation. Rules: required, email, min:n, max:n,
  * maxbytes:n, between:a,b, int, in:a,b,c, regex:/pattern/, same:field,
- * password (letters + digits).
+ * password (letters + digits), date:minAge,maxAge (Y-m-d), decimal:min,max.
  */
 final class Validator
 {
@@ -79,6 +79,8 @@ final class Validator
             'int' => filter_var($value, FILTER_VALIDATE_INT) === false
                 ? sprintf('%s debe ser un número entero.', $label) : null,
             'between' => $this->checkBetween($value, $param, $label),
+            'date' => $this->checkDate($value, $param, $label),
+            'decimal' => $this->checkDecimal($value, $param, $label),
             'in' => !in_array($value, explode(',', $param), true)
                 ? sprintf('%s contiene un valor no permitido.', $label) : null,
             'regex' => preg_match($param, $value) !== 1
@@ -87,6 +89,10 @@ final class Validator
                 ? sprintf('%s no coincide.', $label) : null,
             'password' => (preg_match('/\p{L}/u', $value) !== 1 || preg_match('/\d/', $value) !== 1)
                 ? sprintf('%s debe incluir letras y números.', $label) : null,
+            'letters' => preg_match('/^[\p{L}\s\.\'\-]+$/u', $value) !== 1
+                ? sprintf('%s solo puede contener letras y espacios (sin números ni símbolos especiales).', $label) : null,
+            'tecvictoria_email' => (!str_ends_with(strtolower($value), '@tecvictoria.edu.mx') && !str_starts_with(strtolower($value), '@tecvictoria.edu.mx'))
+                ? sprintf('%s debe pertenecer obligatoriamente al dominio institucional @tecvictoria.edu.mx.', $label) : null,
             default => throw new \LogicException("Regla de validación desconocida: {$name}"),
         };
     }
@@ -98,6 +104,36 @@ final class Validator
 
         if ($int === false || $int < $min || $int > $max) {
             return sprintf('%s debe estar entre %d y %d.', $label, $min, $max);
+        }
+
+        return null;
+    }
+
+    /** Validates a real Y-m-d date; optional "minAge,maxAge" in years. */
+    private function checkDate(string $value, string $param, string $label): ?string
+    {
+        $date = \DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+        if ($date === false || $date->format('Y-m-d') !== $value) {
+            return sprintf('%s no es una fecha válida.', $label);
+        }
+
+        if ($param !== '') {
+            [$minAge, $maxAge] = array_map('intval', array_pad(explode(',', $param, 2), 2, '0'));
+            $age = $date->diff(new \DateTimeImmutable('today'))->y;
+            if ($date > new \DateTimeImmutable('today') || $age < $minAge || ($maxAge > 0 && $age > $maxAge)) {
+                return sprintf('%s debe corresponder a una edad entre %d y %d años.', $label, $minAge, $maxAge);
+            }
+        }
+
+        return null;
+    }
+
+    private function checkDecimal(string $value, string $param, string $label): ?string
+    {
+        [$min, $max] = array_map('floatval', array_pad(explode(',', $param, 2), 2, '0'));
+
+        if (preg_match('/^\d{1,3}(?:\.\d{1,2})?$/', $value) !== 1 || (float) $value < $min || (float) $value > $max) {
+            return sprintf('%s debe ser un número entre %s y %s (máximo 2 decimales).', $label, $min, $max);
         }
 
         return null;

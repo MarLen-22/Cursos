@@ -86,6 +86,12 @@ final class UsuarioRepository
         $stmt->execute(['hash' => $hash, 'id' => $id]);
     }
 
+    public function updateNombre(int $id, string $nombre): void
+    {
+        $stmt = $this->db->prepare('UPDATE usuario SET nombre = :nombre WHERE id_usuario = :id');
+        $stmt->execute(['nombre' => $nombre, 'id' => $id]);
+    }
+
     public function setActivo(int $id, bool $activo): void
     {
         $stmt = $this->db->prepare('UPDATE usuario SET activo = :activo WHERE id_usuario = :id');
