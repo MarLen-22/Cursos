@@ -17,20 +17,43 @@
             <?php endif; ?>
 
             <?php foreach ($modulos as $modulo): ?>
+                <?php
+                    $esCalculo = in_array($modulo->slug, ['calculo-diferencial', 'calculo-diferencial-e-integral'], true)
+                        || str_contains(mb_strtolower($modulo->titulo), 'cálculo')
+                        || str_contains(mb_strtolower($modulo->titulo), 'calculo');
+                    $tituloMostrar = $esCalculo ? 'Cálculo Diferencial' : $modulo->titulo;
+                ?>
                 <div class="col-12 col-md-6">
                     <div class="card h-100 border-slate-200 rounded-4 shadow-xs hover-card p-4 d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div class="module-icon-box bg-<?= e($modulo->color->value) ?>-subtle text-<?= e($modulo->color->value) ?> fs-4">
                                 <?= e($modulo->icono) ?>
                             </div>
-                            <span class="badge bg-<?= e($modulo->color->value) ?>-subtle text-<?= e($modulo->color->value) ?> rounded-pill px-3 py-1">
-                                <?= e($modulo->nivel->etiqueta()) ?>
-                            </span>
+                            <div class="d-flex flex-wrap gap-1 justify-content-end">
+                                <?php if ($esCalculo): ?>
+                                    <span class="badge bg-info-subtle text-info rounded-pill px-3 py-1">
+                                        Enfoque Lógico-Visual · 5 Lecciones
+                                    </span>
+                                <?php endif; ?>
+                                <span class="badge bg-<?= e($modulo->color->value) ?>-subtle text-<?= e($modulo->color->value) ?> rounded-pill px-3 py-1">
+                                    <?= e($modulo->nivel->etiqueta()) ?>
+                                </span>
+                            </div>
                         </div>
-                        <h2 class="h5 fw-bold mb-2"><?= e($modulo->titulo) ?></h2>
-                        <p class="text-slate-500 small mb-4 flex-grow-1"><?= e($modulo->descripcion) ?></p>
+                        <h2 class="h5 fw-bold mb-2"><?= e($tituloMostrar) ?></h2>
+                        <p class="text-slate-500 small mb-3 flex-grow-1"><?= e($modulo->descripcion) ?></p>
+                        <?php if ($esCalculo): ?>
+                            <div class="d-flex flex-wrap gap-1 mb-3">
+                                <span class="badge bg-light text-secondary border">1. Funciones (Cajas Negras)</span>
+                                <span class="badge bg-light text-secondary border">2. Límites (Iteraciones)</span>
+                                <span class="badge bg-light text-secondary border">3. La Derivada</span>
+                                <span class="badge bg-light text-secondary border">4. Reglas (Patrones)</span>
+                                <span class="badge bg-light text-secondary border">5. Optimización</span>
+                                <span class="badge bg-light text-success border">🎓 Encuesta y Certificado</span>
+                            </div>
+                        <?php endif; ?>
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top border-slate-100">
-                            <span class="text-muted small">Módulo interactivo</span>
+                            <span class="text-muted small"><?= $esCalculo ? 'Split-Screen · Simuladores + Guías PDF' : 'Módulo interactivo' ?></span>
                             <a href="<?= url('/modulos/' . e($modulo->slug)) ?>" class="btn btn-sm btn-outline-cyan fw-bold px-3">
                                 Explorar módulo ↗
                             </a>

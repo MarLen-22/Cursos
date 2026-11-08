@@ -9,7 +9,7 @@ SET NAMES utf8mb4;
 
 -- Los únicos módulos activos del proyecto son los 4 oficiales definidos en 02_seed.sql:
 -- 1. Fundamentos de Programación
--- 2. Cálculo Diferencial e Integral
+-- 2. Cálculo Diferencial
 -- 3. Matemáticas Discretas
 -- 4. Física
 

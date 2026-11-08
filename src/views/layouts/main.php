@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="<?= url('/vendor/bootstrap/css/bootstrap.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/styles.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/alumno.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/calculo-diferencial.css') ?>">
 </head>
 <body class="d-flex flex-column h-100 bg-slate-50 text-slate-900">
     <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
@@ -36,5 +37,6 @@
     <script src="<?= url('/vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script src="<?= asset('js/app.js') ?>"></script>
     <script src="<?= asset('js/alumno.js') ?>"></script>
+    <script src="<?= asset('js/calculo-diferencial.js') ?>"></script>
 </body>
 </html>

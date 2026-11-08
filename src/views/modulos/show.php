@@ -1,3 +1,13 @@
+<?php
+$esCalculoDiferencial = in_array($modulo->slug, ['calculo-diferencial', 'calculo-diferencial-e-integral'], true)
+    || str_contains(mb_strtolower($modulo->titulo), 'cálculo')
+    || str_contains(mb_strtolower($modulo->titulo), 'calculo');
+
+if ($esCalculoDiferencial) {
+    require __DIR__ . '/calculo_diferencial.php';
+    return;
+}
+?>
 <section class="py-5 bg-navy text-white position-relative">
     <div class="bg-grid position-absolute top-0 start-0 w-100 h-100 pointer-events-none"></div>
     <div class="container-fluid max-w-7xl mx-auto px-4 position-relative z-1">

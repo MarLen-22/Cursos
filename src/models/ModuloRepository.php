@@ -10,8 +10,24 @@ final class ModuloRepository
 {
     private const COLUMNS = 'id_modulo, slug, titulo, descripcion, contenido, icono, color, nivel, orden, activo, actualizado_en';
 
+    private static bool $migrated = false;
+
     public function __construct(private readonly PDO $db)
     {
+        if (!self::$migrated) {
+            self::$migrated = true;
+            try {
+                $this->db->exec(
+                    "UPDATE modulo
+                        SET slug = 'calculo-diferencial',
+                            titulo = 'Cálculo Diferencial',
+                            descripcion = 'Haz visible el cambio: interpreta funciones, límites, derivadas, pendientes y optimización con enfoque lógico-visual.'
+                      WHERE slug = 'calculo-diferencial-e-integral' OR titulo = 'Cálculo Diferencial e Integral'"
+                );
+            } catch (\Throwable) {
+                // Ignore if read-only or already updated
+            }
+        }
     }
 
     /** @return list<Modulo> */
@@ -50,6 +66,12 @@ final class ModuloRepository
         $stmt = $this->db->prepare('SELECT ' . self::COLUMNS . ' FROM modulo WHERE slug = :slug AND activo = 1');
         $stmt->execute(['slug' => $slug]);
         $row = $stmt->fetch();
+
+        if ($row === false && in_array($slug, ['calculo-diferencial', 'calculo-diferencial-e-integral'], true)) {
+            $altSlug = $slug === 'calculo-diferencial' ? 'calculo-diferencial-e-integral' : 'calculo-diferencial';
+            $stmt->execute(['slug' => $altSlug]);
+            $row = $stmt->fetch();
+        }
 
         return $row !== false ? Modulo::fromRow($row) : null;
     }
