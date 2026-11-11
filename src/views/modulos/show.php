@@ -7,6 +7,15 @@ if ($esCalculoDiferencial) {
     require __DIR__ . '/calculo_diferencial.php';
     return;
 }
+
+$esFisica = in_array($modulo->slug, ['fisica', 'fisica-causa-efecto-y-simulacion'], true)
+    || str_contains(mb_strtolower($modulo->titulo), 'física')
+    || str_contains(mb_strtolower($modulo->titulo), 'fisica');
+
+if ($esFisica) {
+    require __DIR__ . '/fisica.php';
+    return;
+}
 ?>
 <section class="py-5 bg-navy text-white position-relative">
     <div class="bg-grid position-absolute top-0 start-0 w-100 h-100 pointer-events-none"></div>

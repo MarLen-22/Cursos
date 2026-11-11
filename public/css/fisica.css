@@ -1,0 +1,641 @@
+/* =====================================================================
+   Física: Causa, Efecto y Simulación · Estilos UI/UX E-Learning
+   Diseño Split-Screen (Sidebar Izquierdo 30% / Panel Principal 70%)
+   Paleta Clean UI: Verde Azulado (Teal #0d9488, #0f766e) y Esmeralda
+   (#10b981, #059669), Sombras Suaves (Soft Shadows) y Tipografía Inter
+   ===================================================================== */
+
+:root {
+    --fis-bg-page: #f4f7f6;
+    --fis-bg-surface: #ffffff;
+    --fis-bg-subtle: #f0fdfa;
+    --fis-bg-muted: #f8fafc;
+    --fis-border: #d1fae5;
+    --fis-border-neutral: #e2e8f0;
+    --fis-text-main: #0f172a;
+    --fis-text-secondary: #334155;
+    --fis-text-muted: #64748b;
+    --fis-teal: #0d9488;
+    --fis-teal-dark: #0f766e;
+    --fis-teal-light: #ccfbf1;
+    --fis-emerald: #10b981;
+    --fis-emerald-dark: #059669;
+    --fis-emerald-light: #d1fae5;
+    --fis-amber: #f59e0b;
+    --fis-amber-light: #fef3c7;
+    --fis-rose: #e11d48;
+    --fis-rose-light: #ffe4e6;
+    --fis-indigo: #4f46e5;
+    --fis-indigo-light: #e0e7ff;
+    --fis-header-grad: linear-gradient(135deg, #042f2e 0%, #0f3d3e 55%, #064e3b 100%);
+}
+
+[data-bs-theme="dark"] {
+    --fis-bg-page: #071214;
+    --fis-bg-surface: #0d1b1e;
+    --fis-bg-subtle: rgba(13, 148, 136, 0.14);
+    --fis-bg-muted: #13262b;
+    --fis-border: rgba(20, 184, 166, 0.25);
+    --fis-border-neutral: #1e293b;
+    --fis-text-main: #f1f5f9;
+    --fis-text-secondary: #cbd5e1;
+    --fis-text-muted: #94a3b8;
+    --fis-teal-light: rgba(13, 148, 136, 0.22);
+    --fis-emerald-light: rgba(16, 185, 129, 0.22);
+    --fis-amber-light: rgba(245, 158, 11, 0.2);
+    --fis-rose-light: rgba(225, 29, 72, 0.2);
+    --fis-indigo-light: rgba(79, 70, 229, 0.2);
+}
+
+/* ---------------------------------------------------------------------
+   1. Layout de Pantalla Dividida (Split-Screen 30% / 70%)
+   --------------------------------------------------------------------- */
+.fis-elearning-wrapper {
+    background-color: var(--fis-bg-page);
+    min-height: calc(100vh - 70px);
+    padding-bottom: 3.5rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.fis-hero-banner {
+    background: var(--fis-header-grad);
+    border-bottom: 1px solid rgba(20, 184, 166, 0.25);
+}
+
+.fis-split-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+@media (min-width: 992px) {
+    .fis-split-layout {
+        flex-direction: row;
+    }
+    .fis-sidebar-panel {
+        width: 30%;
+        flex: 0 0 30%;
+        position: sticky;
+        top: 5rem;
+        max-height: calc(100vh - 6rem);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #99f6e4 transparent;
+    }
+    .fis-main-panel {
+        width: 70%;
+        flex: 1 1 70%;
+        min-width: 0;
+    }
+}
+
+/* Botones Teal / Esmeralda propios del curso de Física */
+.btn-teal {
+    background: linear-gradient(135deg, var(--fis-teal) 0%, var(--fis-emerald-dark) 100%);
+    color: #ffffff !important;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-teal:hover,
+.btn-teal:focus {
+    background: linear-gradient(135deg, var(--fis-teal-dark) 0%, #047857 100%);
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px -3px rgba(13, 148, 136, 0.45);
+}
+
+.btn-outline-teal {
+    color: var(--fis-teal);
+    border: 1.5px solid var(--fis-teal);
+    background: transparent;
+    transition: all 0.18s ease;
+}
+
+.btn-outline-teal:hover {
+    background: var(--fis-teal);
+    color: #ffffff !important;
+}
+
+.shadow-teal {
+    box-shadow: 0 8px 22px -4px rgba(13, 148, 136, 0.4);
+}
+
+.text-teal {
+    color: var(--fis-teal) !important;
+}
+
+.text-emerald {
+    color: var(--fis-emerald) !important;
+}
+
+/* ---------------------------------------------------------------------
+   2. Barra Lateral Izquierda (Menú Acordeón Ruta de Aprendizaje)
+   --------------------------------------------------------------------- */
+.fis-sidebar-card {
+    background: var(--fis-bg-surface);
+    border: 1px solid var(--fis-border-neutral);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px -6px rgba(13, 148, 136, 0.08);
+}
+
+.fis-sidebar-header {
+    padding: 1.15rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--fis-border-neutral);
+    background: linear-gradient(135deg, rgba(13, 148, 136, 0.09) 0%, rgba(16, 185, 129, 0.06) 100%);
+}
+
+.fis-sidebar-close-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--fis-text-muted);
+    background: rgba(15, 23, 42, 0.05);
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.15s ease;
+}
+
+.fis-sidebar-close-btn:hover {
+    background: var(--fis-rose-light);
+    color: var(--fis-rose);
+}
+
+.fis-lesson-accordion .accordion-item {
+    border: 0;
+    border-bottom: 1px solid var(--fis-border-neutral);
+    background: var(--fis-bg-surface);
+}
+
+.fis-lesson-accordion .accordion-item:last-child {
+    border-bottom: 0;
+}
+
+.fis-lesson-accordion .accordion-button {
+    padding: 0.95rem 1.15rem;
+    font-size: 0.87rem;
+    font-weight: 700;
+    color: var(--fis-text-main);
+    background: var(--fis-bg-surface);
+    box-shadow: none !important;
+    line-height: 1.35;
+}
+
+.fis-lesson-accordion .accordion-button:not(.collapsed) {
+    background: var(--fis-bg-subtle);
+    color: var(--fis-teal-dark);
+}
+
+[data-bs-theme="dark"] .fis-lesson-accordion .accordion-button:not(.collapsed) {
+    color: #2dd4bf;
+}
+
+.fis-lesson-meta {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--fis-text-muted);
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.fis-nav-list {
+    list-style: none;
+    padding: 0.35rem 0.65rem 0.75rem;
+    margin: 0;
+    background: var(--fis-bg-surface);
+}
+
+.fis-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.25rem;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--fis-text-secondary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.16s ease;
+}
+
+.fis-nav-item:hover {
+    background: var(--fis-bg-muted);
+    color: var(--fis-text-main);
+    transform: translateX(2px);
+}
+
+.fis-nav-item.is-active {
+    background: var(--fis-teal-light);
+    border-color: rgba(13, 148, 136, 0.38);
+    color: var(--fis-teal-dark);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(13, 148, 136, 0.1);
+}
+
+[data-bs-theme="dark"] .fis-nav-item.is-active {
+    color: #5eead4;
+    border-color: rgba(45, 212, 191, 0.4);
+}
+
+.fis-nav-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    background: var(--fis-bg-muted);
+}
+
+.fis-nav-item.is-active .fis-nav-icon {
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(13, 148, 136, 0.15);
+}
+
+[data-bs-theme="dark"] .fis-nav-item.is-active .fis-nav-icon {
+    background: #0f172a;
+}
+
+.fis-nav-check {
+    margin-left: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid #cbd5e1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: transparent;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.fis-nav-item.is-completed .fis-nav-check {
+    background: var(--fis-emerald);
+    border-color: var(--fis-emerald);
+    color: #ffffff;
+}
+
+/* ---------------------------------------------------------------------
+   3. Panel Principal (Área de Trabajo 70%)
+   --------------------------------------------------------------------- */
+.fis-workspace-card {
+    background: var(--fis-bg-surface);
+    border: 1px solid var(--fis-border-neutral);
+    border-radius: 20px;
+    padding: 1.85rem 2.15rem;
+    box-shadow: 0 10px 30px -6px rgba(15, 23, 42, 0.06);
+}
+
+@media (max-width: 767px) {
+    .fis-workspace-card {
+        padding: 1.25rem;
+    }
+}
+
+.fis-content-pane {
+    display: none;
+    animation: fisFadeIn 0.22s ease-out;
+}
+
+.fis-content-pane.is-active {
+    display: block;
+}
+
+@keyframes fisFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fis-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.32rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.fis-badge-reading {
+    background: var(--fis-teal-light);
+    color: var(--fis-teal-dark);
+}
+
+.fis-badge-sim {
+    background: var(--fis-emerald-light);
+    color: var(--fis-emerald-dark);
+}
+
+.fis-badge-abp {
+    background: var(--fis-amber-light);
+    color: #b45309;
+}
+
+.fis-badge-pdf {
+    background: var(--fis-indigo-light);
+    color: var(--fis-indigo);
+}
+
+.fis-badge-closing {
+    background: var(--fis-emerald-light);
+    color: var(--fis-emerald-dark);
+}
+
+/* Cajas de Fórmulas Principales (El "Código" Físico) */
+.fis-formula-card {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
+    border: 1px solid #99f6e4;
+    border-left: 5px solid var(--fis-teal);
+    border-radius: 14px;
+    padding: 1.15rem 1.35rem;
+    margin-bottom: 0.85rem;
+    transition: transform 0.15s ease;
+}
+
+[data-bs-theme="dark"] .fis-formula-card {
+    background: rgba(13, 148, 136, 0.1);
+    border-color: rgba(20, 184, 166, 0.3);
+}
+
+.fis-formula-card:hover {
+    transform: translateX(3px);
+}
+
+.fis-formula-math {
+    background: #0f172a;
+    color: #f8fafc;
+    border-radius: 10px;
+    padding: 0.65rem 1.1rem;
+    font-size: 1.12rem;
+    display: inline-block;
+    border: 1px solid #1e293b;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Acordeón de Tips para el Reto ABP (Bosquejo UI) */
+.fis-tips-accordion {
+    border: 1.5px solid #5eead4;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(240, 253, 250, 0.9), rgba(209, 250, 229, 0.5));
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .fis-tips-accordion {
+    background: rgba(13, 148, 136, 0.12);
+    border-color: rgba(45, 212, 191, 0.35);
+}
+
+.fis-tips-toggle {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--fis-teal-dark);
+    cursor: pointer;
+}
+
+[data-bs-theme="dark"] .fis-tips-toggle {
+    color: #5eead4;
+}
+
+.fis-tips-body {
+    padding: 0 1.2rem 1rem;
+    font-size: 0.88rem;
+    color: var(--fis-text-secondary);
+    border-top: 1px dashed rgba(13, 148, 136, 0.25);
+    padding-top: 0.75rem;
+}
+
+/* Botones de utilidad: Guardar nota y Feedback 👍 👎 */
+.fis-note-drawer {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+[data-bs-theme="dark"] .fis-note-drawer {
+    background: rgba(234, 179, 8, 0.12);
+    border-color: rgba(250, 204, 21, 0.35);
+}
+
+.fis-feedback-btn {
+    border: 1px solid var(--fis-border-neutral);
+    background: var(--fis-bg-muted);
+    border-radius: 10px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.fis-feedback-btn:hover,
+.fis-feedback-btn.is-selected {
+    background: var(--fis-teal-light);
+    border-color: var(--fis-teal);
+    color: var(--fis-teal-dark);
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------
+   4. Simuladores y Retos ABP (Consola Física Interactiva)
+   --------------------------------------------------------------------- */
+.fis-sim-box {
+    background: #0b171a;
+    color: #f8fafc;
+    border-radius: 18px;
+    border: 1px solid #134e4a;
+    overflow: hidden;
+    box-shadow: 0 14px 34px -8px rgba(4, 47, 46, 0.35);
+}
+
+.fis-sim-topbar {
+    background: linear-gradient(90deg, #042f2e 0%, #115e59 100%);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(45, 212, 191, 0.25);
+}
+
+.fis-sim-body {
+    padding: 1.5rem;
+}
+
+.fis-sim-canvas-wrap {
+    background: #071013;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 0.75rem;
+    text-align: center;
+    position: relative;
+}
+
+.fis-sim-console {
+    background: #040b0d;
+    border: 1px solid #134e4a;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    font-size: 0.83rem;
+    color: #cbd5e1;
+    min-height: 96px;
+}
+
+/* Barras de Energía para Lección 4 (Montaña Rusa) */
+.fis-energy-bar-track {
+    height: 130px;
+    width: 42px;
+    background: #1e293b;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 1px solid #334155;
+}
+
+.fis-energy-bar-fill {
+    width: 100%;
+    transition: height 0.2s ease;
+}
+
+/* ---------------------------------------------------------------------
+   5. Estilos para las 5 Guías Visuales Incorporadas (HTML + CSS)
+   --------------------------------------------------------------------- */
+.fis-guide-container {
+    background: #ffffff;
+    color: #1f2937;
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.06);
+}
+
+[data-bs-theme="dark"] .fis-guide-container {
+    background: #111827;
+    color: #f3f4f6;
+    border-color: #1f2937;
+}
+
+.code-font {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+}
+
+.math-box {
+    background-color: #1e293b;
+    color: #f8fafc;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-size: 1.05rem;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+    overflow-x: auto;
+}
+
+.border-logic-if {
+    border-left: 4px solid #3b82f6 !important;
+}
+
+.border-logic-else {
+    border-left: 4px solid #ef4444 !important;
+}
+
+.border-logic-success {
+    border-left: 4px solid #10b981 !important;
+}
+
+.fis-guide-step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------
+   6. Modal de Video con Backdrop Blur (Requerimiento 3)
+   --------------------------------------------------------------------- */
+.modal-backdrop.show {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    background-color: rgba(4, 24, 24, 0.72);
+    opacity: 1 !important;
+}
+
+.fis-modal-header {
+    background: var(--fis-header-grad);
+    color: #ffffff;
+    border-bottom: 1px solid rgba(45, 212, 191, 0.25);
+}
+
+/* ---------------------------------------------------------------------
+   7. Tabla Escala Likert (1 al 5) - Módulo de Cierre (Requerimiento 4)
+   --------------------------------------------------------------------- */
+.fis-likert-table thead th {
+    background: #ccfbf1;
+    color: #115e59;
+    font-weight: 700;
+    font-size: 0.84rem;
+    vertical-align: middle;
+    border-color: #99f6e4;
+    padding: 0.85rem 0.7rem;
+}
+
+[data-bs-theme="dark"] .fis-likert-table thead th {
+    background: #134e4a;
+    color: #5eead4;
+    border-color: #115e59;
+}
+
+.fis-likert-table tbody tr:nth-child(odd) td {
+    background: rgba(204, 251, 241, 0.35);
+}
+
+[data-bs-theme="dark"] .fis-likert-table tbody tr:nth-child(odd) td {
+    background: rgba(19, 78, 74, 0.3);
+}
+
+.fis-likert-radio {
+    width: 1.3rem;
+    height: 1.3rem;
+    cursor: pointer;
+    accent-color: #0d9488;
+}
+

@@ -25,9 +25,9 @@ final class Response
         header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
         header(
             "Content-Security-Policy: default-src 'self'; "
-            . "script-src 'self' 'unsafe-inline'; "
-            . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-            . "font-src 'self' https://fonts.gstatic.com; "
+            . "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+            . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; "
+            . "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; "
             . "img-src 'self' data: https://i.ytimg.com https://img.youtube.com; "
             . "frame-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com; "
             . "form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'self'"

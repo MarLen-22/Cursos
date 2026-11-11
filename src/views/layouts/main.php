@@ -10,11 +10,23 @@
     <script src="<?= asset('js/theme-init.js') ?>"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= url('/vendor/bootstrap/css/bootstrap.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/styles.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/alumno.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/calculo-diferencial.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/fisica.css') ?>">
+    <!-- Configuración de MathJax para renderizado nativo de fórmulas LaTeX ($...$ y $$...$$) -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body class="d-flex flex-column h-100 bg-slate-50 text-slate-900">
     <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
@@ -38,5 +50,6 @@
     <script src="<?= asset('js/app.js') ?>"></script>
     <script src="<?= asset('js/alumno.js') ?>"></script>
     <script src="<?= asset('js/calculo-diferencial.js') ?>"></script>
+    <script src="<?= asset('js/fisica.js') ?>"></script>
 </body>
 </html>
