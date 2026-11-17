@@ -110,3 +110,6 @@ Accede a cualquiera de las dos rutas (ambas funcionan gracias al Front Controlle
 
 Para migrar la base de datos a **Azure Database for MySQL (Flexible Server)** y la aplicación a **Azure App Service**, consulta la guía paso a paso en:
 👉 [`docs/AZURE_MIGRATION.md`](file:///c:/xampp/htdocs/Cursos/docs/AZURE_MIGRATION.md).
+
+
+- Cambiar contraseña en base de datos
