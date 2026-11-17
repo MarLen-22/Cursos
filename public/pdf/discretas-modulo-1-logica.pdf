@@ -1,0 +1,84 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1928 >>
+stream
+BT
+/F1 10 Tf
+50 740 Td
+(TECNOLOGICO NACIONAL DE MEXICO - INSTITUTO TECNOLOGICO DE CIUDAD VICTORIA) Tj
+0 -13 Td
+(DEPARTAMENTO DE INGENIERIA EN SISTEMAS COMPUTACIONALES - ABP) Tj
+/F1 16 Tf
+0 -28 Td
+(Modulo 1: Logica Proposicional y Tablas de Verdad) Tj
+/F1 11 Tf
+0 -16 Td
+(Curso: Matematicas Discretas | Guia Oficial Didactica - Modulo 1) Tj
+/F1 12 Tf
+0 -24 Td
+(1. OBJETIVOS DE APRENDIZAJE Y COMPETENCIAS) Tj
+/F1 9.5 Tf
+0 -14 Td
+(  * Distinguir enunciados declarativos univocos con valor de verdad definido.) Tj
+0 -14 Td
+(  * Construir tablas de verdad de conectivos fundamentales: conjuncion, disyuncion y condicional.) Tj
+0 -14 Td
+(  * Aplicar las Leyes de De Morgan e identificar tautologias, contradicciones y contingencias.) Tj
+/F1 12 Tf
+0 -22 Td
+(2. MARCO TEORICO Y DESARROLLO DE CONCEPTOS) Tj
+/F1 9.5 Tf
+0 -14 Td
+(  - Condicional [p -> q]: Falso exclusivamente cuando el antecedente es V y el consecuente F.) Tj
+0 -14 Td
+(  - Leyes de De Morgan: ~[p ^ q] equivale a ~p v ~q; y ~[p v q] equivale a ~p ^ ~q.) Tj
+0 -14 Td
+(  - Tautologia: Forma proposicional cuya columna final es siempre Verdadera.) Tj
+0 -14 Td
+(  - Disyuncion exclusiva [p XOR q]: Verdadera cuando exactamente una proposicion es V.) Tj
+/F1 12 Tf
+0 -22 Td
+(3. METODOLOGIA ABP: FASES DE RESOLUCION) Tj
+/F1 9.5 Tf
+0 -14 Td
+(  > Explora: Identifica proposiciones atomicas a partir del enunciado del problema.) Tj
+0 -14 Td
+(  > Formula: Traduce restricciones verbales a formulas de logica proposicional formal.) Tj
+0 -14 Td
+(  > Experimenta: Construye la tabla de verdad para las 2^n combinaciones de verdad.) Tj
+0 -14 Td
+(  > Reflexiona: Verifica la equivalencia logica simplificando mediante postulados.) Tj
+/F1 9 Tf
+0 -28 Td
+(Evaluacion del Modulo: 10 preguntas de opcion multiple. Acreditacion minima: 70%.) Tj
+0 -12 Td
+(Plataforma Oficial Logica Visual ABP - Documento Didactico Descargable en PDF) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000002221 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2291
+%%EOF

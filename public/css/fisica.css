@@ -73,6 +73,7 @@
     .fis-split-layout {
         flex-direction: row;
     }
+
     .fis-sidebar-panel {
         width: 30%;
         flex: 0 0 30%;
@@ -83,6 +84,7 @@
         scrollbar-width: thin;
         scrollbar-color: #99f6e4 transparent;
     }
+
     .fis-main-panel {
         width: 70%;
         flex: 1 1 70%;
@@ -321,6 +323,7 @@
         opacity: 0;
         transform: translateY(6px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -638,4 +641,3 @@
     cursor: pointer;
     accent-color: #0d9488;
 }
-

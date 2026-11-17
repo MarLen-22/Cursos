@@ -1,0 +1,632 @@
+/* =====================================================================
+   Fundamentos de Programación · Estilos UI/UX E-Learning
+   Diseño Split-Screen (Sidebar Izquierdo 30% / Panel Principal 70%)
+   Paleta Clean UI: Azul Tecnológico (#2563eb, #1d4ed8) y Cian (#0ea5e9)
+   ===================================================================== */
+
+:root {
+    --prog-bg-page: #f4f7fb;
+    --prog-bg-surface: #ffffff;
+    --prog-bg-subtle: #eff6ff;
+    --prog-bg-muted: #f8fafc;
+    --prog-border: #dbeafe;
+    --prog-border-neutral: #e2e8f0;
+    --prog-text-main: #0f172a;
+    --prog-text-secondary: #334155;
+    --prog-text-muted: #64748b;
+    --prog-blue: #2563eb;
+    --prog-blue-dark: #1d4ed8;
+    --prog-blue-light: #dbeafe;
+    --prog-sky: #0ea5e9;
+    --prog-sky-dark: #0284c7;
+    --prog-sky-light: #e0f2fe;
+    --prog-emerald: #10b981;
+    --prog-emerald-dark: #059669;
+    --prog-emerald-light: #d1fae5;
+    --prog-amber: #f59e0b;
+    --prog-amber-light: #fef3c7;
+    --prog-rose: #e11d48;
+    --prog-rose-light: #ffe4e6;
+    --prog-indigo: #4f46e5;
+    --prog-indigo-light: #e0e7ff;
+    --prog-header-grad: linear-gradient(135deg, #09152b 0%, #172554 55%, #1e3a8a 100%);
+}
+
+[data-bs-theme="dark"] {
+    --prog-bg-page: #070d19;
+    --prog-bg-surface: #0d1627;
+    --prog-bg-subtle: rgba(37, 99, 235, 0.14);
+    --prog-bg-muted: #132038;
+    --prog-border: rgba(59, 130, 246, 0.25);
+    --prog-border-neutral: #1e293b;
+    --prog-text-main: #f1f5f9;
+    --prog-text-secondary: #cbd5e1;
+    --prog-text-muted: #94a3b8;
+    --prog-blue-light: rgba(37, 99, 235, 0.22);
+    --prog-sky-light: rgba(14, 165, 233, 0.22);
+    --prog-emerald-light: rgba(16, 185, 129, 0.22);
+    --prog-amber-light: rgba(245, 158, 11, 0.2);
+    --prog-rose-light: rgba(225, 29, 72, 0.2);
+    --prog-indigo-light: rgba(79, 70, 229, 0.2);
+}
+
+/* ---------------------------------------------------------------------
+   1. Layout de Pantalla Dividida (Split-Screen 30% / 70%)
+   --------------------------------------------------------------------- */
+.prog-elearning-wrapper {
+    background-color: var(--prog-bg-page);
+    min-height: calc(100vh - 70px);
+    padding-bottom: 3.5rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.prog-hero-banner {
+    background: var(--prog-header-grad);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.prog-split-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+@media (min-width: 992px) {
+    .prog-split-layout {
+        flex-direction: row;
+    }
+
+    .prog-sidebar-panel {
+        width: 30%;
+        flex: 0 0 30%;
+        position: sticky;
+        top: 5rem;
+        max-height: calc(100vh - 6rem);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #93c5fd transparent;
+    }
+
+    .prog-main-panel {
+        width: 70%;
+        flex: 1 1 70%;
+        min-width: 0;
+    }
+}
+
+/* Botones Azul Tecnológico / Cian propios del curso */
+.btn-prog {
+    background: linear-gradient(135deg, var(--prog-blue) 0%, var(--prog-sky-dark) 100%);
+    color: #ffffff !important;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-prog:hover,
+.btn-prog:focus {
+    background: linear-gradient(135deg, var(--prog-blue-dark) 0%, #0369a1 100%);
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px -3px rgba(37, 99, 235, 0.45);
+}
+
+.btn-outline-prog {
+    color: var(--prog-blue);
+    border: 1.5px solid var(--prog-blue);
+    background: transparent;
+    transition: all 0.18s ease;
+}
+
+.btn-outline-prog:hover {
+    background: var(--prog-blue);
+    color: #ffffff !important;
+}
+
+.shadow-prog {
+    box-shadow: 0 8px 22px -4px rgba(37, 99, 235, 0.4);
+}
+
+.text-prog {
+    color: var(--prog-blue) !important;
+}
+
+.text-sky {
+    color: var(--prog-sky) !important;
+}
+
+/* ---------------------------------------------------------------------
+   2. Barra Lateral Izquierda (Menú Acordeón Ruta de Aprendizaje)
+   --------------------------------------------------------------------- */
+.prog-sidebar-card {
+    background: var(--prog-bg-surface);
+    border: 1px solid var(--prog-border-neutral);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px -6px rgba(37, 99, 235, 0.08);
+}
+
+.prog-sidebar-header {
+    padding: 1.15rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--prog-border-neutral);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.09) 0%, rgba(14, 165, 233, 0.06) 100%);
+}
+
+.prog-sidebar-close-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--prog-text-muted);
+    background: rgba(15, 23, 42, 0.05);
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.15s ease;
+}
+
+.prog-sidebar-close-btn:hover {
+    background: var(--prog-rose-light);
+    color: var(--prog-rose);
+}
+
+.prog-lesson-accordion .accordion-item {
+    border: 0;
+    border-bottom: 1px solid var(--prog-border-neutral);
+    background: var(--prog-bg-surface);
+}
+
+.prog-lesson-accordion .accordion-item:last-child {
+    border-bottom: 0;
+}
+
+.prog-lesson-accordion .accordion-button {
+    padding: 0.95rem 1.15rem;
+    font-size: 0.87rem;
+    font-weight: 700;
+    color: var(--prog-text-main);
+    background: var(--prog-bg-surface);
+    box-shadow: none !important;
+    line-height: 1.35;
+}
+
+.prog-lesson-accordion .accordion-button:not(.collapsed) {
+    background: var(--prog-bg-subtle);
+    color: var(--prog-blue-dark);
+}
+
+[data-bs-theme="dark"] .prog-lesson-accordion .accordion-button:not(.collapsed) {
+    color: #60a5fa;
+}
+
+.prog-lesson-meta {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--prog-text-muted);
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.prog-nav-list {
+    list-style: none;
+    padding: 0.35rem 0.65rem 0.75rem;
+    margin: 0;
+    background: var(--prog-bg-surface);
+}
+
+.prog-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.25rem;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--prog-text-secondary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.16s ease;
+}
+
+.prog-nav-item:hover {
+    background: var(--prog-bg-muted);
+    color: var(--prog-text-main);
+    transform: translateX(2px);
+}
+
+.prog-nav-item.is-active {
+    background: var(--prog-blue-light);
+    border-color: rgba(37, 99, 235, 0.38);
+    color: var(--prog-blue-dark);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+}
+
+[data-bs-theme="dark"] .prog-nav-item.is-active {
+    color: #93c5fd;
+    border-color: rgba(96, 165, 250, 0.4);
+}
+
+.prog-nav-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    background: var(--prog-bg-muted);
+}
+
+.prog-nav-item.is-active .prog-nav-icon {
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.15);
+}
+
+[data-bs-theme="dark"] .prog-nav-item.is-active .prog-nav-icon {
+    background: #0f172a;
+}
+
+.prog-nav-check {
+    margin-left: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid #cbd5e1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: transparent;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.prog-nav-item.is-completed .prog-nav-check {
+    background: var(--prog-emerald);
+    border-color: var(--prog-emerald);
+    color: #ffffff;
+}
+
+/* ---------------------------------------------------------------------
+   3. Panel Principal (Área de Trabajo 70%)
+   --------------------------------------------------------------------- */
+.prog-workspace-card {
+    background: var(--prog-bg-surface);
+    border: 1px solid var(--prog-border-neutral);
+    border-radius: 20px;
+    padding: 1.85rem 2.15rem;
+    box-shadow: 0 10px 30px -6px rgba(15, 23, 42, 0.06);
+}
+
+@media (max-width: 767px) {
+    .prog-workspace-card {
+        padding: 1.25rem;
+    }
+}
+
+.prog-content-pane {
+    display: none;
+    animation: progFadeIn 0.22s ease-out;
+}
+
+.prog-content-pane.is-active {
+    display: block;
+}
+
+@keyframes progFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.prog-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.32rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.prog-badge-reading {
+    background: var(--prog-blue-light);
+    color: var(--prog-blue-dark);
+}
+
+.prog-badge-sim {
+    background: var(--prog-sky-light);
+    color: var(--prog-sky-dark);
+}
+
+.prog-badge-abp {
+    background: var(--prog-amber-light);
+    color: #b45309;
+}
+
+.prog-badge-pdf {
+    background: var(--prog-indigo-light);
+    color: var(--prog-indigo);
+}
+
+.prog-badge-closing {
+    background: var(--prog-emerald-light);
+    color: var(--prog-emerald-dark);
+}
+
+/* Cajas de Sintaxis y Reglas Principales */
+.prog-formula-card {
+    background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+    border: 1px solid #bfdbfe;
+    border-left: 5px solid var(--prog-blue);
+    border-radius: 14px;
+    padding: 1.15rem 1.35rem;
+    margin-bottom: 0.85rem;
+    transition: transform 0.15s ease;
+}
+
+[data-bs-theme="dark"] .prog-formula-card {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.prog-formula-card:hover {
+    transform: translateX(3px);
+}
+
+.prog-formula-math {
+    background: #0f172a;
+    color: #38bdf8;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    border-radius: 10px;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.96rem;
+    display: inline-block;
+    border: 1px solid #1e293b;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Acordeón de Tips para el Simulador / Reto ABP */
+.prog-tips-accordion {
+    border: 1.5px solid #93c5fd;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(239, 246, 255, 0.9), rgba(224, 242, 254, 0.55));
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .prog-tips-accordion {
+    background: rgba(37, 99, 235, 0.12);
+    border-color: rgba(96, 165, 250, 0.35);
+}
+
+.prog-tips-toggle {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--prog-blue-dark);
+    cursor: pointer;
+}
+
+[data-bs-theme="dark"] .prog-tips-toggle {
+    color: #93c5fd;
+}
+
+.prog-tips-body {
+    padding: 0 1.2rem 1rem;
+    font-size: 0.88rem;
+    color: var(--prog-text-secondary);
+    border-top: 1px dashed rgba(37, 99, 235, 0.25);
+    padding-top: 0.75rem;
+}
+
+/* Botones de utilidad: Guardar nota y Feedback 👍 👎 */
+.prog-note-drawer {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+[data-bs-theme="dark"] .prog-note-drawer {
+    background: rgba(234, 179, 8, 0.12);
+    border-color: rgba(250, 204, 21, 0.35);
+}
+
+.prog-feedback-btn {
+    border: 1px solid var(--prog-border-neutral);
+    background: var(--prog-bg-muted);
+    border-radius: 10px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.prog-feedback-btn:hover,
+.prog-feedback-btn.is-selected {
+    background: var(--prog-blue-light);
+    border-color: var(--prog-blue);
+    color: var(--prog-blue-dark);
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------
+   4. Simuladores y Retos ABP (Consola Algorítmica Interactiva)
+   --------------------------------------------------------------------- */
+.prog-sim-box {
+    background: #0a1120;
+    color: #f8fafc;
+    border-radius: 18px;
+    border: 1px solid #1e3a8a;
+    overflow: hidden;
+    box-shadow: 0 14px 34px -8px rgba(15, 23, 42, 0.4);
+}
+
+.prog-sim-topbar {
+    background: linear-gradient(90deg, #0f172a 0%, #1e3a8a 100%);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(96, 165, 250, 0.25);
+}
+
+.prog-sim-body {
+    padding: 1.5rem;
+}
+
+.prog-sim-canvas-wrap {
+    background: #060b16;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 0.85rem;
+    text-align: center;
+    position: relative;
+}
+
+.prog-sim-console {
+    background: #040812;
+    border: 1px solid #1e3a8a;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    font-size: 0.83rem;
+    color: #cbd5e1;
+    min-height: 96px;
+}
+
+.prog-array-cell {
+    min-width: 58px;
+    border-radius: 10px;
+    border: 1.5px solid #38bdf8;
+    background: #0f172a;
+    padding: 0.45rem 0.6rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.prog-array-cell.is-highlighted {
+    background: #1d4ed8;
+    border-color: #fde047;
+    transform: translateY(-3px);
+}
+
+/* ---------------------------------------------------------------------
+   5. Estilos para las 5 Guías Visuales Incorporadas (HTML + CSS)
+   --------------------------------------------------------------------- */
+.prog-guide-container {
+    background: #ffffff;
+    color: #1f2937;
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.06);
+}
+
+[data-bs-theme="dark"] .prog-guide-container {
+    background: #111827;
+    color: #f3f4f6;
+    border-color: #1f2937;
+}
+
+.code-font {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+}
+
+.code-box {
+    background-color: #0f172a;
+    color: #38bdf8;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    overflow-x: auto;
+}
+
+.prog-guide-step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------
+   6. Modal de Video con Backdrop Blur
+   --------------------------------------------------------------------- */
+.modal-backdrop.show {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    background-color: rgba(7, 15, 32, 0.75);
+    opacity: 1 !important;
+}
+
+.prog-modal-header {
+    background: var(--prog-header-grad);
+    color: #ffffff;
+    border-bottom: 1px solid rgba(96, 165, 250, 0.25);
+}
+
+/* ---------------------------------------------------------------------
+   7. Tabla Escala Likert (1 al 5) - Módulo de Cierre
+   --------------------------------------------------------------------- */
+.prog-likert-table thead th {
+    background: #dbeafe;
+    color: #1e3a8a;
+    font-weight: 700;
+    font-size: 0.84rem;
+    vertical-align: middle;
+    border-color: #93c5fd;
+    padding: 0.85rem 0.7rem;
+}
+
+[data-bs-theme="dark"] .prog-likert-table thead th {
+    background: #1e3a8a;
+    color: #93c5fd;
+    border-color: #2563eb;
+}
+
+.prog-likert-table tbody tr:nth-child(odd) td {
+    background: rgba(219, 234, 254, 0.35);
+}
+
+[data-bs-theme="dark"] .prog-likert-table tbody tr:nth-child(odd) td {
+    background: rgba(30, 58, 138, 0.28);
+}
+
+.prog-likert-radio {
+    width: 1.3rem;
+    height: 1.3rem;
+    cursor: pointer;
+    accent-color: #2563eb;
+}

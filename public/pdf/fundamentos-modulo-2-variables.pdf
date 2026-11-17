@@ -1,0 +1,84 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1900 >>
+stream
+BT
+/F1 10 Tf
+50 740 Td
+(TECNOLOGICO NACIONAL DE MEXICO - INSTITUTO TECNOLOGICO DE CIUDAD VICTORIA) Tj
+0 -13 Td
+(DEPARTAMENTO DE INGENIERIA EN SISTEMAS COMPUTACIONALES - ABP) Tj
+/F1 16 Tf
+0 -28 Td
+(Modulo 2: Variables, Tipos de Datos y Operadores) Tj
+/F1 11 Tf
+0 -16 Td
+(Curso: Fundamentos de Programacion | Guia Oficial Didactica - Modulo 2) Tj
+/F1 12 Tf
+0 -24 Td
+(1. OBJETIVOS DE APRENDIZAJE Y COMPETENCIAS) Tj
+/F1 9.5 Tf
+0 -14 Td
+(  * Diferenciar tipos de datos primitivos en memoria: int, float, string y boolean.) Tj
+0 -14 Td
+(  * Aplicar operadores aritmeticos respetando la jerarquia matematica de operaciones.) Tj
+0 -14 Td
+(  * Utilizar operadores relacionales y logicos en expresiones complejas.) Tj
+/F1 12 Tf
+0 -22 Td
+(2. MARCO TEORICO Y DESARROLLO DE CONCEPTOS) Tj
+/F1 9.5 Tf
+0 -14 Td
+(  - int / float: Almacenamiento numerico exacto y de punto flotante en memoria RAM.) Tj
+0 -14 Td
+(  - Precedencia: 1] Parentesis, 2] Potencias, 3] Multiplicacion/Division/Modulo, 4] Suma/Resta.) Tj
+0 -14 Td
+(  - Operador Modulo [%]: Devuelve el residuo entero resultante de una division exacta.) Tj
+0 -14 Td
+(  - Operador de comparacion de igualdad [==] vs asignacion en variable [=].) Tj
+/F1 12 Tf
+0 -22 Td
+(3. METODOLOGIA ABP: FASES DE RESOLUCION) Tj
+/F1 9.5 Tf
+0 -14 Td
+(  > Explora: Determina que tipos de variables se adecuan a los datos del problema.) Tj
+0 -14 Td
+(  > Formula: Escribe expresiones matematicas verificando la jerarquia de operaciones.) Tj
+0 -14 Td
+(  > Experimenta: Evalua combinaciones logicas con AND, OR y NOT en casos reales.) Tj
+0 -14 Td
+(  > Reflexiona: Valida el uso correcto de constantes para proteger valores fijos.) Tj
+/F1 9 Tf
+0 -28 Td
+(Evaluacion del Modulo: 10 preguntas de opcion multiple. Acreditacion minima: 70%.) Tj
+0 -12 Td
+(Plataforma Oficial Logica Visual ABP - Documento Didactico Descargable en PDF) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000002193 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2263
+%%EOF

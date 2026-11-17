@@ -1,1021 +1,2245 @@
 <?php
 /**
- * Curso Interactivo MOOC: Fundamentos de Programación (Diseño Claro / Blanco)
- * Estilo Santander Open Academy / Coursera
- * Con Videos, PDFs incrustados/descargables, 10 preguntas por cada módulo y Evaluación Final de 15 preguntas con Candado
+ * Vista Principal del Curso: Fundamentos de Programación (Lógica, Estructuras y Simulación)
+ * Diseño Split-Screen E-Learning (Sidebar Izquierdo 30% / Panel Principal 70%)
+ * Paleta Clean UI: Azul Cobalto (Blue) e Índigo
+ *
+ * Variables disponibles desde ModuloController::show():
+ * @var \App\Models\Modulo $modulo
+ * @var \App\Models\Inscripcion|null $inscripcion
  */
-$moduloTitulo = $modulo->titulo ?? 'Fundamentos de Programación';
+
+use App\Core\Auth;
+
+$usuarioActual = Auth::user();
+
+// =========================================================================
+// PARÁMETROS DINÁMICOS DE SESIÓN PARA LA GENERACIÓN DEL CERTIFICADO PDF
+// =========================================================================
+$nombreAlumno     = $usuarioActual !== null ? $usuarioActual->nombre : 'Estudiante de Ingeniería';
+$moduloCompletado = $modulo->titulo ?? 'Fundamentos de Programación (Lógica, Estructuras y Simulación)';
+$fechaActual      = ($inscripcion !== null && $inscripcion->finalizadoEn !== null)
+    ? fecha($inscripcion->finalizadoEn, 'd/m/Y')
+    : date('d/m/Y');
+$folioCertificado = sprintf(
+    'LV-PROG-%05d-%04d',
+    $inscripcion !== null ? $inscripcion->id : 1,
+    $usuarioActual !== null ? $usuarioActual->id : 1
+);
 ?>
-<div class="mooc-white-theme bg-white min-vh-100 text-slate-900 pb-5" id="moocAppProg">
-    
-    <!-- ENCABEZADO SUPERIOR ESTILO SANTANDER OPEN ACADEMY (FONDO BLANCO Y LIMPIO) -->
-    <header class="border-bottom border-slate-200 bg-white py-4 shadow-xs">
-        <div class="container-fluid max-w-7xl mx-auto px-4">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 small">
-                        <li class="breadcrumb-item"><a href="<?= url('/modulos') ?>" class="text-primary text-decoration-none fw-semibold">← Volver a Cursos</a></li>
-                        <li class="breadcrumb-item active text-slate-500" aria-current="page"><?= e($moduloTitulo) ?></li>
-                    </ol>
-                </nav>
+
+<link rel="stylesheet" href="<?= asset('css/programacion_fundamentos.css') ?>">
+
+<div class="prog-elearning-wrapper" id="programacionCursoApp">
+    <!-- Metadatos dinámicos de sesión para el generador del Certificado PDF -->
+    <div id="progCertificateData"
+         class="d-none"
+         data-nombre-alumno="<?= e($nombreAlumno) ?>"
+         data-modulo-completado="<?= e($moduloCompletado) ?>"
+         data-fecha-emision="<?= e($fechaActual) ?>"
+         data-folio="<?= e($folioCertificado) ?>"></div>
+
+    <!-- Encabezado Superior del Curso (Paleta Azul Cobalto / Índigo) -->
+    <section class="prog-hero-banner text-white py-4 position-relative">
+        <div class="bg-grid position-absolute top-0 start-0 w-100 h-100 pointer-events-none"></div>
+        <div class="container-fluid max-w-7xl mx-auto px-3 px-md-4 position-relative z-1">
+            <nav aria-label="breadcrumb" class="mb-2">
+                <ol class="breadcrumb mb-0 small">
+                    <li class="breadcrumb-item"><a href="<?= url('/modulos') ?>" class="text-slate-300 text-decoration-none">Módulos Interactivos</a></li>
+                    <li class="breadcrumb-item active text-info fw-semibold" aria-current="page">Fundamentos de Programación: Lógica y Simulación</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="module-icon-box bg-primary-subtle text-info fs-3 fw-bold" style="background: rgba(59,130,246,0.22); color: #60a5fa;">&lt;/&gt;</div>
+                    <div>
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                            <h1 class="h3 fw-bold text-white mb-0">Fundamentos de Programación (Lógica, Estructuras y Simulación)</h1>
+                            <span class="badge rounded-pill fw-bold" style="background:#3b82f6; color:#eff6ff;">Nivel Inicial · ABP</span>
+                        </div>
+                        <p class="small text-slate-200 mb-0 max-w-4xl">
+                            En Programación, el pensamiento algorítmico transforma problemas reales en instrucciones ejecutables. Las variables, condicionales (<em>if/else</em>), ciclos (<em>while/for</em>) y funciones son la base de estas 5 lecciones interactivas.
+                        </p>
+                    </div>
+                </div>
+
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-blue-50 text-primary border border-blue-200 px-3 py-2 rounded-pill fw-semibold">
-                        Nivel Inicial · MOOC
-                    </span>
-                    <span class="badge bg-slate-100 text-slate-700 border border-slate-200 px-3 py-2 rounded-pill">
-                        5 Módulos · 10 preguntas c/u + Examen Final 15 preguntas
-                    </span>
-                </div>
-            </div>
-
-            <div class="row align-items-center g-4">
-                <div class="col-12 col-lg-8">
-                    <div class="d-flex align-items-center gap-3 mb-2">
-                        <div class="rounded-3 bg-blue-50 text-primary fs-3 px-3 py-2 border border-blue-200 fw-bold">
-                            &lt;/&gt;
-                        </div>
-                        <div>
-                            <span class="text-uppercase tracking-wider small fw-bold text-primary">Curso Oficial</span>
-                            <h1 class="h2 fw-bold text-slate-900 mb-0"><?= e($moduloTitulo) ?></h1>
-                        </div>
-                    </div>
-                    <p class="text-slate-600 mb-3 small max-w-2xl">
-                        Aprende a formular algoritmos estructurados, variables, condicionales, ciclos y funciones mediante videos explicativos, guías descargables en PDF y exámenes rigurosos de 10 preguntas por módulo.
-                    </p>
-                    
-                    <!-- Navegación rápida por módulos -->
-                    <div class="d-flex flex-wrap align-items-center gap-2 pt-1">
-                        <span class="small text-slate-500 me-2 fw-semibold">Módulos:</span>
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-circle px-2 py-1 mod-nav-pill active" onclick="loadLesson('m1_video')">1</button>
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-circle px-2 py-1 mod-nav-pill" onclick="loadLesson('m2_video')">2</button>
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-circle px-2 py-1 mod-nav-pill" onclick="loadLesson('m3_video')">3</button>
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-circle px-2 py-1 mod-nav-pill" onclick="loadLesson('m4_video')">4</button>
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-circle px-2 py-1 mod-nav-pill" onclick="loadLesson('m5_video')">5</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle px-2 py-1 mod-nav-pill" onclick="openFinalEvaluation()">🔒 Final (15 preguntas)</button>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-4">
-                    <div class="bg-slate-50 border border-slate-200 rounded-4 p-3 shadow-sm">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="small text-slate-700 fw-bold">Progreso del Curso</span>
-                            <span class="badge bg-primary text-white fw-bold" id="progressPercentBadge">0%</span>
-                        </div>
-                        <div class="progress bg-slate-200 rounded-pill mb-2" style="height: 10px;">
-                            <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" id="progressBar" style="width: 0%"></div>
-                        </div>
-                        <div class="d-flex justify-content-between text-xs text-slate-500">
-                            <span id="completedItemsCount">0 de 5 módulos aprobados</span>
-                            <span id="lockStatusNotice">🔒 Examen final bloqueado</span>
-                        </div>
-                    </div>
+                    <?php if (Auth::check() && $inscripcion === null): ?>
+                        <form action="<?= url('/modulos/' . e($modulo->slug) . '/inscripcion') ?>" method="POST" class="m-0">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn btn-prog btn-sm fw-bold px-3 shadow-prog">
+                                Inscribirme al curso ▷
+                            </button>
+                        </form>
+                    <?php elseif (Auth::check() && $inscripcion !== null && !$inscripcion->finalizado()): ?>
+                        <form action="<?= url('/modulos/' . e($modulo->slug) . '/avance') ?>" method="POST" class="m-0">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="accion" value="finalizar">
+                            <button type="submit" class="btn btn-outline-light btn-sm fw-bold px-3">
+                                Marcar curso como completado ✓
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                    <a href="<?= url('/modulos') ?>" class="btn btn-outline-light btn-sm">← Catálogo</a>
                 </div>
             </div>
         </div>
-    </header>
+    </section>
 
-    <!-- CUERPO PRINCIPAL (DISEÑO BLANCO DE 2 COLUMNAS) -->
-    <div class="container-fluid max-w-7xl mx-auto px-4 py-4">
-        <div class="row g-4">
-            
-            <!-- COLUMNA IZQUIERDA: LISTA DE MÓDULOS (4 cols) -->
-            <div class="col-12 col-lg-4">
-                <div class="card border border-slate-200 rounded-4 shadow-sm bg-white overflow-hidden sticky-top" style="top: 1rem; z-index: 10;">
-                    <div class="card-header bg-slate-50 border-bottom border-slate-200 py-3 px-4 d-flex justify-content-between align-items-center">
-                        <h2 class="h6 fw-bold mb-0 text-slate-900">Estructura del Curso</h2>
-                        <span class="badge bg-white border border-slate-300 text-slate-700 text-xs">5 Módulos</span>
+    <!-- Cuerpo Principal Split-Screen (30% Sidebar Izquierdo / 70% Panel Principal) -->
+    <div class="container-fluid max-w-7xl mx-auto px-3 px-md-4 pt-4">
+        <div class="prog-split-layout">
+
+            <!-- =============================================================
+                 1. PANEL LATERAL IZQUIERDO (30%): RUTA DE APRENDIZAJE Y NAVEGACIÓN
+                 ============================================================= -->
+            <aside class="prog-sidebar-panel" aria-label="Ruta de Aprendizaje y Navegación de Programación">
+                <div class="prog-sidebar-card">
+                    <div class="prog-sidebar-header">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-uppercase fw-bold text-xs tracking-wider text-prog">Ruta de Aprendizaje</span>
+                            <a href="<?= url('/modulos') ?>" class="prog-sidebar-close-btn" title="Volver al catálogo de módulos" aria-label="Cerrar curso">✕</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 class="h6 fw-bold mb-0">Fundamentos de Programación</h2>
+                            <span class="badge bg-primary-subtle text-primary rounded-pill" id="progGlobalProgressText">1/22 elementos (5%)</span>
+                        </div>
+                        <div class="progress" style="height: 7px;">
+                            <div class="progress-bar" id="progGlobalProgressBar" role="progressbar" style="width: 5%; background-color: #2563eb;"></div>
+                        </div>
                     </div>
 
-                    <div class="accordion accordion-flush" id="courseAccordion" style="max-height: 75vh; overflow-y: auto;">
-                        
-                        <!-- MÓDULO 1 -->
-                        <div class="accordion-item border-bottom border-slate-100">
-                            <h3 class="accordion-header" id="hM1">
-                                <button class="accordion-button py-3 px-4 fw-bold text-slate-800 bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#cM1">
-                                    <div class="w-100 pe-2">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <span class="badge bg-blue-100 text-blue-800 text-xs font-semibold">Módulo 1</span>
-                                            <span class="text-xs text-muted" id="badge-m1">Pendiente</span>
-                                        </div>
-                                        <div class="small fw-bold text-truncate">Algoritmos y Lógica de Solución</div>
+                    <div class="accordion prog-lesson-accordion" id="progSidebarAccordion">
+                        <!-- LECCIÓN 1 -->
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="progHeadL1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#progCollapseL1" aria-expanded="true" aria-controls="progCollapseL1">
+                                    <div>
+                                        Lección 1: Algoritmos y Lógica de Solución
+                                        <span class="prog-lesson-meta" id="progLessonCount-1">0/4 elementos</span>
                                     </div>
                                 </button>
                             </h3>
-                            <div id="cM1" class="accordion-collapse collapse show">
-                                <div class="accordion-body p-0">
-                                    <div class="list-group list-group-flush small">
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn active py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m1_video')" id="nav-m1_video">
-                                            <span class="text-danger">📹</span>
-                                            <span>1.1 Video Clase: ¿Qué es un Algoritmo?</span>
+                            <div id="progCollapseL1" class="accordion-collapse collapse show" aria-labelledby="progHeadL1">
+                                <ul class="prog-nav-list">
+                                    <li>
+                                        <button type="button" class="prog-nav-item is-active" data-prog-item="l1-lectura" data-prog-lesson="1" data-prog-type="lectura">
+                                            <span class="prog-nav-icon">📖</span>
+                                            <span><strong>Lectura</strong> • Teoría: Entrada, Proceso, Salida y Pseudocódigo</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m1_pdf')" id="nav-m1_pdf">
-                                            <span class="text-primary">📄</span>
-                                            <span>1.2 Guía de Estudio y Diagramas (PDF)</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l1-video" data-prog-lesson="1" data-prog-type="video"
+                                                data-video-title="¿Qué es un Algoritmo? Pensamiento Computacional"
+                                                data-video-channel="Canal: HolaMundo"
+                                                data-video-embed="https://www.youtube.com/embed/chPhlsydl30"
+                                                data-video-url="https://www.youtube.com/watch?v=chPhlsydl30"
+                                                data-video-alt-title="Algoritmos y Diagramas de Flujo desde Cero"
+                                                data-video-alt-channel="Canal: TodoCode"
+                                                data-video-alt-embed="https://www.youtube.com/embed/U3CGMyjzlvM"
+                                                data-video-alt-url="https://www.youtube.com/watch?v=U3CGMyjzlvM"
+                                                data-video-alt-short="Diagramas de Flujo desde Cero">
+                                            <span class="prog-nav-icon">▶</span>
+                                            <span><strong>Vídeo</strong> • Qué es un Algoritmo (Pop-up YouTube)</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center justify-content-between bg-slate-50" onclick="loadLesson('m1_quiz')" id="nav-m1_quiz">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="text-warning">📝</span>
-                                                <span class="fw-bold">1.3 Examen del Módulo 1</span>
-                                            </div>
-                                            <span class="badge bg-white border border-slate-300 text-slate-600" id="quiz-status-m1">10 preguntas</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l1-simulador" data-prog-lesson="1" data-prog-type="simulador">
+                                            <span class="prog-nav-icon">⚙</span>
+                                            <span><strong>Simulador</strong> • Traza Algorítmica (Entrada → Proceso → Salida)</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                    </div>
-                                </div>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l1-pdf" data-prog-lesson="1" data-prog-type="pdf">
+                                            <span class="prog-nav-icon">📄</span>
+                                            <span><strong>Guía PDF</strong> • Guia_1_Algoritmos_y_Diagramas_ANSI.pdf</span>
+                                            <span class="prog-nav-check">✓</span>
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- MÓDULO 2 -->
-                        <div class="accordion-item border-bottom border-slate-100">
-                            <h3 class="accordion-header" id="hM2">
-                                <button class="accordion-button collapsed py-3 px-4 fw-bold text-slate-800 bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#cM2">
-                                    <div class="w-100 pe-2">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <span class="badge bg-blue-100 text-blue-800 text-xs font-semibold">Módulo 2</span>
-                                            <span class="text-xs text-muted" id="badge-m2">Pendiente</span>
-                                        </div>
-                                        <div class="small fw-bold text-truncate">Variables, Tipos de Datos y Operadores</div>
+                        <!-- LECCIÓN 2 -->
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="progHeadL2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#progCollapseL2" aria-expanded="false" aria-controls="progCollapseL2">
+                                    <div>
+                                        Lección 2: Variables, Tipos de Datos y Operadores
+                                        <span class="prog-lesson-meta" id="progLessonCount-2">0/4 elementos</span>
                                     </div>
                                 </button>
                             </h3>
-                            <div id="cM2" class="accordion-collapse collapse">
-                                <div class="accordion-body p-0">
-                                    <div class="list-group list-group-flush small">
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m2_video')" id="nav-m2_video">
-                                            <span class="text-danger">📹</span>
-                                            <span>2.1 Video Clase: Tipos de Datos Primitivos</span>
+                            <div id="progCollapseL2" class="accordion-collapse collapse" aria-labelledby="progHeadL2">
+                                <ul class="prog-nav-list">
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l2-lectura" data-prog-lesson="2" data-prog-type="lectura">
+                                            <span class="prog-nav-icon">📖</span>
+                                            <span><strong>Lectura</strong> • Teoría: Tipos Primitivos y Jerarquía de Operadores</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m2_pdf')" id="nav-m2_pdf">
-                                            <span class="text-primary">📄</span>
-                                            <span>2.2 Guía de Operadores y Jerarquía (PDF)</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l2-video" data-prog-lesson="2" data-prog-type="video"
+                                                data-video-title="Variables y Tipos de Datos en Programación"
+                                                data-video-channel="Canal: TodoCode"
+                                                data-video-embed="https://www.youtube.com/embed/s2d0_g6H40o"
+                                                data-video-url="https://www.youtube.com/watch?v=s2d0_g6H40o"
+                                                data-video-alt-title="Operadores Aritméticos, Relacionales y Lógicos"
+                                                data-video-alt-channel="Canal: Programación ATS"
+                                                data-video-alt-embed="https://www.youtube.com/embed/dN4C1e4g7zM"
+                                                data-video-alt-url="https://www.youtube.com/watch?v=dN4C1e4g7zM"
+                                                data-video-alt-short="Operadores y Jerarquía">
+                                            <span class="prog-nav-icon">▶</span>
+                                            <span><strong>Vídeo</strong> • Variables y Tipos de Datos (Pop-up YouTube)</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center justify-content-between bg-slate-50" onclick="loadLesson('m2_quiz')" id="nav-m2_quiz">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="text-warning">📝</span>
-                                                <span class="fw-bold">2.3 Examen del Módulo 2</span>
-                                            </div>
-                                            <span class="badge bg-white border border-slate-300 text-slate-600" id="quiz-status-m2">10 preguntas</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l2-reto" data-prog-lesson="2" data-prog-type="reto">
+                                            <span class="prog-nav-icon">⚡</span>
+                                            <span><strong>Reto ABP</strong> • Evaluador de Expresiones y Precedencia</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                    </div>
-                                </div>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l2-pdf" data-prog-lesson="2" data-prog-type="pdf">
+                                            <span class="prog-nav-icon">📄</span>
+                                            <span><strong>Guía PDF</strong> • Guia_2_Variables_y_Operadores.pdf</span>
+                                            <span class="prog-nav-check">✓</span>
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- MÓDULO 3 -->
-                        <div class="accordion-item border-bottom border-slate-100">
-                            <h3 class="accordion-header" id="hM3">
-                                <button class="accordion-button collapsed py-3 px-4 fw-bold text-slate-800 bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#cM3">
-                                    <div class="w-100 pe-2">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <span class="badge bg-blue-100 text-blue-800 text-xs font-semibold">Módulo 3</span>
-                                            <span class="text-xs text-muted" id="badge-m3">Pendiente</span>
-                                        </div>
-                                        <div class="small fw-bold text-truncate">Estructuras Condicionales (if / else)</div>
+                        <!-- LECCIÓN 3 -->
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="progHeadL3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#progCollapseL3" aria-expanded="false" aria-controls="progCollapseL3">
+                                    <div>
+                                        Lección 3: Estructuras Condicionales (if / else)
+                                        <span class="prog-lesson-meta" id="progLessonCount-3">0/4 elementos</span>
                                     </div>
                                 </button>
                             </h3>
-                            <div id="cM3" class="accordion-collapse collapse">
-                                <div class="accordion-body p-0">
-                                    <div class="list-group list-group-flush small">
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m3_video')" id="nav-m3_video">
-                                            <span class="text-danger">📹</span>
-                                            <span>3.1 Video Clase: Toma de Decisiones</span>
+                            <div id="progCollapseL3" class="accordion-collapse collapse" aria-labelledby="progHeadL3">
+                                <ul class="prog-nav-list">
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l3-lectura" data-prog-lesson="3" data-prog-type="lectura">
+                                            <span class="prog-nav-icon">📖</span>
+                                            <span><strong>Lectura</strong> • Teoría: Decisiones Simples, Dobles y Anidadas</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m3_pdf')" id="nav-m3_pdf">
-                                            <span class="text-primary">📄</span>
-                                            <span>3.2 Guía de Casos Condicionales (PDF)</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l3-video" data-prog-lesson="3" data-prog-type="video"
+                                                data-video-title="Estructuras Condicionales if, else if y else"
+                                                data-video-channel="Canal: Fazt"
+                                                data-video-embed="https://www.youtube.com/embed/2yC7-9_vK7k"
+                                                data-video-url="https://www.youtube.com/watch?v=2yC7-9_vK7k"
+                                                data-video-alt-title="Tablas de Verdad y Operadores Lógicos AND, OR, NOT"
+                                                data-video-alt-channel="Canal: MoureDev"
+                                                data-video-alt-embed="https://www.youtube.com/embed/5l3i2w7t89c"
+                                                data-video-alt-url="https://www.youtube.com/watch?v=5l3i2w7t89c"
+                                                data-video-alt-short="Operadores Lógicos y Condicionales">
+                                            <span class="prog-nav-icon">▶</span>
+                                            <span><strong>Vídeo</strong> • Toma de Decisiones con if/else (Pop-up)</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center justify-content-between bg-slate-50" onclick="loadLesson('m3_quiz')" id="nav-m3_quiz">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="text-warning">📝</span>
-                                                <span class="fw-bold">3.3 Examen del Módulo 3</span>
-                                            </div>
-                                            <span class="badge bg-white border border-slate-300 text-slate-600" id="quiz-status-m3">10 preguntas</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l3-simulador" data-prog-lesson="3" data-prog-type="simulador">
+                                            <span class="prog-nav-icon">⚙</span>
+                                            <span><strong>Simulador</strong> • Depurador de Rutas Condicionales</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                    </div>
-                                </div>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l3-pdf" data-prog-lesson="3" data-prog-type="pdf">
+                                            <span class="prog-nav-icon">📄</span>
+                                            <span><strong>Guía PDF</strong> • Guia_3_Estructuras_Condicionales.pdf</span>
+                                            <span class="prog-nav-check">✓</span>
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- MÓDULO 4 -->
-                        <div class="accordion-item border-bottom border-slate-100">
-                            <h3 class="accordion-header" id="hM4">
-                                <button class="accordion-button collapsed py-3 px-4 fw-bold text-slate-800 bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#cM4">
-                                    <div class="w-100 pe-2">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <span class="badge bg-blue-100 text-blue-800 text-xs font-semibold">Módulo 4</span>
-                                            <span class="text-xs text-muted" id="badge-m4">Pendiente</span>
-                                        </div>
-                                        <div class="small fw-bold text-truncate">Estructuras Cíclicas (while / for)</div>
+                        <!-- LECCIÓN 4 -->
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="progHeadL4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#progCollapseL4" aria-expanded="false" aria-controls="progCollapseL4">
+                                    <div>
+                                        Lección 4: Estructuras Cíclicas (while / for)
+                                        <span class="prog-lesson-meta" id="progLessonCount-4">0/4 elementos</span>
                                     </div>
                                 </button>
                             </h3>
-                            <div id="cM4" class="accordion-collapse collapse">
-                                <div class="accordion-body p-0">
-                                    <div class="list-group list-group-flush small">
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m4_video')" id="nav-m4_video">
-                                            <span class="text-danger">📹</span>
-                                            <span>4.1 Video Clase: Bucles while y for</span>
+                            <div id="progCollapseL4" class="accordion-collapse collapse" aria-labelledby="progHeadL4">
+                                <ul class="prog-nav-list">
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l4-lectura" data-prog-lesson="4" data-prog-type="lectura">
+                                            <span class="prog-nav-icon">📖</span>
+                                            <span><strong>Lectura</strong> • Teoría: Contadores, Acumuladores y Bucles</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m4_pdf')" id="nav-m4_pdf">
-                                            <span class="text-primary">📄</span>
-                                            <span>4.2 Guía de Patrones Iterativos (PDF)</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l4-video" data-prog-lesson="4" data-prog-type="video"
+                                                data-video-title="Bucles e Iteraciones: while, do-while y for"
+                                                data-video-channel="Canal: TodoCode"
+                                                data-video-embed="https://www.youtube.com/embed/6iOlB0QLy84"
+                                                data-video-url="https://www.youtube.com/watch?v=6iOlB0QLy84"
+                                                data-video-alt-title="Cómo evitar Bucles Infinitos y usar Acumuladores"
+                                                data-video-alt-channel="Canal: Programación ATS"
+                                                data-video-alt-embed="https://www.youtube.com/embed/j7S9k3L4p2w"
+                                                data-video-alt-url="https://www.youtube.com/watch?v=j7S9k3L4p2w"
+                                                data-video-alt-short="Control de Ciclos y Acumuladores">
+                                            <span class="prog-nav-icon">▶</span>
+                                            <span><strong>Vídeo</strong> • Bucles while y for explicados (Pop-up)</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center justify-content-between bg-slate-50" onclick="loadLesson('m4_quiz')" id="nav-m4_quiz">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="text-warning">📝</span>
-                                                <span class="fw-bold">4.3 Examen del Módulo 4</span>
-                                            </div>
-                                            <span class="badge bg-white border border-slate-300 text-slate-600" id="quiz-status-m4">10 preguntas</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l4-reto" data-prog-lesson="4" data-prog-type="reto">
+                                            <span class="prog-nav-icon">⚡</span>
+                                            <span><strong>Reto ABP</strong> • Simulador de Trazas de Bucle (Contador/Suma)</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                    </div>
-                                </div>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l4-pdf" data-prog-lesson="4" data-prog-type="pdf">
+                                            <span class="prog-nav-icon">📄</span>
+                                            <span><strong>Guía PDF</strong> • Guia_4_Patrones_Iterativos.pdf</span>
+                                            <span class="prog-nav-check">✓</span>
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- MÓDULO 5 -->
-                        <div class="accordion-item border-bottom border-slate-100">
-                            <h3 class="accordion-header" id="hM5">
-                                <button class="accordion-button collapsed py-3 px-4 fw-bold text-slate-800 bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#cM5">
-                                    <div class="w-100 pe-2">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <span class="badge bg-blue-100 text-blue-800 text-xs font-semibold">Módulo 5</span>
-                                            <span class="text-xs text-muted" id="badge-m5">Pendiente</span>
-                                        </div>
-                                        <div class="small fw-bold text-truncate">Funciones y Arreglos (Listas)</div>
+                        <!-- LECCIÓN 5 -->
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="progHeadL5">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#progCollapseL5" aria-expanded="false" aria-controls="progCollapseL5">
+                                    <div>
+                                        Lección 5: Funciones y Arreglos (Listas)
+                                        <span class="prog-lesson-meta" id="progLessonCount-5">0/4 elementos</span>
                                     </div>
                                 </button>
                             </h3>
-                            <div id="cM5" class="accordion-collapse collapse">
-                                <div class="accordion-body p-0">
-                                    <div class="list-group list-group-flush small">
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m5_video')" id="nav-m5_video">
-                                            <span class="text-danger">📹</span>
-                                            <span>5.1 Video Clase: Funciones y Parámetros</span>
+                            <div id="progCollapseL5" class="accordion-collapse collapse" aria-labelledby="progHeadL5">
+                                <ul class="prog-nav-list">
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l5-lectura" data-prog-lesson="5" data-prog-type="lectura">
+                                            <span class="prog-nav-icon">📖</span>
+                                            <span><strong>Lectura</strong> • Teoría: Modularidad, Parámetros e Índices [0..n-1]</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center gap-2" onclick="loadLesson('m5_pdf')" id="nav-m5_pdf">
-                                            <span class="text-primary">📄</span>
-                                            <span>5.2 Guía de Arreglos y Listas (PDF)</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l5-video" data-prog-lesson="5" data-prog-type="video"
+                                                data-video-title="Funciones y Arreglos (Vectores/Listas) en Programación"
+                                                data-video-channel="Canal: TodoCode"
+                                                data-video-embed="https://www.youtube.com/embed/9J2h7m4p3wQ"
+                                                data-video-url="https://www.youtube.com/watch?v=9J2h7m4p3wQ"
+                                                data-video-alt-title="Paso de Parámetros y Retorno de Valores en Funciones"
+                                                data-video-alt-channel="Canal: HolaMundo"
+                                                data-video-alt-embed="https://www.youtube.com/embed/tR8k2M5n9xL"
+                                                data-video-alt-url="https://www.youtube.com/watch?v=tR8k2M5n9xL"
+                                                data-video-alt-short="Funciones y Retorno (HolaMundo)">
+                                            <span class="prog-nav-icon">▶</span>
+                                            <span><strong>Vídeo</strong> • Funciones y Arreglos en Memoria (Pop-up)</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                        <button type="button" class="list-group-item list-group-item-action lesson-btn py-2.5 px-4 d-flex align-items-center justify-content-between bg-slate-50" onclick="loadLesson('m5_quiz')" id="nav-m5_quiz">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="text-warning">📝</span>
-                                                <span class="fw-bold">5.3 Examen del Módulo 5</span>
-                                            </div>
-                                            <span class="badge bg-white border border-slate-300 text-slate-600" id="quiz-status-m5">10 preguntas</span>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l5-simulador" data-prog-lesson="5" data-prog-type="simulador">
+                                            <span class="prog-nav-icon">⚙</span>
+                                            <span><strong>Simulador</strong> • Inspector de Arreglos y Llamadas a Función</span>
+                                            <span class="prog-nav-check">✓</span>
                                         </button>
-                                    </div>
-                                </div>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="l5-pdf" data-prog-lesson="5" data-prog-type="pdf">
+                                            <span class="prog-nav-icon">📄</span>
+                                            <span><strong>Guía PDF</strong> • Guia_5_Funciones_y_Arreglos.pdf</span>
+                                            <span class="prog-nav-check">✓</span>
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- EVALUACIÓN FINAL DEL CURSO (15 PREGUNTAS) -->
-                        <div class="p-3 bg-slate-50 border-bottom border-slate-200">
-                            <button type="button" class="btn btn-outline-primary btn-sm w-100 fw-bold d-flex justify-content-between align-items-center py-2.5" onclick="openFinalEvaluation()" id="btnNavFinalQuiz">
-                                <span class="d-flex align-items-center gap-2">
-                                    <span id="finalLockIcon">🔒</span>
-                                    <span>Evaluación Final (15 preguntas)</span>
-                                </span>
-                                <span class="badge bg-slate-200 text-slate-700" id="finalQuizBadge">Bloqueada</span>
+                        <!-- MÓDULO DE CIERRE Y CERTIFICACIÓN -->
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="progHeadL6">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#progCollapseL6" aria-expanded="false" aria-controls="progCollapseL6">
+                                    <div>
+                                        Módulo de Cierre y Certificación
+                                        <span class="prog-lesson-meta" id="progLessonCount-6">0/2 elementos</span>
+                                    </div>
+                                </button>
+                            </h3>
+                            <div id="progCollapseL6" class="accordion-collapse collapse" aria-labelledby="progHeadL6">
+                                <ul class="prog-nav-list">
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="cierre-encuesta" data-prog-lesson="6" data-prog-type="cierre">
+                                            <span class="prog-nav-icon">📊</span>
+                                            <span><strong>Encuesta</strong> • Satisfacción e Impacto del Módulo (Escala Likert)</span>
+                                            <span class="prog-nav-check">✓</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="prog-nav-item" data-prog-item="cierre-certificado" data-prog-lesson="6" data-prog-type="cierre">
+                                            <span class="prog-nav-icon">🎓</span>
+                                            <span><strong>Certificado</strong> • Descargar acreditación de Programación</span>
+                                            <span class="prog-nav-check">✓</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- =============================================================
+                 2. PANEL PRINCIPAL (70%): ÁREA DE TRABAJO INTERACTIVA
+                 ============================================================= -->
+            <div class="prog-main-panel" id="progMainWorkspace">
+                <div class="prog-workspace-card">
+
+                    <!-- =====================================================
+                         LECCIÓN 1 · ITEM 1: LECTURA (Algoritmos y Lógica de Solución)
+                         ===================================================== -->
+                    <article class="prog-content-pane is-active" data-prog-pane="l1-lectura">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <div>
+                                <span class="prog-type-badge prog-badge-reading mb-1">📖 Lección 1 · Lectura Activa</span>
+                                <h2 class="h3 fw-bold mb-0">Algoritmos y Lógica de Solución (Pensamiento Computacional)</h2>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-prog fw-semibold" data-prog-note-toggle="l1">
+                                📝 Guardar nota
                             </button>
                         </div>
 
-                        <!-- CERTIFICADO FINAL -->
-                        <div class="p-3 bg-white">
-                            <button type="button" class="btn btn-success btn-sm w-100 fw-bold d-flex justify-content-between align-items-center py-2.5 disabled" onclick="openCertificate()" id="btnNavCert">
-                                <span class="d-flex align-items-center gap-2">
-                                    <span>🏅</span>
-                                    <span>Descargar Certificado Oficial</span>
-                                </span>
-                                <span class="badge bg-white text-success border border-success-subtle" id="finalCertBadge">Bloqueado</span>
+                        <!-- Cajón de Notas Personales -->
+                        <div class="prog-note-drawer d-none" id="progNoteDrawer-l1">
+                            <label for="progNoteInput-l1" class="form-label small fw-bold text-dark mb-1">📝 Tus apuntes de la Lección 1 (Algoritmos):</label>
+                            <textarea id="progNoteInput-l1" class="form-control form-control-sm mb-2" rows="2" placeholder="Escribe aquí tus notas sobre Entrada, Proceso, Salida y símbolos ANSI..."></textarea>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-primary fw-semibold" id="progNoteStatus-l1"></span>
+                                <button type="button" class="btn btn-xs btn-prog fw-bold px-3" id="progNoteSave-l1">Guardar apunte</button>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-3">
+                            <strong>Tema:</strong> Definición de algoritmo, características fundamentales, arquitectura Entrada–Proceso–Salida y pseudocódigo.
+                        </p>
+
+                        <h3 class="h5 fw-bold text-prog mb-2">¿Qué es? (Introducción Teórica)</h3>
+                        <p class="text-secondary leading-relaxed mb-3">
+                            Un <strong>algoritmo</strong> es una secuencia ordenada, finita y sin ambigüedades de pasos lógicos diseñados para resolver un problema específico. Antes de escribir una sola línea en Python, PHP, Java o C++, todo programa nace como un modelo lógico dividido en tres etapas esenciales:
+                        </p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-4">
+                                <div class="p-3 rounded-4 border bg-light h-100">
+                                    <h4 class="h6 fw-bold text-primary mb-2">📥 1. Entrada (Input)</h4>
+                                    <p class="small text-secondary mb-0">
+                                        Son los datos iniciales que el sistema recibe del usuario, de un archivo o de un sensor para poder operar (ejemplo: <code>nota1, nota2, nota3</code>).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="p-3 rounded-4 border border-primary-subtle h-100" style="background: rgba(219,234,254,0.45);">
+                                    <h4 class="h6 fw-bold text-prog mb-2">⚙️ 2. Proceso (Process)</h4>
+                                    <p class="small text-secondary mb-0">
+                                        Es el conjunto de operaciones matemáticas y comparaciones lógicas que transforman los datos de entrada (ejemplo: <code>promedio = (nota1 + nota2 + nota3) / 3</code>).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="p-3 rounded-4 border bg-light h-100">
+                                    <h4 class="h6 fw-bold text-indigo mb-2" style="color:#4338ca;">📤 3. Salida (Output)</h4>
+                                    <p class="small text-secondary mb-0">
+                                        Es el resultado final ya procesado que se muestra en pantalla o se almacena (ejemplo: mostrar <code>"Aprobado"</code> con su promedio).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="h6 fw-bold mb-2">Todo algoritmo válido debe cumplir con tres propiedades obligatorias:</h4>
+                        <ol class="small text-secondary leading-relaxed mb-4">
+                            <li class="mb-1"><strong>Precisión:</strong> Cada instrucción debe indicar exactamente qué hacer, sin dejar lugar a interpretaciones dobles.</li>
+                            <li class="mb-1"><strong>Determinismo:</strong> Si se ejecuta dos veces con los mismos datos de entrada, debe producir exactamente la misma salida.</li>
+                            <li class="mb-1"><strong>Finitud:</strong> Debe terminar después de un número limitado de pasos; un algoritmo que nunca termina es un error lógico.</li>
+                        </ol>
+
+                        <h3 class="h5 fw-bold text-prog mb-3">Estructura Estándar en Pseudocódigo (Para el Simulador)</h3>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <div class="fw-bold text-dark">Bloque de Declaración y Lectura:</div>
+                                <div class="small text-muted">Captura de variables de entrada desde el entorno</div>
+                            </div>
+                            <div class="prog-formula-math"><code>LEER n1, n2, n3</code></div>
+                        </div>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <div class="fw-bold text-dark">Bloque de Procesamiento y Asignación:</div>
+                                <div class="small text-muted">Transformación aritmética de los datos capturados</div>
+                            </div>
+                            <div class="prog-formula-math"><code>promedio ← (n1 + n2 + n3) / 3</code></div>
+                        </div>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                            <div>
+                                <div class="fw-bold text-dark">Bloque de Salida:</div>
+                                <div class="small text-muted">Entrega del resultado verificado al usuario</div>
+                            </div>
+                            <div class="prog-formula-math"><code>ESCRIBIR "Resultado: ", promedio</code></div>
+                        </div>
+
+                        <!-- Acordeón Expandible: Tips para el Simulador -->
+                        <div class="prog-tips-accordion mb-4">
+                            <button class="prog-tips-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#progTipsL1" aria-expanded="true">
+                                <span>✦ Tips para el Simulador de Traza Algorítmica</span>
+                                <span>[ ˅ ]</span>
+                            </button>
+                            <div id="progTipsL1" class="collapse show">
+                                <div class="prog-tips-body">
+                                    Observa cómo en un <strong>diagrama de flujo ANSI</strong> cada forma geométrica tiene un significado estricto: el <strong>óvalo</strong> marca el Inicio/Fin, el <strong>paralelogramo</strong> indica Entrada/Salida de datos, el <strong>rectángulo</strong> ejecuta procesos matemáticos y el <strong>rombo</strong> evalúa una condición lógica (Sí/No).
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Barra Inferior: Feedback y Acción Directa -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pt-3 border-top">
+                            <div class="d-flex align-items-center gap-2 prog-feedback-group">
+                                <span class="small text-muted">¿Te resultó clara esta lectura?</span>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="up" aria-label="Me gustó">👍</button>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="down" aria-label="No me gustó">👎</button>
+                                <span class="small text-prog fw-semibold prog-feedback-msg"></span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline-prog btn-sm fw-bold" data-prog-goto="l1-video">
+                                    ▶ Ver Vídeo Pop-up
+                                </button>
+                                <button type="button" class="btn btn-prog fw-bold px-4 shadow-prog" data-prog-goto="l1-simulador">
+                                    Ir al Simulador: Traza Algorítmica ➔
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 1 · ITEM 2: VÍDEO (Pop-up YouTube)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l1-video">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-reading">▶ Lección 1 · Recursos Audiovisuales (Pop-up)</span>
+                            <span class="text-muted small">Video: "¿Qué es un Algoritmo?"</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Recursos Audiovisuales: Algoritmos y Pensamiento Computacional</h2>
+                        <p class="text-secondary small mb-4">
+                            Para mantener enfocado tu espacio de trabajo, los vídeos se reproducen en una <strong>ventana emergente (Modal con fondo desenfocado)</strong>. Elige cualquiera de los recursos recomendados o ábrelos directamente en YouTube:
+                        </p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-primary text-white mb-2">Video Recomendado Principal</span>
+                                        <h3 class="h6 fw-bold mb-1">¿Qué es un Algoritmo? Pensamiento Computacional</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>HolaMundo</strong></p>
+                                        <p class="small text-secondary mb-3">Explicación clara y cotidiana sobre cómo descomponer problemas reales en instrucciones lógicas secuenciales.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-prog btn-sm fw-bold px-3" data-open-prog-video="l1-video" data-video-mode="main">
+                                            ▶ Reproducir en Modal
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=chPhlsydl30" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-secondary mb-2">Video Alternativo (Diagramación)</span>
+                                        <h3 class="h6 fw-bold mb-1">Algoritmos y Diagramas de Flujo desde Cero</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>TodoCode</strong></p>
+                                        <p class="small text-secondary mb-3">Repaso práctico de simbología ANSI y pruebas de escritorio paso a paso.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-outline-prog btn-sm fw-bold px-3" data-open-prog-video="l1-video" data-video-mode="alt">
+                                            ▶ Reproducir Alternativo
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=U3CGMyjzlvM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-3 border bg-white small mb-4">
+                            <strong>🌐 Herramienta Recomendada (Para Diagramas y Pseudocódigo):</strong>
+                            <a href="https://pseint.sourceforge.net" target="_blank" rel="noopener noreferrer" class="fw-bold text-prog">PSeInt (pseint.sourceforge.net)</a> — Intérprete educativo de pseudocódigo en español con generación automática de diagramas de flujo.
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l1-lectura">← Anterior: Lectura</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l1-simulador">Siguiente: Simulador Traza Algorítmica ⚙</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 1 · ITEM 3: SIMULADOR (Traza Paso a Paso de Algoritmo)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l1-simulador">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-sim">⚙ Lección 1 · Simulador Interactivo</span>
+                            <span class="text-muted small">Prueba de Escritorio en Tiempo Real</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Simulador: Traza Algorítmica (Entrada → Proceso → Salida)</h2>
+                        <p class="text-secondary small mb-3">
+                            <strong>Ejercicio:</strong> Modifica las tres calificaciones de entrada y ejecuta paso a paso el flujo del algoritmo para observar cómo cambian las variables en memoria y qué ruta toma el diagrama ANSI.
+                        </p>
+
+                        <div class="prog-sim-box mb-4">
+                            <div class="prog-sim-topbar">
+                                <span class="fw-bold text-info small">⚙ Intérprete Visual · Prueba de Escritorio ANSI</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-info text-dark font-monospace" id="progL1StepBadge">Paso 1/4: Entrada</span>
+                                    <span class="badge bg-primary text-white font-monospace" id="progL1AvgBadge">promedio = 85.0</span>
+                                    <span class="badge bg-success text-white font-monospace" id="progL1StatusBadge">APROBADO</span>
+                                </div>
+                            </div>
+                            <div class="prog-sim-body">
+                                <div class="row g-4 align-items-center mb-3">
+                                    <div class="col-12 col-md-6">
+                                        <div class="prog-sim-canvas-wrap">
+                                            <svg viewBox="0 0 320 260" class="w-100" style="max-width:320px;" aria-label="Diagrama de Flujo Interactivo">
+                                                <!-- Inicio -->
+                                                <rect x="115" y="10" width="90" height="28" rx="14" fill="#1e293b" stroke="#60a5fa" stroke-width="2"/>
+                                                <text x="160" y="28" font-size="11" fill="#e2e8f0" font-weight="bold" text-anchor="middle">INICIO</text>
+                                                <line x1="160" y1="38" x2="160" y2="56" stroke="#64748b" stroke-width="2"/>
+
+                                                <!-- Entrada (Paralelogramo) -->
+                                                <polygon id="progL1NodeInput" points="75,56 260,56 245,92 60,92" fill="#1d4ed8" stroke="#93c5fd" stroke-width="2"/>
+                                                <text x="160" y="78" font-size="10" fill="#ffffff" font-weight="bold" text-anchor="middle">LEER n1, n2, n3</text>
+                                                <line x1="160" y1="92" x2="160" y2="110" stroke="#64748b" stroke-width="2"/>
+
+                                                <!-- Proceso (Rectángulo) -->
+                                                <rect id="progL1NodeProcess" x="65" y="110" width="190" height="36" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+                                                <text x="160" y="132" font-size="10" fill="#38bdf8" font-weight="bold" text-anchor="middle">prom = (n1 + n2 + n3) / 3</text>
+                                                <line x1="160" y1="146" x2="160" y2="162" stroke="#64748b" stroke-width="2"/>
+
+                                                <!-- Decisión (Rombo) -->
+                                                <polygon id="progL1NodeDecision" points="160,162 225,190 160,218 95,190" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+                                                <text x="160" y="194" font-size="10" fill="#fbbf24" font-weight="bold" text-anchor="middle">prom &gt;= 70?</text>
+
+                                                <!-- Ramas Salida -->
+                                                <line x1="225" y1="190" x2="275" y2="190" stroke="#10b981" stroke-width="2"/>
+                                                <text x="245" y="183" font-size="9" fill="#34d399" font-weight="bold">SÍ</text>
+                                                <rect id="progL1NodePass" x="235" y="205" width="75" height="28" rx="4" fill="#065f46" stroke="#10b981" stroke-width="1.5"/>
+                                                <text x="272" y="223" font-size="9" fill="#ffffff" font-weight="bold" text-anchor="middle">APROBADO</text>
+
+                                                <line x1="95" y1="190" x2="45" y2="190" stroke="#f43f5e" stroke-width="2"/>
+                                                <text x="72" y="183" font-size="9" fill="#fb7185" font-weight="bold">NO</text>
+                                                <rect id="progL1NodeFail" x="10" y="205" width="78" height="28" rx="4" fill="#881337" stroke="#f43f5e" stroke-width="1.5"/>
+                                                <text x="49" y="223" font-size="9" fill="#ffffff" font-weight="bold" text-anchor="middle">REPROBADO</text>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-4">
+                                                <label for="progL1N1" class="form-label small text-slate-300 mb-1">Nota 1 ($n_1$):</label>
+                                                <input type="number" id="progL1N1" class="form-control form-control-sm bg-dark text-white border-primary font-monospace" value="85" min="0" max="100">
+                                            </div>
+                                            <div class="col-4">
+                                                <label for="progL1N2" class="form-label small text-slate-300 mb-1">Nota 2 ($n_2$):</label>
+                                                <input type="number" id="progL1N2" class="form-control form-control-sm bg-dark text-white border-primary font-monospace" value="90" min="0" max="100">
+                                            </div>
+                                            <div class="col-4">
+                                                <label for="progL1N3" class="form-label small text-slate-300 mb-1">Nota 3 ($n_3$):</label>
+                                                <input type="number" id="progL1N3" class="form-control form-control-sm bg-dark text-white border-primary font-monospace" value="80" min="0" max="100">
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-2 text-center mb-3">
+                                            <div class="col-4">
+                                                <div class="p-2 rounded-3 border border-primary bg-dark">
+                                                    <div class="text-xs text-info">Suma Total</div>
+                                                    <div class="fw-bold font-monospace small text-white" id="progL1SumDisplay">255</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="p-2 rounded-3 border border-info bg-dark">
+                                                    <div class="text-xs text-info">Promedio</div>
+                                                    <div class="fw-bold font-monospace small text-white" id="progL1AvgDisplay">85.00</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="p-2 rounded-3 border border-success bg-dark">
+                                                    <div class="text-xs text-emerald">Salida</div>
+                                                    <div class="fw-bold font-monospace small text-white" id="progL1OutDisplay">Aprobado</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-sm btn-outline-light" id="progL1ResetBtn">Reiniciar</button>
+                                            <button type="button" class="btn btn-sm btn-prog fw-bold flex-grow-1" id="progL1StepBtn">Ejecutar siguiente paso ▷</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="prog-sim-console" id="progL1Console"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l1-video">← Anterior: Vídeo</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l1-pdf">Siguiente: Guía Visual 01 📄</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 1 · ITEM 4: GUÍA PDF (Guia_1_Algoritmos_y_Diagramas_ANSI.pdf)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l1-pdf">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-pdf">📄 Lección 1 · Guía Visual Incorporada</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <code class="small">Guia_1_Algoritmos_y_Diagramas_ANSI.pdf</code>
+                                <button type="button" class="btn btn-prog btn-sm fw-bold" data-print-guide="progGuideContent-1" data-guide-title="Guía 01 - Algoritmos y Diagramación ANSI">
+                                    🖨️ Imprimir / Guardar PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prog-guide-container mb-4" id="progGuideContent-1">
+                            <header class="border-bottom border-4 border-primary pb-3 mb-4">
+                                <p class="text-xs fw-bold text-primary text-uppercase tracking-wider mb-1">Módulo: Fundamentos de Programación | Nivel: Inicial</p>
+                                <h2 class="h3 fw-extrabold text-dark mb-1">GUÍA 01: Algoritmos y Diagramación ANSI</h2>
+                                <p class="text-secondary small mb-0">Traduciendo problemas cotidianos a flujos lógicos estructurados (Entrada, Proceso y Salida).</p>
+                            </header>
+
+                            <section class="mb-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="prog-guide-step-num bg-primary-subtle text-primary me-3">1</div>
+                                    <h3 class="h5 fw-bold mb-0">Arquitectura de Todo Programa (E-P-S)</h3>
+                                </div>
+                                <div class="p-4 rounded-3 bg-light border">
+                                    <p class="small mb-3">Cualquier algoritmo en ingeniería sigue una línea de ensamblaje lógica de tres fases consecutivas:</p>
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-4">
+                                            <div class="bg-white p-3 rounded shadow-xs border-top border-4 border-primary h-100">
+                                                <h4 class="h6 fw-bold text-primary mb-1">1. Entrada (Input)</h4>
+                                                <p class="small text-secondary mb-0">Captura de parámetros iniciales mediante teclado, archivo o petición web.</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="bg-white p-3 rounded shadow-xs border-top border-4 border-indigo h-100" style="border-color:#4f46e5 !important;">
+                                                <h4 class="h6 fw-bold mb-1" style="color:#4f46e5;">2. Proceso (Transformación)</h4>
+                                                <p class="small text-secondary mb-0">Cálculos aritméticos, validaciones y manipulación en memoria RAM.</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="bg-white p-3 rounded shadow-xs border-top border-4 border-success h-100">
+                                                <h4 class="h6 fw-bold text-success mb-1">3. Salida (Output)</h4>
+                                                <p class="small text-secondary mb-0">Despliegue claro del resultado obtenido al usuario o sistema destino.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="prog-guide-step-num bg-primary-subtle text-primary me-3">2</div>
+                                    <h3 class="h5 fw-bold mb-0">Simbología Estándar ANSI para Diagramas de Flujo</h3>
+                                </div>
+                                <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                                    <table class="table table-dark table-hover align-middle small mb-0">
+                                        <thead>
+                                            <tr class="text-uppercase text-secondary">
+                                                <th class="p-3">Símbolo ANSI</th>
+                                                <th class="p-3">Nombre Técnico</th>
+                                                <th class="p-3">Función Lógica</th>
+                                                <th class="p-3">Equivalente en Código</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-info">Óvalo / Terminal</td>
+                                                <td class="p-3">Inicio / Fin</td>
+                                                <td class="p-3">Delimita el punto de arranque y cierre del algoritmo.</td>
+                                                <td class="p-3"><code>main() / return 0</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-primary">Paralelogramo</td>
+                                                <td class="p-3">Entrada / Salida</td>
+                                                <td class="p-3">Solicita datos al usuario o imprime mensajes.</td>
+                                                <td class="p-3"><code>input() / print()</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-success">Rectángulo</td>
+                                                <td class="p-3">Proceso</td>
+                                                <td class="p-3">Ejecuta asignaciones y fórmulas matemáticas.</td>
+                                                <td class="p-3"><code>total = a + b;</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-warning">Rombo</td>
+                                                <td class="p-3">Decisión Lógica</td>
+                                                <td class="p-3">Bifurca el flujo en dos caminos (Verdadero / Falso).</td>
+                                                <td class="p-3"><code>if (condicion)</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l1-simulador">← Anterior: Simulador</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l2-lectura">Ir a Lección 2: Variables y Operadores →</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 2 · ITEM 1: LECTURA (Variables, Tipos de Datos y Operadores)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l2-lectura">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <div>
+                                <span class="prog-type-badge prog-badge-reading mb-1">📖 Lección 2 · Lectura Activa</span>
+                                <h2 class="h3 fw-bold mb-0">Variables, Tipos de Datos y Operadores (Gestión de Memoria)</h2>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-prog fw-semibold" data-prog-note-toggle="l2">
+                                📝 Guardar nota
                             </button>
                         </div>
 
-                    </div>
+                        <div class="prog-note-drawer d-none" id="progNoteDrawer-l2">
+                            <label for="progNoteInput-l2" class="form-label small fw-bold text-dark mb-1">📝 Tus apuntes de la Lección 2 (Variables y Operadores):</label>
+                            <textarea id="progNoteInput-l2" class="form-control form-control-sm mb-2" rows="2" placeholder="Anota reglas de nombres de variables o jerarquía de operadores..."></textarea>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-primary fw-semibold" id="progNoteStatus-l2"></span>
+                                <button type="button" class="btn btn-xs btn-prog fw-bold px-3" id="progNoteSave-l2">Guardar apunte</button>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-3">
+                            <strong>Tema:</strong> Tipos primitivos (<code>int</code>, <code>float</code>, <code>string</code>, <code>bool</code>), constantes y precedencia de operadores.
+                        </p>
+
+                        <h3 class="h5 fw-bold text-prog mb-2">¿Qué es? (Introducción Teórica)</h3>
+                        <p class="text-secondary leading-relaxed mb-3">
+                            Una <strong>variable</strong> es un espacio reservado en la memoria RAM identificado con un nombre simbólico donde se almacena un dato que puede cambiar durante la ejecución del programa. Para optimizar memoria y evitar errores de tipo, los lenguajes clasifican la información en <strong>tipos de datos primitivos</strong>:
+                        </p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-3">
+                                <div class="p-3 rounded-4 border bg-light h-100">
+                                    <span class="badge bg-primary mb-2 code-font">int</span>
+                                    <h4 class="h6 fw-bold mb-1">Enteros</h4>
+                                    <p class="small text-secondary mb-0">Números exactos sin punto decimal (ej. <code>edad = 20</code>, <code>intentos = 3</code>).</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="p-3 rounded-4 border bg-light h-100">
+                                    <span class="badge bg-info text-dark mb-2 code-font">float / double</span>
+                                    <h4 class="h6 fw-bold mb-1">Flotantes</h4>
+                                    <p class="small text-secondary mb-0">Números reales con parte decimal (ej. <code>precio = 149.90</code>, <code>pi = 3.1416</code>).</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="p-3 rounded-4 border bg-light h-100">
+                                    <span class="badge bg-secondary mb-2 code-font">string</span>
+                                    <h4 class="h6 fw-bold mb-1">Cadenas de Texto</h4>
+                                    <p class="small text-secondary mb-0">Secuencias de caracteres entre comillas (ej. <code>nombre = "Ana"</code>).</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="p-3 rounded-4 border border-primary-subtle h-100" style="background: rgba(219,234,254,0.45);">
+                                    <span class="badge bg-success mb-2 code-font">bool</span>
+                                    <h4 class="h6 fw-bold mb-1">Booleanos</h4>
+                                    <p class="small text-secondary mb-0">Valores lógicos binarios: únicamente <code>true</code> (verdadero) o <code>false</code> (falso).</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="h5 fw-bold text-prog mb-3">Jerarquía de Evaluación de Operadores</h3>
+                        <p class="small text-secondary mb-3">Cuando una expresión combina varios operadores, el compilador sigue este orden estricto de prioridad:</p>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <div class="fw-bold text-dark">1. Paréntesis y Agrupación:</div>
+                                <div class="small text-muted">Se evalúa siempre desde el paréntesis más interno hacia afuera</div>
+                            </div>
+                            <div class="prog-formula-math"><code>( ... )</code></div>
+                        </div>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <div class="fw-bold text-dark">2. Multiplicación, División y Módulo:</div>
+                                <div class="small text-muted">Tienen mayor prioridad que suma y resta; <code>%</code> devuelve el residuo entero</div>
+                            </div>
+                            <div class="prog-formula-math"><code>*   /   %</code></div>
+                        </div>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                            <div>
+                                <div class="fw-bold text-dark">3. Suma, Resta, Relacionales y Lógicos:</div>
+                                <div class="small text-muted">Se resuelven después de los productos y antes de la asignación <code>=</code></div>
+                            </div>
+                            <div class="prog-formula-math"><code>+  -  &gt;  &lt;  ==  &amp;&amp;  ||</code></div>
+                        </div>
+
+                        <div class="prog-tips-accordion mb-4">
+                            <button class="prog-tips-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#progTipsL2" aria-expanded="true">
+                                <span>✦ Tips para el Reto ABP: Evaluador de Expresiones</span>
+                                <span>[ ˅ ]</span>
+                            </button>
+                            <div id="progTipsL2" class="collapse show">
+                                <div class="prog-tips-body">
+                                    No confundas el operador de <strong>asignación</strong> (<code>=</code>, que guarda un valor en memoria) con el operador de <strong>comparación de igualdad</strong> (<code>==</code>, que pregunta si dos valores son iguales y devuelve <code>true</code> o <code>false</code>). Asimismo, recuerda que <code>17 % 5</code> da como resultado <code>2</code> (el residuo de dividir 17 entre 5).
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pt-3 border-top">
+                            <div class="d-flex align-items-center gap-2 prog-feedback-group">
+                                <span class="small text-muted">¿Útil?</span>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="up" aria-label="Me gustó">👍</button>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="down" aria-label="No me gustó">👎</button>
+                                <span class="small text-prog fw-semibold prog-feedback-msg"></span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline-prog btn-sm fw-bold" data-prog-goto="l2-video">
+                                    ▶ Vídeo Variables
+                                </button>
+                                <button type="button" class="btn btn-prog fw-bold px-4 shadow-prog" data-prog-goto="l2-reto">
+                                    Ir al Reto ABP: Evaluador de Expresiones ➔
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 2 · ITEM 2: VÍDEO (Pop-up YouTube)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l2-video">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-reading">▶ Lección 2 · Recursos Audiovisuales (Pop-up)</span>
+                            <span class="text-muted small">Video: "Variables, Tipos de Datos y Operadores"</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Variables, Tipos de Datos y Operadores</h2>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-primary text-white mb-2">Video Recomendado</span>
+                                        <h3 class="h6 fw-bold mb-1">Variables y Tipos de Datos en Programación</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>TodoCode</strong></p>
+                                        <p class="small text-secondary mb-3">Comprende cómo se almacenan enteros, decimales, cadenas y booleanos en memoria.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-prog btn-sm fw-bold px-3" data-open-prog-video="l2-video" data-video-mode="main">
+                                            ▶ Reproducir en Modal
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=s2d0_g6H40o" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-secondary mb-2">Video Alternativo</span>
+                                        <h3 class="h6 fw-bold mb-1">Operadores Aritméticos, Relacionales y Lógicos</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>Programación ATS</strong></p>
+                                        <p class="small text-secondary mb-3">Ejercicios prácticos aplicando jerarquía de operaciones y módulo.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-outline-prog btn-sm fw-bold px-3" data-open-prog-video="l2-video" data-video-mode="alt">
+                                            ▶ Reproducir Alternativo
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=dN4C1e4g7zM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-3 border bg-white small mb-4">
+                            <strong>🌐 Recurso Web Recomendado:</strong>
+                            <a href="https://pythontutor.com" target="_blank" rel="noopener noreferrer" class="fw-bold text-prog">Python Tutor (pythontutor.com)</a> — Visualizador en línea paso a paso del estado de las variables en memoria RAM.
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l2-lectura">← Anterior: Lectura</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l2-reto">Siguiente: Reto ABP Evaluador ⚡</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 2 · ITEM 3: RETO ABP (Evaluador de Expresiones y Precedencia)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l2-reto">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-abp">⚡ Lección 2 · Reto ABP</span>
+                            <span class="text-muted small">Precedencia de Operadores y Tipos</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Reto ABP: Evaluador de Expresiones y Jerarquía de Operadores</h2>
+                        <p class="text-secondary small mb-3">
+                            <strong>Misión:</strong> Ajusta los valores de las variables <code>a</code>, <code>b</code> y <code>c</code>, selecciona una expresión y verifica cómo el evaluador resuelve primero los paréntesis, multiplicaciones y módulo antes de sumar o comparar.
+                        </p>
+
+                        <div class="prog-sim-box mb-4">
+                            <div class="prog-sim-topbar">
+                                <span class="fw-bold text-info small">⚡ Evaluador de Expresiones · Precedencia de Operadores</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-info text-dark font-monospace" id="progL2TypeBadge">Tipo: int</span>
+                                    <span class="badge bg-success text-white font-monospace" id="progL2ResultBadge">Resultado = 22</span>
+                                </div>
+                            </div>
+                            <div class="prog-sim-body">
+                                <div class="row g-3 mb-3">
+                                    <div class="col-12 col-md-6">
+                                        <label for="progL2ExprSelect" class="form-label small text-slate-300 mb-1">Expresión a Evaluar:</label>
+                                        <select id="progL2ExprSelect" class="form-select form-select-sm bg-dark text-white border-secondary font-monospace">
+                                            <option value="expr1" selected>resultado = a + b * c</option>
+                                            <option value="expr2">resultado = (a + b) * c</option>
+                                            <option value="expr3">residuo = (a * b) % c</option>
+                                            <option value="expr4">valido = (a + b &gt; 15) &amp;&amp; (c != 0)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4 col-md-2">
+                                        <label for="progL2VarA" class="form-label small text-info mb-1">int a:</label>
+                                        <input type="number" id="progL2VarA" class="form-control form-control-sm bg-dark text-white border-info font-monospace" value="4" min="-50" max="50">
+                                    </div>
+                                    <div class="col-4 col-md-2">
+                                        <label for="progL2VarB" class="form-label small text-info mb-1">int b:</label>
+                                        <input type="number" id="progL2VarB" class="form-control form-control-sm bg-dark text-white border-info font-monospace" value="6" min="-50" max="50">
+                                    </div>
+                                    <div class="col-4 col-md-2">
+                                        <label for="progL2VarC" class="form-label small text-info mb-1">int c:</label>
+                                        <input type="number" id="progL2VarC" class="form-control form-control-sm bg-dark text-white border-info font-monospace" value="3" min="1" max="50">
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end mb-3">
+                                    <button type="button" class="btn btn-sm btn-prog fw-bold px-4" id="progL2EvalBtn">
+                                        ⚡ Evaluar Paso a Paso
+                                    </button>
+                                </div>
+
+                                <div class="prog-sim-console" id="progL2Console"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l2-video">← Anterior: Vídeo</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l2-pdf">Siguiente: Guía Visual 02 📄</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 2 · ITEM 4: GUÍA PDF (Guia_2_Variables_y_Operadores.pdf)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l2-pdf">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-pdf">📄 Lección 2 · Guía Visual Incorporada</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <code class="small">Guia_2_Variables_y_Operadores.pdf</code>
+                                <button type="button" class="btn btn-prog btn-sm fw-bold" data-print-guide="progGuideContent-2" data-guide-title="Guía 02 - Variables, Tipos de Datos y Operadores">
+                                    🖨️ Imprimir / Guardar PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prog-guide-container mb-4" id="progGuideContent-2" style="border-top: 8px solid #4f46e5;">
+                            <header class="border-bottom border-4 pb-3 mb-4" style="border-color:#4f46e5 !important;">
+                                <p class="text-xs fw-bold text-uppercase tracking-wider mb-1" style="color:#4f46e5;">Módulo: Fundamentos de Programación | Lección 2</p>
+                                <h2 class="h3 fw-extrabold text-dark mb-1">GUÍA 02: Variables, Tipos de Datos y Operadores</h2>
+                                <p class="text-secondary small mb-0">Referencia rápida de tipos primitivos, reglas de identificadores y jerarquía de evaluación.</p>
+                            </header>
+
+                            <section class="mb-4">
+                                <h3 class="h5 fw-bold text-dark mb-3">1. Reglas para Nombrar Identificadores (Variables)</h3>
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <div class="border border-2 border-success-subtle rounded-4 p-3 bg-success-subtle bg-opacity-10 h-100">
+                                            <h4 class="h6 fw-bold text-success mb-2">✓ Nombres Válidos (Buenas Prácticas)</h4>
+                                            <ul class="small text-secondary mb-0">
+                                                <li>Iniciar con letra o guion bajo: <code>totalVenta</code>, <code>_contador</code>.</li>
+                                                <li>Usar notación camelCase o snake_case: <code>promedioFinal</code>, <code>edad_usuario</code>.</li>
+                                                <li>Ser descriptivos respecto al dato que almacenan.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="border border-2 border-danger-subtle rounded-4 p-3 bg-danger-subtle bg-opacity-10 h-100">
+                                            <h4 class="h6 fw-bold text-danger mb-2">✕ Nombres Inválidos (Error de Sintaxis)</h4>
+                                            <ul class="small text-secondary mb-0">
+                                                <li>Iniciar con un número: <code>1alumno</code>, <code>2dato</code>.</li>
+                                                <li>Contener espacios o símbolos especiales: <code>total venta</code>, <code>precio$</code>.</li>
+                                                <li>Usar palabras reservadas del lenguaje: <code>if</code>, <code>while</code>, <code>return</code>.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section>
+                                <h3 class="h5 fw-bold text-dark mb-3">2. Tabla de Precedencia de Operadores</h3>
+                                <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                                    <table class="table table-dark table-hover align-middle small mb-0">
+                                        <thead>
+                                            <tr class="text-uppercase text-secondary">
+                                                <th class="p-3">Prioridad</th>
+                                                <th class="p-3">Categoría</th>
+                                                <th class="p-3">Operadores</th>
+                                                <th class="p-3">Ejemplo y Resultado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-info">Nivel 1 (Alta)</td>
+                                                <td class="p-3">Agrupación</td>
+                                                <td class="p-3"><code>( )</code></td>
+                                                <td class="p-3"><code>(2 + 3) * 4</code> → <code>20</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-primary">Nivel 2</td>
+                                                <td class="p-3">Multiplicativos</td>
+                                                <td class="p-3"><code>*  /  %</code></td>
+                                                <td class="p-3"><code>10 + 15 % 4</code> → <code>13</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-success">Nivel 3</td>
+                                                <td class="p-3">Aditivos</td>
+                                                <td class="p-3"><code>+  -</code></td>
+                                                <td class="p-3"><code>20 - 5 + 3</code> → <code>18</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-warning">Nivel 4</td>
+                                                <td class="p-3">Relacionales</td>
+                                                <td class="p-3"><code>&lt;  &lt;=  &gt;  &gt;=  ==  !=</code></td>
+                                                <td class="p-3"><code>10 &gt;= 10</code> → <code>true</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 fw-bold text-danger">Nivel 5 (Baja)</td>
+                                                <td class="p-3">Lógicos</td>
+                                                <td class="p-3"><code>!</code> luego <code>&amp;&amp;</code> luego <code>||</code></td>
+                                                <td class="p-3"><code>true &amp;&amp; false</code> → <code>false</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l2-reto">← Anterior: Reto ABP</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l3-lectura">Ir a Lección 3: Estructuras Condicionales →</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 3 · ITEM 1: LECTURA (Estructuras Condicionales if / else)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l3-lectura">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <div>
+                                <span class="prog-type-badge prog-badge-reading mb-1">📖 Lección 3 · Lectura Activa</span>
+                                <h2 class="h3 fw-bold mb-0">Estructuras Condicionales (<code>if / else if / else</code>)</h2>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-prog fw-semibold" data-prog-note-toggle="l3">
+                                📝 Guardar nota
+                            </button>
+                        </div>
+
+                        <div class="prog-note-drawer d-none" id="progNoteDrawer-l3">
+                            <label for="progNoteInput-l3" class="form-label small fw-bold text-dark mb-1">📝 Tus apuntes de la Lección 3 (Condicionales):</label>
+                            <textarea id="progNoteInput-l3" class="form-control form-control-sm mb-2" rows="2" placeholder="Anota diferencias entre && (AND) y || (OR)..."></textarea>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-primary fw-semibold" id="progNoteStatus-l3"></span>
+                                <button type="button" class="btn btn-xs btn-prog fw-bold px-3" id="progNoteSave-l3">Guardar apunte</button>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-3">
+                            <strong>Tema:</strong> Toma de decisiones lógicas, bifurcación de flujo y operadores booleanos (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>).
+                        </p>
+
+                        <h3 class="h5 fw-bold text-prog mb-2">¿Qué es? (Introducción Teórica)</h3>
+                        <p class="text-secondary leading-relaxed mb-3">
+                            Un programa inteligente no siempre ejecuta todas sus líneas en orden lineal: necesita tomar decisiones según los datos disponibles. Las <strong>estructuras condicionales</strong> evalúan una expresión booleana (que resulta en <code>true</code> o <code>false</code>) para decidir qué bloque de instrucciones ejecutar:
+                        </p>
+
+                        <div class="d-flex flex-column gap-3 mb-4">
+                            <div class="p-3 rounded-4 border bg-light">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center mb-1">
+                                    <h4 class="h6 fw-bold text-prog mb-0">1. Condicional Simple (<code>if</code>)</h4>
+                                    <code class="small bg-dark text-info px-2 py-1 rounded">if (condicion) { accion(); }</code>
+                                </div>
+                                <p class="small text-secondary mb-0">
+                                    Ejecuta el bloque interno únicamente si la condición se cumple (<code>true</code>). Si es falsa, continúa con el resto del programa sin hacer nada.
+                                </p>
+                            </div>
+
+                            <div class="p-3 rounded-4 border bg-light">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center mb-1">
+                                    <h4 class="h6 fw-bold text-prog mb-0">2. Condicional Doble (<code>if / else</code>)</h4>
+                                    <code class="small bg-dark text-emerald px-2 py-1 rounded">if (cond) { rutaA(); } else { rutaB(); }</code>
+                                </div>
+                                <p class="small text-secondary mb-0">
+                                    Garantiza que exactamente uno de dos caminos mutuamente excluyentes se ejecute. Nunca se ejecutan ambos bloques a la vez.
+                                </p>
+                            </div>
+
+                            <div class="p-3 rounded-4 border bg-light">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center mb-1">
+                                    <h4 class="h6 fw-bold text-prog mb-0">3. Condicional Encadenada (<code>else if</code>)</h4>
+                                    <code class="small bg-dark text-warning px-2 py-1 rounded">if (c1) { ... } else if (c2) { ... } else { ... }</code>
+                                </div>
+                                <p class="small text-secondary mb-0">
+                                    Permite evaluar múltiples rangos o casos en cascada, deteniéndose en la primera condición verdadera que encuentre.
+                                </p>
+                            </div>
+                        </div>
+
+                        <h3 class="h5 fw-bold text-prog mb-3">Operadores Lógicos Compuestos</h3>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <div class="fw-bold text-dark">Conjunción Lógica (AND):</div>
+                                <div class="small text-muted">Devuelve <code>true</code> solo si <strong>ambas</strong> condiciones son verdaderas</div>
+                            </div>
+                            <div class="prog-formula-math"><code>condicion1 &amp;&amp; condicion2</code></div>
+                        </div>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                            <div>
+                                <div class="fw-bold text-dark">Disyunción Lógica (OR):</div>
+                                <div class="small text-muted">Devuelve <code>true</code> si <strong>al menos una</strong> de las condiciones es verdadera</div>
+                            </div>
+                            <div class="prog-formula-math"><code>condicion1 || condicion2</code></div>
+                        </div>
+
+                        <div class="prog-tips-accordion mb-4">
+                            <button class="prog-tips-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#progTipsL3" aria-expanded="true">
+                                <span>✦ Tips para el Depurador de Rutas Condicionales</span>
+                                <span>[ ˅ ]</span>
+                            </button>
+                            <div id="progTipsL3" class="collapse show">
+                                <div class="prog-tips-body">
+                                    En una cadena <code>if / else if / else</code>, el orden importa: siempre coloca primero las condiciones más restrictivas (por ejemplo, <code>promedio &gt;= 90</code> antes de <code>promedio &gt;= 70</code>), de lo contrario la condición general capturará el flujo antes de llegar a la específica.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pt-3 border-top">
+                            <div class="d-flex align-items-center gap-2 prog-feedback-group">
+                                <span class="small text-muted">¿Útil?</span>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="up">👍</button>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="down">👎</button>
+                                <span class="small text-prog fw-semibold prog-feedback-msg"></span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline-prog btn-sm fw-bold" data-prog-goto="l3-video">
+                                    ▶ Vídeo Condicionales
+                                </button>
+                                <button type="button" class="btn btn-prog fw-bold px-4 shadow-prog" data-prog-goto="l3-simulador">
+                                    Ir al Simulador: Depurador Condicional ➔
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 3 · ITEM 2: VÍDEO (Pop-up YouTube)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l3-video">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-reading">▶ Lección 3 · Recursos Audiovisuales (Pop-up)</span>
+                            <span class="text-muted small">Video: "Estructuras Condicionales if / else"</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Toma de Decisiones con <code>if</code>, <code>else if</code> y <code>else</code></h2>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-primary text-white mb-2">Video Recomendado</span>
+                                        <h3 class="h6 fw-bold mb-1">Estructuras Condicionales if, else if y else</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>Fazt</strong></p>
+                                        <p class="small text-secondary mb-3">Explica cómo controlar el flujo de ejecución mediante condiciones simples, dobles y múltiples.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-prog btn-sm fw-bold px-3" data-open-prog-video="l3-video" data-video-mode="main">
+                                            ▶ Reproducir en Modal
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=2yC7-9_vK7k" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-secondary mb-2">Video Alternativo</span>
+                                        <h3 class="h6 fw-bold mb-1">Tablas de Verdad y Operadores Lógicos AND, OR, NOT</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>MoureDev</strong></p>
+                                        <p class="small text-secondary mb-3">Cómo combinar múltiples expresiones booleanas sin errores de lógica.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-outline-prog btn-sm fw-bold px-3" data-open-prog-video="l3-video" data-video-mode="alt">
+                                            ▶ Reproducir Alternativo
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=5l3i2w7t89c" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l3-lectura">← Anterior: Lectura</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l3-simulador">Siguiente: Simulador Condicional ⚙</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 3 · ITEM 3: SIMULADOR (Depurador de Rutas Condicionales)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l3-simulador">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-sim">⚙ Lección 3 · Simulador Interactivo</span>
+                            <span class="text-muted small">Evaluador de Ramas <code>if / else if / else</code></span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Simulador: Depurador de Flujo Condicional y Operadores Lógicos</h2>
+                        <p class="text-secondary small mb-3">
+                            <strong>Regla de negocio:</strong> Para acreditar con excelencia se requiere <code>calificacion &gt;= 90 &amp;&amp; asistencia &gt;= 85</code>; para acreditar ordinario basta <code>calificacion &gt;= 70 &amp;&amp; asistencia &gt;= 80</code>; de lo contrario entra al bloque <code>else</code>.
+                        </p>
+
+                        <div class="prog-sim-box mb-4">
+                            <div class="prog-sim-topbar">
+                                <span class="fw-bold text-info small">⚙ Depurador Condicional · Evaluación Booleana</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-info text-dark font-monospace" id="progL3BranchBadge">Rama: else if (Ordinario)</span>
+                                    <span class="badge bg-success text-white font-monospace" id="progL3BoolBadge">true</span>
+                                </div>
+                            </div>
+                            <div class="prog-sim-body">
+                                <div class="row g-4 align-items-center mb-3">
+                                    <div class="col-12 col-md-6">
+                                        <div class="p-3 rounded-3 bg-dark border border-secondary font-monospace small text-slate-200">
+                                            <div id="progL3CodeLine1" class="p-1 rounded">if (calif &gt;= 90 &amp;&amp; asist &gt;= 85) {</div>
+                                            <div class="ps-3 text-emerald">estatus = "EXCELENCIA";</div>
+                                            <div id="progL3CodeLine2" class="p-1 rounded bg-primary bg-opacity-25 border-start border-3 border-info">} else if (calif &gt;= 70 &amp;&amp; asist &gt;= 80) {</div>
+                                            <div class="ps-3 text-info">estatus = "ACREDITADO";</div>
+                                            <div id="progL3CodeLine3" class="p-1 rounded">} else {</div>
+                                            <div class="ps-3 text-danger">estatus = "RECURSAMIENTO";</div>
+                                            <div>}</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between small text-slate-300">
+                                                <label for="progL3GradeSlider">Calificación Final (<code>calif</code>):</label>
+                                                <span class="fw-bold text-info font-monospace" id="progL3GradeVal">82</span>
+                                            </div>
+                                            <input type="range" class="form-range" id="progL3GradeSlider" min="0" max="100" step="1" value="82">
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between small text-slate-300">
+                                                <label for="progL3AttendSlider">Porcentaje de Asistencia (<code>asist</code>):</label>
+                                                <span class="fw-bold text-warning font-monospace" id="progL3AttendVal">88%</span>
+                                            </div>
+                                            <input type="range" class="form-range" id="progL3AttendSlider" min="50" max="100" step="1" value="88">
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-prog fw-bold w-100" id="progL3TestBtn">
+                                            Probar caso límite aleatorio ▷
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="prog-sim-console" id="progL3Console"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l3-video">← Anterior: Vídeo</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l3-pdf">Siguiente: Guía Visual 03 📄</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 3 · ITEM 4: GUÍA PDF (Guia_3_Estructuras_Condicionales.pdf)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l3-pdf">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-pdf">📄 Lección 3 · Guía Visual Incorporada</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <code class="small">Guia_3_Estructuras_Condicionales.pdf</code>
+                                <button type="button" class="btn btn-prog btn-sm fw-bold" data-print-guide="progGuideContent-3" data-guide-title="Guía 03 - Estructuras Condicionales y Tablas de Verdad">
+                                    🖨️ Imprimir / Guardar PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prog-guide-container mb-4" id="progGuideContent-3" style="border-top: 8px solid #f59e0b;">
+                            <header class="pb-3 mb-4 border-bottom">
+                                <p class="text-xs fw-bold text-warning text-uppercase tracking-wider mb-1">Módulo: Fundamentos de Programación | Lección 3</p>
+                                <h2 class="h3 fw-extrabold text-dark mb-1">GUÍA 03: Estructuras Condicionales y Tablas de Verdad</h2>
+                                <p class="text-secondary small mb-0">Control de flujo mediante expresiones booleanas y operadores lógicos.</p>
+                            </header>
+
+                            <section>
+                                <h3 class="h5 fw-bold text-dark mb-3">Tabla de Verdad de Operadores Lógicos</h3>
+                                <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                                    <table class="table table-dark table-hover align-middle small text-center mb-0">
+                                        <thead>
+                                            <tr class="text-uppercase text-secondary">
+                                                <th class="p-3">A</th>
+                                                <th class="p-3">B</th>
+                                                <th class="p-3">A &amp;&amp; B (AND)</th>
+                                                <th class="p-3">A || B (OR)</th>
+                                                <th class="p-3">!A (NOT)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-3 text-success fw-bold">true</td>
+                                                <td class="p-3 text-success fw-bold">true</td>
+                                                <td class="p-3"><span class="badge bg-success">true</span></td>
+                                                <td class="p-3"><span class="badge bg-success">true</span></td>
+                                                <td class="p-3"><span class="badge bg-danger">false</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 text-success fw-bold">true</td>
+                                                <td class="p-3 text-danger fw-bold">false</td>
+                                                <td class="p-3"><span class="badge bg-danger">false</span></td>
+                                                <td class="p-3"><span class="badge bg-success">true</span></td>
+                                                <td class="p-3"><span class="badge bg-danger">false</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 text-danger fw-bold">false</td>
+                                                <td class="p-3 text-success fw-bold">true</td>
+                                                <td class="p-3"><span class="badge bg-danger">false</span></td>
+                                                <td class="p-3"><span class="badge bg-success">true</span></td>
+                                                <td class="p-3"><span class="badge bg-success">true</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 text-danger fw-bold">false</td>
+                                                <td class="p-3 text-danger fw-bold">false</td>
+                                                <td class="p-3"><span class="badge bg-danger">false</span></td>
+                                                <td class="p-3"><span class="badge bg-danger">false</span></td>
+                                                <td class="p-3"><span class="badge bg-success">true</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l3-simulador">← Anterior: Simulador</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l4-lectura">Ir a Lección 4: Estructuras Cíclicas →</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 4 · ITEM 1: LECTURA (Estructuras Cíclicas while / for)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l4-lectura">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <div>
+                                <span class="prog-type-badge prog-badge-reading mb-1">📖 Lección 4 · Lectura Activa</span>
+                                <h2 class="h3 fw-bold mb-0">Estructuras Cíclicas (<code>while</code>, <code>do-while</code> y <code>for</code>)</h2>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-prog fw-semibold" data-prog-note-toggle="l4">
+                                📝 Guardar nota
+                            </button>
+                        </div>
+
+                        <div class="prog-note-drawer d-none" id="progNoteDrawer-l4">
+                            <label for="progNoteInput-l4" class="form-label small fw-bold text-dark mb-1">📝 Tus apuntes de la Lección 4 (Ciclos):</label>
+                            <textarea id="progNoteInput-l4" class="form-control form-control-sm mb-2" rows="2" placeholder="Anota la diferencia entre contador y acumulador..."></textarea>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-primary fw-semibold" id="progNoteStatus-l4"></span>
+                                <button type="button" class="btn btn-xs btn-prog fw-bold px-3" id="progNoteSave-l4">Guardar apunte</button>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-3">
+                            <strong>Tema:</strong> Iteración controlada, variables de control (contador y acumulador) y prevención de ciclos infinitos.
+                        </p>
+
+                        <h3 class="h5 fw-bold text-prog mb-2">¿Qué es? (Introducción Teórica)</h3>
+                        <p class="text-secondary leading-relaxed mb-3">
+                            Un <strong>ciclo o bucle</strong> permite repetir automáticamente un bloque de instrucciones mientras una condición lógica permanezca verdadera. Para dominar los bucles en ingeniería se utilizan dos patrones fundamentales de variables:
+                        </p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 rounded-4 border border-primary-subtle h-100" style="background: rgba(219,234,254,0.45);">
+                                    <h4 class="h6 fw-bold text-prog mb-1">🔢 1. Contador (<code>i = i + 1</code>)</h4>
+                                    <p class="small text-secondary mb-0">
+                                        Variable entera que se incrementa o decrementa en una <strong>cantidad fija</strong> en cada vuelta del ciclo para llevar el control de las iteraciones.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 rounded-4 border bg-light h-100">
+                                    <h4 class="h6 fw-bold text-primary mb-1">📊 2. Acumulador (<code>suma = suma + x</code>)</h4>
+                                    <p class="small text-secondary mb-0">
+                                        Variable inicializada en <code>0</code> (para sumas) o en <code>1</code> (para productos) que va integrando valores variables en cada iteración.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="h5 fw-bold text-prog mb-3">Sintaxis de los Bucles Principales</h3>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <div class="fw-bold text-dark">Ciclo <code>for</code> (Iteraciones definidas):</div>
+                                <div class="small text-muted">Ideal cuando conoces de antemano el número exacto de repeticiones $N$</div>
+                            </div>
+                            <div class="prog-formula-math"><code>for (int i = 1; i &lt;= N; i++) { ... }</code></div>
+                        </div>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                            <div>
+                                <div class="fw-bold text-dark">Ciclo <code>while</code> (Condición previa):</div>
+                                <div class="small text-muted">Evalúa la condición antes de entrar; puede ejecutarse 0 o más veces</div>
+                            </div>
+                            <div class="prog-formula-math"><code>while (condicion) { ... actualizar(); }</code></div>
+                        </div>
+
+                        <div class="prog-tips-accordion mb-4">
+                            <button class="prog-tips-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#progTipsL4" aria-expanded="true">
+                                <span>✦ Tips para el Reto ABP: Trazas de Bucle</span>
+                                <span>[ ˅ ]</span>
+                            </button>
+                            <div id="progTipsL4" class="collapse show">
+                                <div class="prog-tips-body">
+                                    Para evitar un <strong>bucle infinito</strong> en un ciclo <code>while</code>, asegúrate siempre de que dentro del cuerpo del bucle exista una instrucción que modifique la variable evaluada en la condición de parada.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pt-3 border-top">
+                            <div class="d-flex align-items-center gap-2 prog-feedback-group">
+                                <span class="small text-muted">¿Útil?</span>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="up">👍</button>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="down">👎</button>
+                                <span class="small text-prog fw-semibold prog-feedback-msg"></span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline-prog btn-sm fw-bold" data-prog-goto="l4-video">
+                                    ▶ Vídeo Ciclos
+                                </button>
+                                <button type="button" class="btn btn-prog fw-bold px-4 shadow-prog" data-prog-goto="l4-reto">
+                                    Ir al Reto ABP: Simulador de Bucles ➔
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 4 · ITEM 2: VÍDEO (Pop-up YouTube)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l4-video">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-reading">▶ Lección 4 · Recursos Audiovisuales (Pop-up)</span>
+                            <span class="text-muted small">Video: "Estructuras Cíclicas while y for"</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Bucles e Iteraciones: <code>while</code>, <code>do-while</code> y <code>for</code></h2>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-primary text-white mb-2">Video Recomendado</span>
+                                        <h3 class="h6 fw-bold mb-1">Bucles e Iteraciones: while, do-while y for</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>TodoCode</strong></p>
+                                        <p class="small text-secondary mb-3">Diferencias prácticas entre ciclos controlados por contador y por centinela.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-prog btn-sm fw-bold px-3" data-open-prog-video="l4-video" data-video-mode="main">
+                                            ▶ Reproducir en Modal
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=6iOlB0QLy84" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-secondary mb-2">Video Alternativo</span>
+                                        <h3 class="h6 fw-bold mb-1">Cómo evitar Bucles Infinitos y usar Acumuladores</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>Programación ATS</strong></p>
+                                        <p class="small text-secondary mb-3">Ejemplos paso a paso de sumatorias y tablas de multiplicar con ciclos.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-outline-prog btn-sm fw-bold px-3" data-open-prog-video="l4-video" data-video-mode="alt">
+                                            ▶ Reproducir Alternativo
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=j7S9k3L4p2w" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l4-lectura">← Anterior: Lectura</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l4-reto">Siguiente: Reto ABP Trazas de Bucle ⚡</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 4 · ITEM 3: RETO ABP (Simulador de Trazas de Bucle)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l4-reto">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-abp">⚡ Lección 4 · Reto ABP</span>
+                            <span class="text-muted small">Simulación de Contador y Acumulador</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Reto ABP: Simulador de Trazas de Bucle (<code>for</code>)</h2>
+                        <p class="text-secondary small mb-3">
+                            <strong>Objetivo:</strong> Ejecuta iteración por iteración el ciclo <code>for (int i = 1; i &lt;= N; i++) { suma += i; }</code> para visualizar cómo evolucionan las variables en memoria hasta cumplir la condición de salida.
+                        </p>
+
+                        <div class="prog-sim-box mb-4">
+                            <div class="prog-sim-topbar">
+                                <span class="fw-bold text-info small">⚡ Motor Iterativo · Bucle for (i = 1 hasta N)</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-info text-dark font-monospace" id="progL4IterBadge">Iteración i = 1</span>
+                                    <span class="badge bg-success text-white font-monospace" id="progL4SumBadge">suma = 1</span>
+                                </div>
+                            </div>
+                            <div class="prog-sim-body">
+                                <div class="row g-3 align-items-center mb-3">
+                                    <div class="col-12 col-md-5">
+                                        <label for="progL4LimitInput" class="form-label small text-slate-300 mb-1">Límite de Iteraciones ($N$): $3$ a $10$</label>
+                                        <input type="range" class="form-range" id="progL4LimitInput" min="3" max="10" step="1" value="5">
+                                    </div>
+                                    <div class="col-6 col-md-3 text-center">
+                                        <div class="p-2 rounded-3 bg-dark border border-info">
+                                            <div class="text-xs text-info">Contador (<code>i</code>)</div>
+                                            <div class="fw-bold fs-5 font-monospace text-white" id="progL4CounterVal">1</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4 text-center">
+                                        <div class="p-2 rounded-3 bg-dark border border-success">
+                                            <div class="text-xs text-emerald">Acumulador (<code>suma</code>)</div>
+                                            <div class="fw-bold fs-5 font-monospace text-white" id="progL4AccumVal">1</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2 mb-3">
+                                    <button type="button" class="btn btn-sm btn-outline-light" id="progL4ResetBtn">Reiniciar ciclo (i = 1)</button>
+                                    <button type="button" class="btn btn-sm btn-prog fw-bold flex-grow-1" id="progL4NextIterBtn">
+                                        Avanzar siguiente iteración (i++) ▷
+                                    </button>
+                                </div>
+
+                                <div class="prog-sim-console" id="progL4Console"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l4-video">← Anterior: Vídeo</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l4-pdf">Siguiente: Guía Visual 04 📄</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 4 · ITEM 4: GUÍA PDF (Guia_4_Patrones_Iterativos.pdf)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l4-pdf">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-pdf">📄 Lección 4 · Guía Visual Incorporada</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <code class="small">Guia_4_Patrones_Iterativos.pdf</code>
+                                <button type="button" class="btn btn-prog btn-sm fw-bold" data-print-guide="progGuideContent-4" data-guide-title="Guía 04 - Patrones Iterativos: while, do-while y for">
+                                    🖨️ Imprimir / Guardar PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prog-guide-container mb-4" id="progGuideContent-4" style="border-top: 8px solid #2563eb;">
+                            <header class="pb-3 mb-4 border-bottom">
+                                <p class="text-xs fw-bold text-prog text-uppercase tracking-wider mb-1">Módulo: Fundamentos de Programación | Lección 4</p>
+                                <h2 class="h3 fw-extrabold text-dark mb-1">GUÍA 04: Patrones Iterativos (<code>while</code>, <code>do-while</code> y <code>for</code>)</h2>
+                                <p class="text-secondary small mb-0">Cuándo elegir cada estructura repetitiva según la naturaleza del problema.</p>
+                            </header>
+
+                            <section class="row g-3">
+                                <div class="col-12 col-md-4">
+                                    <div class="p-3 rounded-4 border bg-light h-100">
+                                        <span class="badge bg-primary mb-2 code-font">for</span>
+                                        <h4 class="h6 fw-bold text-dark mb-1">Iteraciones Conocidas</h4>
+                                        <p class="small text-secondary mb-0">Úsalo cuando sabes exactamente cuántas veces se repetirá el ciclo (ej. recorrer los 10 elementos de un arreglo).</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="p-3 rounded-4 border bg-light h-100">
+                                        <span class="badge bg-info text-dark mb-2 code-font">while</span>
+                                        <h4 class="h6 fw-bold text-dark mb-1">Condición Previa</h4>
+                                        <p class="small text-secondary mb-0">Úsalo cuando el ciclo depende de un evento o valor centinela (ej. leer datos hasta que el usuario ingrese <code>0</code>).</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="p-3 rounded-4 border bg-light h-100">
+                                        <span class="badge bg-success mb-2 code-font">do-while</span>
+                                        <h4 class="h6 fw-bold text-dark mb-1">Al Menos Una Vez</h4>
+                                        <p class="small text-secondary mb-0">Evalúa la condición al final; ideal para menús interactivos y validación de contraseñas.</p>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l4-reto">← Anterior: Reto ABP</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l5-lectura">Ir a Lección 5: Funciones y Arreglos →</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 5 · ITEM 1: LECTURA (Funciones y Arreglos)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l5-lectura">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <div>
+                                <span class="prog-type-badge prog-badge-reading mb-1">📖 Lección 5 · Lectura Activa</span>
+                                <h2 class="h3 fw-bold mb-0">Funciones y Arreglos (Modularización y Estructuras de Datos)</h2>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-prog fw-semibold" data-prog-note-toggle="l5">
+                                📝 Guardar nota
+                            </button>
+                        </div>
+
+                        <div class="prog-note-drawer d-none" id="progNoteDrawer-l5">
+                            <label for="progNoteInput-l5" class="form-label small fw-bold text-dark mb-1">📝 Tus apuntes de la Lección 5 (Funciones y Arreglos):</label>
+                            <textarea id="progNoteInput-l5" class="form-control form-control-sm mb-2" rows="2" placeholder="Anota cómo funcionan los índices base 0 y return..."></textarea>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-primary fw-semibold" id="progNoteStatus-l5"></span>
+                                <button type="button" class="btn btn-xs btn-prog fw-bold px-3" id="progNoteSave-l5">Guardar apunte</button>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-3">
+                            <strong>Tema:</strong> Subprogramas reutilizables, paso de parámetros, sentencia <code>return</code> y arreglos unidimensionales con índice base 0.
+                        </p>
+
+                        <h3 class="h5 fw-bold text-prog mb-2">¿Qué es? (Introducción Teórica)</h3>
+                        <p class="text-secondary leading-relaxed mb-3">
+                            A medida que los programas crecen, dividir el código en bloques independientes y manejar colecciones de datos se vuelve indispensable:
+                        </p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 rounded-4 border border-primary-subtle bg-light h-100">
+                                    <h4 class="h6 fw-bold text-primary mb-1">🧩 1. Funciones (Divide y Vencerás)</h4>
+                                    <p class="small text-secondary mb-0">
+                                        Una función es un bloque de código con nombre propio que recibe <strong>parámetros</strong> de entrada, realiza una tarea específica y devuelve un resultado mediante <code>return</code>, evitando repetir código.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 rounded-4 border border-indigo-subtle bg-light h-100">
+                                    <h4 class="h6 fw-bold mb-1" style="color:#4338ca;">📦 2. Arreglos / Listas (Índices Base 0)</h4>
+                                    <p class="small text-secondary mb-0">
+                                        Un arreglo almacena múltiples valores del mismo tipo bajo un único nombre. En casi todos los lenguajes modernos, el <strong>primer elemento ocupa la posición <code>0</code></strong> y el último ocupa <code>N - 1</code>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="h5 fw-bold text-prog mb-3">Sintaxis Clave (Para el Inspector de Memoria)</h3>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <div class="fw-bold text-dark">Declaración de Función con Retorno:</div>
+                                <div class="small text-muted">Recibe parámetros y devuelve el resultado calculado</div>
+                            </div>
+                            <div class="prog-formula-math"><code>function calcularArea(base, altura) { return base * altura; }</code></div>
+                        </div>
+
+                        <div class="prog-formula-card d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                            <div>
+                                <div class="fw-bold text-dark">Acceso y Recorrido de un Arreglo de tamaño $N$:</div>
+                                <div class="small text-muted">El índice válido va desde <code>0</code> hasta <code>N - 1</code></div>
+                            </div>
+                            <div class="prog-formula-math"><code>for (int i = 0; i &lt; N; i++) { procesar(datos[i]); }</code></div>
+                        </div>
+
+                        <div class="prog-tips-accordion mb-4">
+                            <button class="prog-tips-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#progTipsL5" aria-expanded="true">
+                                <span>✦ Tips para el Simulador de Arreglos y Funciones</span>
+                                <span>[ ˅ ]</span>
+                            </button>
+                            <div id="progTipsL5" class="collapse show">
+                                <div class="prog-tips-body">
+                                    Si un arreglo tiene <strong>5 elementos</strong>, sus índices válidos son <code>0, 1, 2, 3, 4</code>. Intentar acceder a <code>datos[5]</code> produce un error de desbordamiento de índice (<em>IndexOutOfBounds</em>).
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pt-3 border-top">
+                            <div class="d-flex align-items-center gap-2 prog-feedback-group">
+                                <span class="small text-muted">¿Útil?</span>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="up">👍</button>
+                                <button type="button" class="prog-feedback-btn" data-prog-feedback="down">👎</button>
+                                <span class="small text-prog fw-semibold prog-feedback-msg"></span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline-prog btn-sm fw-bold" data-prog-goto="l5-video">
+                                    ▶ Vídeo Funciones
+                                </button>
+                                <button type="button" class="btn btn-prog fw-bold px-4 shadow-prog" data-prog-goto="l5-simulador">
+                                    Ir al Simulador: Inspector de Arreglos ➔
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 5 · ITEM 2: VÍDEO (Pop-up YouTube)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l5-video">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-reading">▶ Lección 5 · Recursos Audiovisuales (Pop-up)</span>
+                            <span class="text-muted small">Video: "Funciones y Arreglos en Programación"</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Funciones y Arreglos Unidimensionales</h2>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-primary text-white mb-2">Video Recomendado</span>
+                                        <h3 class="h6 fw-bold mb-1">Funciones y Arreglos (Vectores/Listas) en Programación</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>TodoCode</strong></p>
+                                        <p class="small text-secondary mb-3">Cómo almacenar conjuntos de datos en índices base 0 y recorrerlos con ciclos.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-prog btn-sm fw-bold px-3" data-open-prog-video="l5-video" data-video-mode="main">
+                                            ▶ Reproducir en Modal
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=9J2h7m4p3wQ" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <span class="badge bg-secondary mb-2">Video Alternativo</span>
+                                        <h3 class="h6 fw-bold mb-1">Paso de Parámetros y Retorno de Valores en Funciones</h3>
+                                        <p class="small text-muted mb-2">Canal: <strong>HolaMundo</strong></p>
+                                        <p class="small text-secondary mb-3">Modularización limpia y reutilización de código mediante funciones puras.</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-outline-prog btn-sm fw-bold px-3" data-open-prog-video="l5-video" data-video-mode="alt">
+                                            ▶ Reproducir Alternativo
+                                        </button>
+                                        <a href="https://www.youtube.com/watch?v=tR8k2M5n9xL" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+                                            Abrir en YouTube ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l5-lectura">← Anterior: Lectura</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l5-simulador">Siguiente: Simulador de Arreglos ⚙</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 5 · ITEM 3: SIMULADOR (Inspector de Memoria: Arreglos y Funciones)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l5-simulador">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-sim">⚙ Lección 5 · Simulador Interactivo</span>
+                            <span class="text-muted small">Arreglos Base 0 y Llamadas a Función</span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Simulador: Inspector de Arreglos y Llamadas a Función</h2>
+                        <p class="text-secondary small mb-3">
+                            <strong>Ejercicio:</strong> Modifica los valores de cada celda del arreglo <code>notas[0..4]</code> y ejecuta las funciones <code>sumarArreglo(notas)</code> o <code>obtenerMaximo(notas)</code> para inspeccionar el valor retornado.
+                        </p>
+
+                        <div class="prog-sim-box mb-4">
+                            <div class="prog-sim-topbar">
+                                <span class="fw-bold text-info small">📦 Memoria RAM · int notas[5] (Índices 0 al 4)</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-info text-dark font-monospace" id="progL5LenBadge">notas.length = 5</span>
+                                    <span class="badge bg-success text-white font-monospace" id="progL5ReturnBadge">return: 95</span>
+                                </div>
+                            </div>
+                            <div class="prog-sim-body">
+                                <div class="row g-2 text-center mb-3">
+                                    <?php
+                                    $valoresIniciales = [78, 95, 84, 62, 91];
+                                    foreach ($valoresIniciales as $idx => $valIni):
+                                    ?>
+                                        <div class="col">
+                                            <div class="p-2 rounded-3 bg-dark border border-primary">
+                                                <div class="text-xs text-info font-monospace mb-1">notas[<?= $idx ?>]</div>
+                                                <input type="number" class="form-control form-control-sm bg-black text-white text-center border-secondary font-monospace prog-l5-cell" data-index="<?= $idx ?>" value="<?= $valIni ?>" min="0" max="100">
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <button type="button" class="btn btn-sm btn-prog fw-bold" id="progL5MaxBtn">
+                                        ▶ Ejecutar obtenerMaximo(notas)
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-info fw-bold" id="progL5SumBtn">
+                                        ▶ Ejecutar sumarArreglo(notas)
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-light" id="progL5AvgBtn">
+                                        ▶ Ejecutar calcularPromedio(notas)
+                                    </button>
+                                </div>
+
+                                <div class="prog-sim-console" id="progL5Console"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l5-video">← Anterior: Vídeo</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4" data-prog-goto="l5-pdf">Siguiente: Guía Visual 05 📄</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         LECCIÓN 5 · ITEM 4: GUÍA PDF (Guia_5_Funciones_y_Arreglos.pdf)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="l5-pdf">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-pdf">📄 Lección 5 · Guía Visual Incorporada</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <code class="small">Guia_5_Funciones_y_Arreglos.pdf</code>
+                                <button type="button" class="btn btn-prog btn-sm fw-bold" data-print-guide="progGuideContent-5" data-guide-title="Guía 05 - Funciones Modulares y Arreglos Base 0">
+                                    🖨️ Imprimir / Guardar PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prog-guide-container mb-4" id="progGuideContent-5" style="border-top: 8px solid #0284c7;">
+                            <header class="pb-3 mb-4 border-bottom">
+                                <p class="text-xs fw-bold text-primary text-uppercase tracking-wider mb-1">Módulo: Fundamentos de Programación | Lección 5</p>
+                                <h2 class="h3 fw-extrabold text-dark mb-1">GUÍA 05: Funciones Modulares y Arreglos Base 0</h2>
+                                <p class="text-secondary small mb-0">Anatomía de una función y mapa de memoria de un arreglo unidimensional.</p>
+                            </header>
+
+                            <section class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="border border-2 border-primary-subtle rounded-4 p-4 h-100">
+                                        <span class="badge bg-primary text-uppercase mb-2">Anatomía de Función</span>
+                                        <p class="small text-secondary mb-2">Toda función se compone de firma (nombre + parámetros), cuerpo lógico y valor de retorno:</p>
+                                        <div class="bg-dark text-info p-3 rounded-3 font-monospace small">
+                                            function sumar(a, b) {<br>
+                                            &nbsp;&nbsp;let total = a + b;<br>
+                                            &nbsp;&nbsp;return total;<br>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="border border-2 border-info-subtle rounded-4 p-4 h-100">
+                                        <span class="badge bg-info text-dark text-uppercase mb-2">Regla de Índices</span>
+                                        <p class="small text-secondary mb-2">Un arreglo de longitud <code>N</code> siempre inicia en el índice <code>0</code> y finaliza en <code>N - 1</code>:</p>
+                                        <div class="bg-dark text-white p-3 rounded-3 font-monospace small">
+                                            Índice: &nbsp;[0] &nbsp;[1] &nbsp;[2] &nbsp;[3]<br>
+                                            Valor: &nbsp;&nbsp;10 &nbsp;&nbsp;20 &nbsp;&nbsp;30 &nbsp;&nbsp;40
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="l5-simulador">← Anterior: Simulador</button>
+                            <button type="button" class="btn btn-prog fw-bold px-4 shadow-prog" data-prog-goto="cierre-encuesta">Ir al Módulo de Cierre y Certificación 🎓 →</button>
+                        </div>
+                    </article>
+
+                    <!-- =====================================================
+                         MÓDULO DE CIERRE · ITEM 1: ENCUESTA ESCALA LIKERT (1 AL 5)
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="cierre-encuesta">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-closing">📊 Módulo de Cierre · Instrumento de Evaluación</span>
+                            <button type="button" class="btn btn-xs btn-outline-prog fw-semibold" id="progSurveyQuickFillBtn">
+                                ⚡ Autocompletar demostración
+                            </button>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Instrumento de Evaluación: Encuesta de Satisfacción e Impacto del Módulo Interactivo</h2>
+                        <p class="small text-secondary leading-relaxed mb-3">
+                            <strong>Instrucciones:</strong> La presente encuesta tiene como propósito conocer tu percepción, nivel de satisfacción y el impacto académico derivado del uso del simulador visual y la metodología de Aprendizaje Basado en Problemas (ABP) durante este módulo. Tus respuestas son confidenciales y serán utilizadas exclusivamente con fines de investigación para evaluar y mejorar la estrategia didáctica en el <strong>Instituto Tecnológico de Ciudad Victoria</strong>.
+                        </p>
+                        <p class="small text-secondary mb-2">
+                            Lee detenidamente cada afirmación y selecciona la opción que mejor refleje tu grado de acuerdo o desacuerdo, utilizando la siguiente escala:
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-2 p-2 rounded-3 bg-light border small mb-4">
+                            <span class="badge bg-primary">5: Totalmente de acuerdo (TA)</span>
+                            <span class="badge bg-info text-dark">4: De acuerdo (DA)</span>
+                            <span class="badge bg-secondary">3: Neutral / Indeciso (N)</span>
+                            <span class="badge bg-warning text-dark">2: En desacuerdo (ED)</span>
+                            <span class="badge bg-danger">1: Totalmente en desacuerdo (TED)</span>
+                        </div>
+
+                        <form id="progLikertSurveyForm">
+                            <!-- Apartado I: Datos Generales (Opcional / Estadístico) -->
+                            <div class="p-3 rounded-3 border bg-light mb-4">
+                                <h3 class="h6 fw-bold mb-3">Apartado I: Datos Generales (Opcional / Estadístico)</h3>
+                                <div class="row g-3 small">
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label fw-semibold mb-1">Carrera:</label>
+                                        <input type="text" class="form-control form-control-sm" value="Ingeniería en Sistemas Computacionales">
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label fw-semibold mb-1">Semestre:</label>
+                                        <input type="text" class="form-control form-control-sm" value="1">
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label fw-semibold mb-1">Grupo:</label>
+                                        <input type="text" class="form-control form-control-sm" placeholder="A">
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label fw-semibold mb-1">Edad:</label>
+                                        <input type="number" class="form-control form-control-sm" placeholder="18" min="15" max="99">
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label fw-semibold mb-1 d-block">Sexo:</label>
+                                        <div class="d-flex gap-3 pt-1">
+                                            <label class="form-check-label"><input type="radio" name="prog_sexo" value="M" class="form-check-input me-1">M</label>
+                                            <label class="form-check-label"><input type="radio" name="prog_sexo" value="F" class="form-check-input me-1">F</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold mb-1">Módulo Evaluado:</label>
+                                        <input type="text" class="form-control form-control-sm fw-bold text-prog" value="Fundamentos de Programación (Lógica, Estructuras y Simulación)" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Apartado II: Valoración de la Experiencia y el Impacto (Escala Likert) -->
+                            <h3 class="h6 fw-bold mb-2">Apartado II: Valoración de la Experiencia y el Impacto (Escala Likert)</h3>
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered prog-likert-table align-middle small mb-0">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th style="width: 45px;">N°</th>
+                                            <th class="text-start">Criterio de Evaluación / Dimensión</th>
+                                            <th style="width: 68px;">TA<br>(5)</th>
+                                            <th style="width: 68px;">DA<br>(4)</th>
+                                            <th style="width: 68px;">N<br>(3)</th>
+                                            <th style="width: 68px;">ED<br>(2)</th>
+                                            <th style="width: 68px;">TED<br>(1)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $criteriosProgramacion = [
+                                            1  => ['Utilidad visual:', 'El simulador interactivo facilitó la visualización de los conceptos abstractos (trazas de algoritmos, variables, condicionales y bucles) sin necesidad de recurrir únicamente a la memorización de sintaxis.'],
+                                            2  => ['Reducción de carga cognitiva:', 'El uso de las herramientas visuales disminuyó la frustración y el esfuerzo mental excesivo al momento de enfrentar problemas de lógica de programación.'],
+                                            3  => ['Aprendizaje Basado en Problemas (ABP):', 'Los retos prácticos basados en situaciones reales le dieron un sentido lógico y aplicable a los temas estudiados.'],
+                                            4  => ['Razonamiento vs. Memorización:', 'Las actividades interactivas me obligaron a razonar el procedimiento lógico y la toma de decisiones en lugar de solo copiar o memorizar código.'],
+                                            5  => ['Puente cognitivo hacia las ciencias exactas:', 'La estructura lógica de las lecciones me ayudó a comprender mejor la conexión entre la programación y la resolución de problemas de cálculo y física.'],
+                                            6  => ['Autonomía en el aprendizaje:', 'Los recursos didácticos y guías descargables me permitieron avanzar a mi propio ritmo y resolver ejercicios de forma más independiente.'],
+                                            7  => ['Motivación académica:', 'La dinámica interactiva de la plataforma incrementó mi interés y motivación por superar los retos planteados en la materia.'],
+                                            8  => ['Reducción del riesgo de reprobación:', 'Considero que el uso constante de este curso de reforzamiento mejora significativamente mis probabilidades de aprobar con éxito las evaluaciones de la asignatura.'],
+                                            9  => ['Satisfacción general con la plataforma:', 'La interfaz, el diseño y la distribución de las 5 lecciones del módulo resultaron intuitivas y agradables de utilizar.'],
+                                            10 => ['Pertinencia institucional:', 'Recomendaría la implementación oficial de esta herramienta interactiva como apoyo obligatorio para los estudiantes de nuevo ingreso.'],
+                                        ];
+                                        foreach ($criteriosProgramacion as $num => [$tituloCrit, $descCrit]):
+                                        ?>
+                                            <tr>
+                                                <td class="text-center fw-bold"><?= $num ?></td>
+                                                <td><strong><?= e($tituloCrit) ?></strong> <?= e($descCrit) ?></td>
+                                                <?php for ($val = 5; $val >= 1; $val--): ?>
+                                                    <td class="text-center">
+                                                        <input type="radio" class="prog-likert-radio" name="prog_likert_<?= $num ?>" value="<?= $val ?>" aria-label="Pregunta <?= $num ?> opción <?= $val ?>">
+                                                    </td>
+                                                <?php endfor; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Apartado III: Retroalimentación Cualitativa (Comentarios Abiertos) -->
+                            <div class="p-3 rounded-3 border bg-light mb-3">
+                                <h3 class="h6 fw-bold mb-3">Apartado III: Retroalimentación Cualitativa (Comentarios Abiertos)</h3>
+                                <div class="mb-2">
+                                    <label for="progComment1" class="form-label small fw-semibold mb-1">1. ¿Qué fue lo que más te gustó de los simuladores visuales y los retos de este módulo para comprender la materia?</label>
+                                    <textarea id="progComment1" class="form-control form-control-sm" rows="2"></textarea>
+                                </div>
+                                <div class="mb-2">
+                                    <label for="progComment2" class="form-label small fw-semibold mb-1">2. ¿En qué aspectos consideras que la plataforma o las lecciones podrían mejorar para facilitar aún más tu aprendizaje?</label>
+                                    <textarea id="progComment2" class="form-control form-control-sm" rows="2"></textarea>
+                                </div>
+                                <div>
+                                    <label for="progComment3" class="form-label small fw-semibold mb-1">3. Comentarios, observaciones o sugerencias adicionales:</label>
+                                    <textarea id="progComment3" class="form-control form-control-sm" rows="2"></textarea>
+                                </div>
+                                <p class="text-xs text-muted fst-italic mt-2 mb-0">
+                                    ¡Agradecemos tu valiosa participación para el desarrollo y mejora continua de este proyecto de investigación!
+                                </p>
+                            </div>
+
+                            <div id="progSurveyStatusAlert" class="d-none"></div>
+
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pt-3 border-top">
+                                <button type="submit" class="btn btn-prog fw-bold px-4">
+                                    Enviar Encuesta y Validar Progreso ✓
+                                </button>
+
+                                <button type="button" id="progBtnDownloadCertSurvey" class="btn btn-secondary fw-bold px-4 opacity-75" disabled>
+                                    🔒 Descargar Certificado
+                                </button>
+                            </div>
+                        </form>
+                    </article>
+
+                    <!-- =====================================================
+                         MÓDULO DE CIERRE · ITEM 2: CERTIFICADO DE ACREDITACIÓN
+                         ===================================================== -->
+                    <article class="prog-content-pane" data-prog-pane="cierre-certificado">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <span class="prog-type-badge prog-badge-closing">🎓 Módulo de Cierre · Acreditación de Programación</span>
+                            <span class="text-muted small font-monospace">Folio: <?= e($folioCertificado) ?></span>
+                        </div>
+
+                        <h2 class="h4 fw-bold mb-2">Certificado de Acreditación: Fundamentos de Programación</h2>
+
+                        <div id="progCertLockNotice" class="alert alert-warning d-flex align-items-center gap-2 py-2 px-3 small mb-3">
+                            <span>🔒</span>
+                            <div>
+                                <strong>Requisito previo:</strong> Para desbloquear el botón <strong>"Descargar Certificado"</strong>, primero envía la <button type="button" class="btn btn-link btn-sm p-0 align-baseline fw-bold text-prog" data-prog-goto="cierre-encuesta">Encuesta de Satisfacción e Impacto</button>.
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-4 bg-white text-center shadow-sm mb-4" style="border: 6px double #1d4ed8;">
+                            <div class="text-uppercase text-xs tracking-wider text-prog fw-bold mb-1">
+                                Instituto Tecnológico de Ciudad Victoria · Lógica Visual ABP
+                            </div>
+                            <h3 class="h5 fw-bold text-dark mb-3">CERTIFICADO DE ACREDITACIÓN</h3>
+                            <p class="small text-secondary mb-1">Se otorga el presente reconocimiento a:</p>
+                            <div class="h3 fw-bold text-prog my-2"><?= e($nombreAlumno) ?></div>
+                            <p class="small text-secondary max-w-2xl mx-auto mb-3">
+                                Por haber acreditado satisfactoriamente las 5 lecciones interactivas, simuladores de lógica y retos de Aprendizaje Basado en Problemas del módulo:
+                            </p>
+                            <div class="d-inline-block px-4 py-2 rounded-3 fw-bold h5 mb-3" style="background:#eff6ff; border:2px solid #2563eb; color:#1e40af;">
+                                <?= e($moduloCompletado) ?>
+                            </div>
+                            <div class="d-flex flex-wrap justify-content-around align-items-center small text-muted pt-3 border-top mt-2">
+                                <div><strong>Fecha de finalización:</strong> <?= e($fechaActual) ?></div>
+                                <div><strong>Folio de verificación:</strong> <span class="font-monospace"><?= e($folioCertificado) ?></span></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-prog-goto="cierre-encuesta">← Volver a la Encuesta</button>
+                            <button type="button" id="progBtnDownloadCertPane" class="btn btn-secondary fw-bold px-4 opacity-75" disabled>
+                                🔒 Descargar Certificado
+                            </button>
+                        </div>
+                    </article>
+
                 </div>
             </div>
 
-            <!-- COLUMNA DERECHA: PANTALLA PRINCIPAL DE CONTENIDOS (8 cols) -->
-            <div class="col-12 col-lg-8">
-                
-                <!-- 1. VISTA DE LECCIÓN ORDINARIA (VIDEO / PDF) -->
-                <div class="card border border-slate-200 rounded-4 shadow-sm bg-white overflow-hidden" id="cardLessonView">
-                    <div class="card-header bg-slate-50 border-bottom border-slate-200 p-4">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                            <span class="badge bg-blue-100 text-blue-800 fw-bold text-uppercase" id="lessonTag">Módulo 1</span>
-                            <span class="text-slate-500 small" id="lessonDuration">⏱ Duración: 15 min</span>
-                        </div>
-                        <h2 class="h4 fw-bold text-slate-900 mb-1" id="lessonTitle">1.1 ¿Qué es un Algoritmo? Pensamiento Computacional</h2>
-                        <p class="text-slate-600 small mb-0" id="lessonSummary">Conceptos fundamentales de entrada, proceso y salida para resolver problemas.</p>
+        </div>
+    </div>
+
+    <!-- =================================================================
+         3. COMPONENTE MODAL (VENTANA EMERGENTE CON BACKDROP BLUR) PARA VIDEO
+         ================================================================= -->
+    <div class="modal fade" id="progYoutubeModal" tabindex="-1" aria-labelledby="progYoutubeModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+                <div class="modal-header prog-modal-header py-3 px-4">
+                    <div>
+                        <span class="badge bg-primary text-white fw-bold mb-1" id="progYoutubeModalChannel">Canal Oficial</span>
+                        <h3 class="modal-title h6 fw-bold mb-0 text-white" id="progYoutubeModalTitle">Reproductor de Vídeo</h3>
                     </div>
-
-                    <div class="card-body p-4">
-                        <ul class="nav nav-tabs mb-4 border-bottom border-slate-200" id="lessonTabs" role="tablist">
-                            <li class="nav-item">
-                                <button class="nav-link active fw-bold small text-slate-700" id="tab-video-link" onclick="switchResourceTab('video')">
-                                    📹 Video de la Lección
-                                </button>
-                            </li>
-                            <li class="nav-item">
-                                <button class="nav-link fw-bold small text-slate-700" id="tab-pdf-link" onclick="switchResourceTab('pdf')">
-                                    📄 Guía de Estudio y PDF Incrustado
-                                </button>
-                            </li>
-                        </ul>
-
-                        <!-- CONTENIDO PESTAÑA VIDEO -->
-                        <div id="contentVideoBox">
-                            <div class="ratio ratio-16x9 rounded-3 overflow-hidden bg-black mb-3 shadow-sm border border-slate-200">
-                                <iframe id="videoPlayer" src="https://www.youtube-nocookie.com/embed/chPhlsydl30?rel=0" allowfullscreen></iframe>
-                            </div>
-                            <div class="alert alert-light border border-slate-200 p-3 small text-slate-700 rounded-3">
-                                <h6 class="fw-bold text-slate-900 mb-1">💡 Temas clave explicados en el video:</h6>
-                                <p class="mb-0 text-slate-600" id="videoNotes">Definición de algoritmos y características fundamentales para el desarrollo de soluciones computacionales.</p>
-                            </div>
-                        </div>
-
-                        <!-- CONTENIDO PESTAÑA VISOR DE PDF INCORPORADO -->
-                        <div id="contentPdfBox" class="d-none">
-                            <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-slate-50 border border-slate-200 rounded-3">
-                                <div>
-                                    <h6 class="fw-bold mb-0 text-slate-900" id="pdfHeadingTitle">Guía Técnica de Fundamentos de Algoritmos</h6>
-                                    <span class="text-xs text-slate-500">Documento PDF oficial del curso</span>
-                                </div>
-                                <button type="button" class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="downloadPdfDoc()">
-                                    📥 Descargar PDF Oficial
-                                </button>
-                            </div>
-                            
-                            <div class="p-4 bg-white border border-slate-200 rounded-3 shadow-xs" style="max-height: 480px; overflow-y: auto;">
-                                <div class="border-bottom border-slate-200 pb-3 mb-3 text-center">
-                                    <div class="text-xs text-uppercase fw-bold text-primary tracking-wider">TECNOLÓGICO NACIONAL DE MÉXICO · CIENCIAS BÁSICAS</div>
-                                    <h3 class="h5 fw-bold text-slate-900 mt-1" id="pdfDocumentHeading">Manual Didáctico: Algorítmica y Diagramación ANSI</h3>
-                                    <p class="text-muted small mb-0">Material de lectura y preparación para el examen del módulo</p>
-                                </div>
-                                <div id="pdfBodyHtml" class="small text-slate-700 leading-relaxed space-y-3">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center pt-4 border-top border-slate-200 mt-4">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="navigateStep(-1)">
-                                ← Anterior
-                            </button>
-                            <button type="button" class="btn btn-primary btn-sm fw-bold px-4" onclick="navigateStep(1)">
-                                Continuar al Examen del Módulo (10 preguntas) →
-                            </button>
-                        </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-0 bg-black">
+                    <div class="ratio ratio-16x9">
+                        <iframe id="progYoutubeIframe"
+                                src=""
+                                title="Reproductor de video de Fundamentos de Programación en YouTube"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen></iframe>
                     </div>
                 </div>
-
-                <!-- 2. VISTA DE EXAMEN DE CADA MÓDULO (10 PREGUNTAS) -->
-                <div class="card border border-slate-200 rounded-4 shadow-sm bg-white overflow-hidden d-none" id="cardModuleQuizView">
-                    <div class="card-header bg-slate-50 border-bottom border-slate-200 p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-warning text-dark fw-bold text-uppercase" id="quizModuleBadge">Módulo 1</span>
-                            <span class="badge bg-white border border-slate-300 text-slate-700 text-xs">10 Preguntas · Aprobatorio: 70%</span>
-                        </div>
-                        <h2 class="h4 fw-bold text-slate-900 mb-1" id="quizModuleTitle">Examen de Conocimientos: Algoritmos</h2>
-                        <p class="text-slate-600 small mb-0">Responde las 10 preguntas extraídas directamente de los conceptos de la video clase y la guía PDF.</p>
-                    </div>
-                    <div class="card-body p-4">
-                        <form id="formModuleQuiz" onsubmit="submitModuleQuiz(event)">
-                            <div id="quizQuestionsContainer" class="space-y-4" style="max-height: 600px; overflow-y: auto; padding-right: 8px;">
-                                <!-- 10 preguntas dinámicas por módulo -->
-                            </div>
-
-                            <div class="mt-4 pt-3 border-top border-slate-200 d-flex justify-content-between align-items-center">
-                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="backToLesson()">← Volver a la guía/video</button>
-                                <button type="submit" class="btn btn-primary fw-bold px-4">Calificar Examen (10 preguntas) ▷</button>
-                            </div>
-                        </form>
-
-                        <div id="quizModuleResult" class="mt-4 p-3 rounded-3 d-none text-center"></div>
-                    </div>
-                </div>
-
-                <!-- 3. AVISO DE EVALUACIÓN FINAL BLOQUEADA -->
-                <div class="card border border-slate-200 rounded-4 shadow-sm bg-white p-5 text-center d-none" id="cardLockedView">
-                    <div class="py-4">
-                        <div class="fs-1 mb-3">🔒</div>
-                        <h3 class="h4 fw-bold text-slate-900 mb-2">Evaluación Final Bloqueada</h3>
-                        <p class="text-slate-600 small max-w-lg mx-auto mb-4 leading-relaxed">
-                            Para desbloquear la evaluación final y obtener tu certificado, primero debes <strong>aprobar los exámenes de los 5 módulos (10 preguntas c/u)</strong>.
-                        </p>
-                        <div class="d-inline-block bg-slate-50 border border-slate-200 rounded-3 p-3 text-start small mb-4">
-                            <div class="fw-bold text-slate-800 mb-2">Estado de tus módulos:</div>
-                            <ul class="list-unstyled mb-0 space-y-1 text-slate-600" id="lockedModulesList">
-                                <li>Módulo 1: <span id="lock-stat-m1" class="fw-semibold text-danger">Pendiente</span></li>
-                                <li>Módulo 2: <span id="lock-stat-m2" class="fw-semibold text-danger">Pendiente</span></li>
-                                <li>Módulo 3: <span id="lock-stat-m3" class="fw-semibold text-danger">Pendiente</span></li>
-                                <li>Módulo 4: <span id="lock-stat-m4" class="fw-semibold text-danger">Pendiente</span></li>
-                                <li>Módulo 5: <span id="lock-stat-m5" class="fw-semibold text-danger">Pendiente</span></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-primary btn-sm fw-bold px-4" onclick="loadLesson('m1_video')">
-                                Continuar con Módulo 1 ▷
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. VISTA DE EVALUACIÓN FINAL DEL CURSO (15 PREGUNTAS) -->
-                <div class="card border border-slate-200 rounded-4 shadow-sm bg-white overflow-hidden d-none" id="cardFinalQuizView">
-                    <div class="card-header bg-primary text-white p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-white text-primary fw-bold text-uppercase">Evaluación Integral</span>
-                            <span class="badge bg-blue-700 text-white text-xs">15 Preguntas · Aprobatorio: 70%</span>
-                        </div>
-                        <h2 class="h4 fw-bold text-white mb-1">Examen Final del Curso</h2>
-                        <p class="text-blue-100 small mb-0">Has aprobado los 5 módulos. Responde esta prueba completa de 15 reactivos para expedir tu certificado oficial.</p>
-                    </div>
-                    <div class="card-body p-4">
-                        <form id="formFinalQuiz" onsubmit="submitFinalQuiz(event)">
-                            <div id="finalQuizQuestionsContainer" class="space-y-4" style="max-height: 600px; overflow-y: auto; padding-right: 8px;">
-                                <!-- Inyección de las 15 preguntas integrales -->
-                            </div>
-
-                            <!-- Encuesta de satisfacción -->
-                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-3 my-4">
-                                <h6 class="fw-bold text-slate-900 mb-1">Encuesta de Satisfacción del Curso:</h6>
-                                <p class="text-xs text-slate-500 mb-2">¿Los videos y las guías PDF te ayudaron a comprender los temas?</p>
-                                <div class="d-flex gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="final_sat" checked id="sat1">
-                                        <label class="form-check-label small" for="sat1">Excelente ⭐⭐⭐⭐⭐</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="final_sat" id="sat2">
-                                        <label class="form-check-label small" for="sat2">Muy bueno ⭐⭐⭐⭐</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-success fw-bold w-100 py-2.5">
-                                Calificar Examen Final (15 preguntas) y Expedir Certificado ▷
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- 5. VISTA DEL CERTIFICADO FINAL -->
-                <div class="card border border-slate-200 rounded-4 shadow-sm bg-white overflow-hidden d-none" id="cardCertificateView">
-                    <div class="card-header bg-slate-50 border-bottom border-slate-200 p-4 d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold text-uppercase mb-1">Acreditación Obtenida</span>
-                            <h2 class="h4 fw-bold text-slate-900 mb-0">Certificado Oficial</h2>
-                        </div>
-                        <button type="button" class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="window.print()">
-                            📥 Imprimir / Guardar en PDF
+                <div class="modal-footer bg-light d-flex flex-wrap justify-content-between align-items-center px-4 py-3">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="https://www.youtube.com/watch?v=chPhlsydl30" id="progYoutubeDirectLink" target="_blank" rel="noopener noreferrer" class="btn btn-danger btn-sm fw-bold px-3">
+                            ▶ Abrir directamente en YouTube ↗
+                        </a>
+                        <button type="button" id="progYoutubeAltBtn" class="btn btn-outline-prog btn-sm fw-semibold d-none">
+                            🎬 Ver Video Alternativo
                         </button>
+                        <span id="progYoutubePlaylistWrap" class="d-none">
+                            <a href="#" id="progYoutubePlaylistLink" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm fw-semibold">
+                                Playlist en YouTube ↗
+                            </a>
+                        </span>
                     </div>
-                    
-                    <div class="card-body p-4 bg-slate-100">
-                        <div class="certificate-paper bg-white p-5 mx-auto border shadow-sm rounded-3 position-relative" id="certDiploma" style="max-width: 820px; border: 6px double #0284c7 !important; min-height: 500px;">
-                            <div class="text-center mb-4">
-                                <div class="text-xs text-uppercase tracking-widest text-muted fw-bold mb-1">TECNOLÓGICO NACIONAL DE MÉXICO · IT CIUDAD VICTORIA</div>
-                                <h3 class="fw-bold text-slate-900" style="font-family: Georgia, serif; font-size: 1.8rem;">CERTIFICADO DE APROBACIÓN</h3>
-                                <p class="text-muted text-xs">Se otorga la presente constancia con valor curricular a:</p>
-                            </div>
-
-                            <div class="text-center my-4">
-                                <h2 class="fw-bold text-primary display-6 border-bottom border-slate-300 d-inline-block pb-2 px-4" id="certStudentName">
-                                    Alejandro (Estudiante)
-                                </h2>
-                                <p class="text-slate-600 small mt-2">
-                                    Por haber completado y aprobado satisfactoriamente los 5 módulos del programa:
-                                </p>
-                                <h4 class="fw-bold text-slate-900 text-uppercase tracking-wide">
-                                    Fundamentos de Programación y Pensamiento Computacional
-                                </h4>
-                                <p class="small text-muted mb-0">Acreditando evaluaciones parciales de 10 preguntas por módulo y el examen final integral de 15 reactivos.</p>
-                            </div>
-
-                            <div class="row align-items-end mt-5 pt-4 text-center">
-                                <div class="col-4">
-                                    <div class="border-top border-slate-400 pt-1 small fw-bold">Dra. Marlene / Coordinación</div>
-                                    <div class="text-xs text-muted">Comité Académico Tec</div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="p-2 border rounded bg-slate-50 d-inline-block">
-                                        <div class="fw-bold text-slate-800 text-xs">SELLO DIGITAL</div>
-                                        <div class="font-monospace text-xs text-muted">FOLIO: LV-PROG-2026-9921</div>
-                                    </div>
-                                    <div class="text-xs text-muted mt-1">Fecha: 08/11/2026</div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="border-top border-slate-400 pt-1 small fw-bold">Dirección Académica</div>
-                                    <div class="text-xs text-muted">Lógica Visual ABP</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm fw-bold px-3" data-bs-dismiss="modal">Cerrar</button>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
-<style>
-.mooc-white-theme {
-    font-family: 'Inter', system-ui, sans-serif;
-    background-color: #ffffff;
-}
-.lesson-btn {
-    border: none;
-    border-left: 3px solid transparent;
-    transition: all 0.15s ease;
-    background: transparent;
-    color: #334155;
-}
-.lesson-btn:hover {
-    background-color: #f8fafc;
-    color: #0284c7;
-}
-.lesson-btn.active {
-    background-color: #f0f9ff !important;
-    border-left-color: #0284c7 !important;
-    color: #0369a1 !important;
-    font-weight: 600;
-}
-.mod-nav-pill.active {
-    background-color: #0284c7 !important;
-    color: #ffffff !important;
-    font-weight: bold;
-}
-@media print {
-    body * { visibility: hidden; }
-    #certDiploma, #certDiploma * { visibility: visible; }
-    #certDiploma {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        box-shadow: none !important;
-    }
-}
-</style>
-
-<script>
-// BANCO COMPLETO DE PREGUNTAS (10 POR MÓDULO + 15 PARA EL EXAMEN FINAL)
-const modulesDataProg = {
-    'm1': {
-        title: 'Módulo 1: Algoritmos y Lógica de Solución',
-        tag: 'Módulo 1',
-        dur: '15 min',
-        videoUrl: 'https://www.youtube-nocookie.com/embed/chPhlsydl30?rel=0',
-        videoNotes: 'En este video se detalla cómo desglosar un problema cotidiano en entradas, procesos estructurados y resultados reproducibles.',
-        pdfHeading: 'Manual de Algorítmica y Diagramas de Flujo ANSI',
-        pdfText: `
-            <h6>1. Definición Formal de un Algoritmo</h6>
-            <p>Un algoritmo es una secuencia lógica, ordenada y finita de instrucciones que transforman datos de entrada en una solución correcta.</p>
-            <h6>2. Simbología Estándar en Diagramas de Flujo:</h6>
-            <ul>
-                <li><strong>Óvalo:</strong> Inicio o terminación del proceso.</li>
-                <li><strong>Rectángulo:</strong> Proceso u operación matemática interna (ej. resultado = a + b).</li>
-                <li><strong>Paralelogramo:</strong> Entrada o lectura de datos del usuario, y salida de información.</li>
-                <li><strong>Rombo:</strong> Toma de decisiones condicionales (ej. ¿es x mayor a cero?).</li>
-            </ul>
-        `,
-        questions: [
-            { q: "1. ¿Cuál de las siguientes es una propiedad indispensable de todo algoritmo?", options: ["Debe ser infinito.", "Debe ser finito, preciso y determinista.", "Solo puede ejecutarse en binario."], correct: 1 },
-            { q: "2. En diagramas de flujo ANSI, ¿qué figura geométrica representa una decisión condicional?", options: ["El rectángulo.", "El rombo.", "El óvalo."], correct: 1 },
-            { q: "3. Si ante las mismas entradas el algoritmo siempre genera la misma salida, cumple con:", options: ["Determinismo.", "Finitud.", "Ambigüedad."], correct: 0 },
-            { q: "4. ¿Qué bloque gráfico se utiliza para representar la lectura de un dato por teclado?", options: ["Rectángulo.", "Paralelogramo.", "Círculo."], correct: 1 },
-            { q: "5. ¿Qué significa que un algoritmo sea 'preciso'?", options: ["Que cada instrucción es unívoca y no ambigua.", "Que termina rápido.", "Que ocupa poca memoria."], correct: 0 },
-            { q: "6. El término 'finitud' implica que:", options: ["El algoritmo debe detenerse tras un número contable de pasos.", "Solo procesa números pequeños.", "No tiene condición de salida."], correct: 0 },
-            { q: "7. ¿Para qué se utiliza el pseudocódigo en el diseño algorítmico?", options: ["Para compilar directamente en el procesador.", "Para expresar la lógica en lenguaje estructurado independiente del lenguaje final.", "Para diseñar interfaces gráficas."], correct: 1 },
-            { q: "8. ¿Qué representa la figura de un rectángulo en un diagrama de flujo?", options: ["Una instrucción de cálculo o asignación de proceso.", "El fin del algoritmo.", "Una decisión de si o no."], correct: 0 },
-            { q: "9. ¿Cuál es el propósito principal de una prueba de escritorio (traza)?", options: ["Verificar paso a paso los valores en memoria para detectar fallas lógicas.", "Comprobar la velocidad de internet.", "Pintar los diagramas."], correct: 0 },
-            { q: "10. La primera etapa metodológica al formular un algoritmo según el enfoque ABP es:", options: ["Escribir código de inmediato.", "Analizar el problema, identificar datos de entrada y resultados esperados.", "Descargar un compilador."], correct: 1 }
-        ]
-    },
-    'm2': {
-        title: 'Módulo 2: Variables, Tipos de Datos y Operadores',
-        tag: 'Módulo 2',
-        dur: '20 min',
-        videoUrl: 'https://www.youtube-nocookie.com/embed/G2FCfQj-9ig?rel=0',
-        videoNotes: 'Aprende cómo las computadoras almacenan enteros (int), decimales (float), cadenas de texto (string) y booleanos en memoria RAM.',
-        pdfHeading: 'Guía de Tipos Primitivos y Tabla de Precedencia',
-        pdfText: `
-            <h6>1. Tipos Primitivos en Computación</h6>
-            <p><strong>int:</strong> Números enteros. <strong>float:</strong> Números reales con coma decimal. <strong>string:</strong> Cadenas de caracteres. <strong>bool:</strong> Valores lógicos (true/false).</p>
-            <h6>2. Jerarquía de Operadores:</h6>
-            <p>1. Paréntesis () | 2. Potencias ** | 3. Multiplicación/División (*, /, %) | 4. Suma/Resta (+, -) | 5. Operadores relacionales (==, !=, >, <) | 6. Operadores lógicos (NOT, AND, OR).</p>
-        `,
-        questions: [
-            { q: "1. ¿Qué tipo de dato almacena valores de verdad como verdadero o falso?", options: ["String.", "Float.", "Boolean."], correct: 2 },
-            { q: "2. Al evaluar la expresión matemática (4 + 2) * 3, ¿cuál es el resultado según la jerarquía?", options: ["10.", "18.", "12."], correct: 1 },
-            { q: "3. ¿Qué operador se utiliza para comparar si dos variables son iguales?", options: ["= (un igual).", "== (doble igual).", "=>."], correct: 1 },
-            { q: "4. ¿Qué devuelve el operador módulo (%) en una operación como 10 % 3?", options: ["El cociente (3).", "El residuo entero de la división (1).", "El porcentaje (30%)."], correct: 1 },
-            { q: "5. ¿Cuál es el tipo de dato del valor 'Hola Mundo'?", options: ["Char.", "String (cadena de texto).", "Int."], correct: 1 },
-            { q: "6. Si una variable tiene el valor 3.1416, ¿qué tipo primitivo le corresponde?", options: ["Int.", "Float / Double (punto flotante).", "Boolean."], correct: 1 },
-            { q: "7. ¿Qué operador evalúa si dos condiciones se cumplen simultáneamente?", options: ["OR.", "AND (conjunción lógica).", "NOT."], correct: 1 },
-            { q: "8. ¿Cuál es el resultado de la expresión: 5 + 3 * 2?", options: ["16.", "11 (la multiplicación tiene mayor precedencia).", "13."], correct: 1 },
-            { q: "9. ¿Qué operador relacional verifica si un número es estrictamente mayor que otro?", options: [">.", ">=.", "<."], correct: 0 },
-            { q: "10. ¿Cuál es la diferencia entre declarar una constante y una variable?", options: ["El valor de la constante no cambia durante la ejecución del programa.", "Las constantes ocupan más memoria.", "No hay diferencia."], correct: 0 }
-        ]
-    },
-    'm3': {
-        title: 'Módulo 3: Estructuras Condicionales (if / else)',
-        tag: 'Módulo 3',
-        dur: '20 min',
-        videoUrl: 'https://www.youtube-nocookie.com/embed/tQWyNZ2mzsM?rel=0',
-        videoNotes: 'Muestra cómo controlar el flujo del código bifurcando las instrucciones con sentencias condicionales simples y compuestas.',
-        pdfHeading: 'Manual de Estructuras Selectivas y Bifurcación',
-        pdfText: `
-            <h6>1. Sentencias if / else</h6>
-            <p>Evalúan una condición booleana. Si es verdadera se ejecuta el bloque if; si es falsa se pasa al bloque alternativo else.</p>
-            <h6>2. Operadores Lógicos Compuestos</h6>
-            <p><strong>AND:</strong> Ambas condiciones deben cumplirse. <strong>OR:</strong> Basta con que una se cumpla.</p>
-        `,
-        questions: [
-            { q: "1. Si (edad >= 18) AND (tieneID == true) se evalúa con edad = 20 y tieneID = false, el resultado es:", options: ["Verdadero.", "Falso (ambas deben ser verdaderas).", "Indeterminado."], correct: 1 },
-            { q: "2. ¿Qué palabra clave permite evaluar múltiples condiciones alternativas en cascada?", options: ["elif / else if.", "then.", "loop."], correct: 0 },
-            { q: "3. Si ninguna de las condiciones de un if o elif se cumple y existe un else final:", options: ["El programa genera un error.", "Se ejecuta obligatoriamente el bloque dentro del else.", "Se repite la condición."], correct: 1 },
-            { q: "4. ¿Cuál es el resultado de la expresión lógica: NOT(true)?", options: ["True.", "False.", "Null."], correct: 1 },
-            { q: "5. ¿En qué consiste el cortocircuito en una evaluación con operador OR?", options: ["Si la primera condición es verdadera, no evalúa la segunda ya que el resultado es verdadero.", "Se desconecta el servidor.", "Siempre evalúa todas las condiciones."], correct: 0 },
-            { q: "6. Para comprobar si una calificación 'n' está entre 70 y 100 inclusive, la condición correcta es:", options: ["n >= 70 AND n <= 100.", "n >= 70 OR n <= 100.", "n == 70 AND 100."], correct: 0 },
-            { q: "7. ¿Qué sucede si se omite el bloque 'else' en una estructura condicional?", options: ["El código no compila.", "Si la condición es falsa, simplemente continúa con la siguiente instrucción.", "Ocurre un ciclo infinito."], correct: 1 },
-            { q: "8. Las estructuras condicionales anidadas consisten en:", options: ["Colocar una sentencia 'if' dentro del cuerpo de otra sentencia 'if'.", "Usar más de tres variables.", "Crear funciones dentro de bucles."], correct: 0 },
-            { q: "9. ¿Qué estructura selectiva es ideal cuando se desea comparar una variable contra múltiples valores constantes discretos?", options: ["Bucle for.", "Switch / Case / Match.", "Recursión."], correct: 1 },
-            { q: "10. La sangría o indentación en estructuras condicionales sirve principalmente para:", options: ["Adornar el código.", "Delimitar el bloque de instrucciones que pertenece a esa condición.", "Hacer que corra más rápido."], correct: 1 }
-        ]
-    },
-    'm4': {
-        title: 'Módulo 4: Estructuras Cíclicas e Iterativas (while / for)',
-        tag: 'Módulo 4',
-        dur: '20 min',
-        videoUrl: 'https://www.youtube-nocookie.com/embed/Kp4Mvapo5kc?rel=0',
-        videoNotes: 'Aprende a ejecutar tareas repetitivas mediante bucles for (determinados) y bucles while (controlados por condición).',
-        pdfHeading: 'Patrones de Iteración, Contadores y Acumuladores',
-        pdfText: `
-            <h6>1. Bucle While</h6>
-            <p>Se repite mientras una condición sea verdadera. Es crucial modificar la variable de control dentro del cuerpo del bucle para evitar bucles infinitos.</p>
-            <h6>2. Bucle For</h6>
-            <p>Ideal cuando se conoce de antemano el número exacto de iteraciones o cuando se recorre una colección finita.</p>
-        `,
-        questions: [
-            { q: "1. ¿Qué sucede si la variable de control de un bucle while nunca se modifica dentro del bucle?", options: ["Ocurre un bucle infinito que bloquea la ejecución.", "Termina automáticamente tras 10 vueltas.", "Se convierte en un for."], correct: 0 },
-            { q: "2. Si ejecutamos un bucle for desde i = 1 hasta 5 inclusive, ¿cuántas iteraciones se realizan?", options: ["4 vueltas.", "5 vueltas.", "6 vueltas."], correct: 1 },
-            { q: "3. Una variable que suma valores variables en cada iteración (ej. total += venta) es un:", options: ["Contador.", "Acumulador.", "Bandera."], correct: 1 },
-            { q: "4. Una variable que incrementa en un valor constante (ej. c = c + 1) en cada vuelta es un:", options: ["Acumulador.", "Contador.", "Arreglo."], correct: 1 },
-            { q: "5. ¿Qué instrucción interrumpe y sale de forma inmediata de un bucle?", options: ["continue.", "break.", "return null."], correct: 1 },
-            { q: "6. ¿Qué instrucción omite el resto del cuerpo del bucle actual y salta a la siguiente iteración?", options: ["break.", "continue.", "pass."], correct: 1 },
-            { q: "7. ¿Cuándo es más recomendable usar un bucle 'for' en lugar de un 'while'?", options: ["Cuando conocemos de antemano el número de iteraciones o el tamaño de la lista.", "Cuando esperamos un evento impredecible del usuario.", "Nunca."], correct: 0 },
-            { q: "8. ¿Cuántas veces se ejecuta el cuerpo de un bucle while si su condición inicial es falsa desde el principio?", options: ["1 vez.", "0 veces (nunca ingresa).", "Infinitas veces."], correct: 1 },
-            { q: "9. Si un bucle exterior itera 3 veces y un bucle interior anidado itera 4 veces, ¿cuántas veces se ejecuta el código más interno?", options: ["7 veces.", "12 veces (3 * 4).", "4 veces."], correct: 1 },
-            { q: "10. La condición de parada en un bucle tiene como objetivo:", options: ["Garantizar la finitud y convergencia del algoritmo.", "Aumentar la memoria consumida.", "Hacer más lento el procesador."], correct: 0 }
-        ]
-    },
-    'm5': {
-        title: 'Módulo 5: Funciones y Arreglos (Listas)',
-        tag: 'Módulo 5',
-        dur: '20 min',
-        videoUrl: 'https://www.youtube-nocookie.com/embed/yOXr2sC3WfM?rel=0',
-        videoNotes: 'Comprende el principio de modularidad: cómo agrupar instrucciones en funciones con parámetros y cómo manejar colecciones con listas.',
-        pdfHeading: 'Modularidad, Parámetros y Colecciones Indexadas',
-        pdfText: `
-            <h6>1. Principio de Modularidad</h6>
-            <p>Permite dividir un problema grande en sub-problemas independientes llamados funciones, reduciendo la redundancia de código.</p>
-            <h6>2. Arreglos y Listas</h6>
-            <p>Colecciones secuenciales donde los elementos se acceden por su índice posicional comenzando en 0.</p>
-        `,
-        questions: [
-            { q: "1. ¿Qué instrucción se utiliza dentro de una función para devolver un valor calculado?", options: ["send.", "return.", "echo."], correct: 1 },
-            { q: "2. En casi todos los lenguajes de programación, ¿en qué índice numérico comienza un arreglo?", options: ["Índice 0.", "Índice 1.", "Índice -1."], correct: 0 },
-            { q: "3. La principal ventaja de dividir un programa en funciones modulares es:", options: ["Reutilizar código, facilitar mantenimiento y reducir errores.", "Que no requiere compilación.", "Evitar usar variables."], correct: 0 },
-            { q: "4. Si un arreglo tiene una longitud de 6 elementos, ¿cuál es el índice del último elemento?", options: ["Índice 6.", "Índice 5 (longitud - 1).", "Índice 4."], correct: 1 },
-            { q: "5. ¿Qué es un parámetro en una función?", options: ["Una variable que recibe el dato enviado a la función para procesarlo.", "El nombre del archivo.", "El resultado final."], correct: 0 },
-            { q: "6. ¿Qué ocurre si intentamos acceder a un índice que no existe en el arreglo (ej. arreglo[10] en lista de 3 elementos)?", options: ["Devuelve 0 automáticamente.", "Se produce un error de desbordamiento (Index Out of Bounds).", "Crea el elemento."], correct: 1 },
-            { q: "7. ¿Qué es el 'ámbito' o 'alcance' (scope) de una variable local declarada dentro de una función?", options: ["Solo es accesible y existe dentro de esa función.", "Se puede modificar desde cualquier archivo de la computadora.", "Dura para siempre."], correct: 0 },
-            { q: "8. ¿Cómo se conoce al proceso mediante el cual una función se llama a sí misma para resolver un problema?", options: ["Iteración lineal.", "Recursividad.", "Polimorfismo."], correct: 1 },
-            { q: "9. ¿Qué función o método se usa habitualmente para conocer la cantidad de elementos en una lista?", options: ["count() / length / len().", "size_of_ram().", "total_elements()."], correct: 0 },
-            { q: "10. ¿Cuál es la forma más común y eficiente de recorrer todos los elementos de un arreglo secuencialmente?", options: ["Con un bucle for o foreach.", "Repitiendo 50 líneas a mano.", "Con un condicional if."], correct: 0 }
-        ]
-    }
-};
-
-// 15 PREGUNTAS INTEGRADORAS PARA EL EXAMEN FINAL
-const finalQuestionsProg = [
-    { q: "1. Un algoritmo se define formalmente como:", options: ["Un conjunto desordenado de fórmulas matemáticas.", "Una secuencia lógica, finita, precisa y determinista de instrucciones.", "Un lenguaje de programación compilado."], correct: 1 },
-    { q: "2. En un diagrama de flujo, la figura que representa una entrada o salida de datos es:", options: ["El paralelogramo.", "El rombo.", "El óvalo."], correct: 0 },
-    { q: "3. ¿Cuál es el resultado de la expresión: (10 - 2 * 3) + 4?", options: ["28.", "8 (primero la multiplicación 2*3=6, luego 10-6=4, y 4+4=8).", "12."], correct: 1 },
-    { q: "4. Si una variable almacena el valor true, su tipo de dato es:", options: ["Integer.", "Boolean.", "String."], correct: 1 },
-    { q: "5. ¿Qué operador relacional se emplea para verificar si dos valores son diferentes?", options: ["<> o !=.", "==.", "><."], correct: 0 },
-    { q: "6. En la condición: (A OR B), ¿cuándo es verdadera la expresión?", options: ["Solo cuando ambas son verdaderas.", "Basta con que al menos una de las dos sea verdadera.", "Únicamente cuando ambas son falsas."], correct: 1 },
-    { q: "7. Si en un ciclo 'while' la condición nunca cambia a falso, se genera un:", options: ["Bucle infinito que no concluye.", "Error de sintaxis en compilación.", "Bucle for equivalente."], correct: 0 },
-    { q: "8. En una prueba de escritorio, ¿qué componente se monitorea prioritariamente?", options: ["El valor de las variables tras cada paso de ejecución.", "La resolución del monitor.", "La velocidad del ventilador."], correct: 0 },
-    { q: "9. ¿Cuál es la función de la sentencia 'break' en una estructura iterativa?", options: ["Continuar con la siguiente vuelta.", "Forzar la salida inmediata del bucle.", "Reiniciar el sistema operativo."], correct: 1 },
-    { q: "10. Si declaramos una lista con 8 elementos, ¿cuál es el índice del primer elemento?", options: ["0.", "1.", "-1."], correct: 0 },
-    { q: "11. ¿Cuál es el índice del último elemento en un arreglo de tamaño 8?", options: ["8.", "7 (tamaño menos 1).", "6."], correct: 1 },
-    { q: "12. En programación estructurada, la modularidad permite:", options: ["Separar el código en funciones con responsabilidades específicas.", "Eliminar la necesidad de probar el código.", "Programar sin usar memoria."], correct: 0 },
-    { q: "13. La instrucción 'return' en una función tiene como objetivo:", options: ["Imprimir en consola.", "Devolver el resultado calculado al invocador de la función.", "Reiniciar el bucle for."], correct: 1 },
-    { q: "14. Una variable que cuenta cuántas veces ha ocurrido un suceso en un bucle (c = c + 1) es:", options: ["Un acumulador.", "Un contador.", "Un vector."], correct: 1 },
-    { q: "15. ¿Qué ocurre si un programa intenta acceder al índice 10 de un arreglo de 5 elementos?", options: ["Devuelve 0 sin problema.", "Genera una excepción de índice fuera de rango (Index out of range).", "Amplía el arreglo solo."], correct: 1 }
-];
-
-let currentModKey = 'm1';
-let passedModules = JSON.parse(localStorage.getItem('passed_modules_prog_bank') || '[]');
-
-function initProg() {
-    updateProgressState();
-    loadLesson('m1_video');
-}
-
-function loadLesson(targetKey) {
-    const parts = targetKey.split('_');
-    const modKey = parts[0];
-    const resource = parts[1];
-
-    currentModKey = modKey;
-    const data = modulesDataProg[modKey];
-    if (!data) return;
-
-    if (resource === 'quiz') {
-        showModuleQuiz(modKey);
-        return;
-    }
-
-    document.getElementById('cardLessonView').classList.remove('d-none');
-    document.getElementById('cardModuleQuizView').classList.add('d-none');
-    document.getElementById('cardLockedView').classList.add('d-none');
-    document.getElementById('cardFinalQuizView').classList.add('d-none');
-    document.getElementById('cardCertificateView').classList.add('d-none');
-
-    document.getElementById('lessonTag').innerText = data.tag;
-    document.getElementById('lessonDuration').innerText = '⏱ ' + data.dur;
-    document.getElementById('lessonTitle').innerText = data.title;
-    document.getElementById('videoPlayer').src = data.videoUrl;
-    document.getElementById('videoNotes').innerText = data.videoNotes;
-    document.getElementById('pdfHeadingTitle').innerText = data.pdfHeading;
-    document.getElementById('pdfDocumentHeading').innerText = data.pdfHeading;
-    document.getElementById('pdfBodyHtml').innerHTML = data.pdfText;
-
-    switchResourceTab(resource === 'pdf' ? 'pdf' : 'video');
-    highlightNavBtn('nav-' + targetKey);
-}
-
-function switchResourceTab(type) {
-    const tabVid = document.getElementById('tab-video-link');
-    const tabPdf = document.getElementById('tab-pdf-link');
-    const boxVid = document.getElementById('contentVideoBox');
-    const boxPdf = document.getElementById('contentPdfBox');
-
-    if (type === 'video') {
-        tabVid.classList.add('active');
-        tabPdf.classList.remove('active');
-        boxVid.classList.remove('d-none');
-        boxPdf.classList.add('d-none');
-    } else {
-        tabPdf.classList.add('active');
-        tabVid.classList.remove('active');
-        boxPdf.classList.remove('d-none');
-        boxVid.classList.add('d-none');
-    }
-}
-
-function highlightNavBtn(btnId) {
-    document.querySelectorAll('.lesson-btn').forEach(b => b.classList.remove('active'));
-    const btn = document.getElementById(btnId);
-    if (btn) btn.classList.add('active');
-}
-
-function showModuleQuiz(modKey) {
-    const data = modulesDataProg[modKey];
-    document.getElementById('cardLessonView').classList.add('d-none');
-    document.getElementById('cardModuleQuizView').classList.remove('d-none');
-    document.getElementById('cardLockedView').classList.add('d-none');
-    document.getElementById('cardFinalQuizView').classList.add('d-none');
-    document.getElementById('cardCertificateView').classList.add('d-none');
-
-    document.getElementById('quizModuleBadge').innerText = data.tag;
-    document.getElementById('quizModuleTitle').innerText = 'Examen del ' + data.title + ' (10 preguntas)';
-    document.getElementById('quizModuleResult').classList.add('d-none');
-
-    const container = document.getElementById('quizQuestionsContainer');
-    container.innerHTML = '';
-    data.questions.forEach((qObj, idx) => {
-        let optsHtml = '';
-        qObj.options.forEach((opt, optIdx) => {
-            optsHtml += `
-                <div class="form-check mb-1">
-                    <input class="form-check-input" type="radio" name="mq_${idx}" value="${optIdx}" id="mq_${idx}_${optIdx}" required>
-                    <label class="form-check-label small text-slate-700" for="mq_${idx}_${optIdx}">${opt}</label>
-                </div>
-            `;
-        });
-
-        container.innerHTML += `
-            <div class="p-3 rounded-3 border border-slate-200 bg-slate-50 mb-3">
-                <label class="fw-bold small text-slate-900 d-block mb-2">${qObj.q}</label>
-                ${optsHtml}
-            </div>
-        `;
-    });
-
-    highlightNavBtn('nav-' + modKey + '_quiz');
-}
-
-function submitModuleQuiz(e) {
-    e.preventDefault();
-    const data = modulesDataProg[currentModKey];
-    let correctCount = 0;
-
-    data.questions.forEach((qObj, idx) => {
-        const selected = document.querySelector(`input[name="mq_${idx}"]:checked`);
-        if (selected && parseInt(selected.value) === qObj.correct) {
-            correctCount++;
-        }
-    });
-
-    const score = Math.round((correctCount / data.questions.length) * 100);
-    const resBox = document.getElementById('quizModuleResult');
-    resBox.classList.remove('d-none');
-
-    if (score >= 70) {
-        if (!passedModules.includes(currentModKey)) {
-            passedModules.push(currentModKey);
-            localStorage.setItem('passed_modules_prog_bank', JSON.stringify(passedModules));
-        }
-        resBox.className = 'mt-4 p-3 rounded-3 text-center bg-success-subtle text-success border border-success-subtle';
-        resBox.innerHTML = `
-            <h5 class="fw-bold mb-1">¡Aprobado con éxito! Calificación: ${score} / 100 (${correctCount} de 10 aciertos)</h5>
-            <p class="small mb-2">Has superado la evaluación parcial de 10 preguntas del ${data.tag}.</p>
-            <button type="button" class="btn btn-success btn-sm fw-bold" onclick="goToNextModule('${currentModKey}')">Continuar al Siguiente Módulo ▷</button>
-        `;
-        updateProgressState();
-    } else {
-        resBox.className = 'mt-4 p-3 rounded-3 text-center bg-warning-subtle text-dark border border-warning-subtle';
-        resBox.innerHTML = `
-            <h5 class="fw-bold mb-1">Calificación: ${score} / 100 (${correctCount} de 10 aciertos)</h5>
-            <p class="small mb-2">Se requiere un mínimo de 70% (7 aciertos) para acreditar el módulo. Repasa el video y el PDF antes de reintentar.</p>
-            <button type="button" class="btn btn-outline-dark btn-sm fw-bold" onclick="backToLesson()">Repasar Video y Guía PDF</button>
-        `;
-    }
-}
-
-function goToNextModule(currentKey) {
-    const keys = ['m1', 'm2', 'm3', 'm4', 'm5'];
-    const idx = keys.indexOf(currentKey);
-    if (idx < keys.length - 1) {
-        const nextKey = keys[idx + 1];
-        loadLesson(nextKey + '_video');
-    } else {
-        openFinalEvaluation();
-    }
-}
-
-function backToLesson() {
-    loadLesson(currentModKey + '_video');
-}
-
-function openFinalEvaluation() {
-    const allPassed = ['m1', 'm2', 'm3', 'm4', 'm5'].every(k => passedModules.includes(k));
-    if (!allPassed) {
-        document.getElementById('cardLessonView').classList.add('d-none');
-        document.getElementById('cardModuleQuizView').classList.add('d-none');
-        document.getElementById('cardFinalQuizView').classList.add('d-none');
-        document.getElementById('cardCertificateView').classList.add('d-none');
-        document.getElementById('cardLockedView').classList.remove('d-none');
-        return;
-    }
-
-    document.getElementById('cardLessonView').classList.add('d-none');
-    document.getElementById('cardModuleQuizView').classList.add('d-none');
-    document.getElementById('cardLockedView').classList.add('d-none');
-    document.getElementById('cardCertificateView').classList.add('d-none');
-    document.getElementById('cardFinalQuizView').classList.remove('d-none');
-
-    // Generar las 15 preguntas
-    const fContainer = document.getElementById('finalQuizQuestionsContainer');
-    fContainer.innerHTML = '';
-    finalQuestionsProg.forEach((qObj, idx) => {
-        let opts = '';
-        qObj.options.forEach((opt, oIdx) => {
-            opts += `
-                <div class="form-check mb-1">
-                    <input class="form-check-input" type="radio" name="fq_${idx}" value="${oIdx}" id="fq_${idx}_${oIdx}" required>
-                    <label class="form-check-label small text-slate-700" for="fq_${idx}_${oIdx}">${opt}</label>
-                </div>
-            `;
-        });
-        fContainer.innerHTML += `
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-3 mb-2">
-                <label class="fw-bold small text-slate-900 d-block mb-2">${qObj.q}</label>
-                ${opts}
-            </div>
-        `;
-    });
-}
-
-function submitFinalQuiz(e) {
-    e.preventDefault();
-    let correct = 0;
-    finalQuestionsProg.forEach((qObj, idx) => {
-        const sel = document.querySelector(`input[name="fq_${idx}"]:checked`);
-        if (sel && parseInt(sel.value) === qObj.correct) {
-            correct++;
-        }
-    });
-
-    const score = Math.round((correct / finalQuestionsProg.length) * 100);
-    if (score >= 70) {
-        alert(`¡Felicidades! Calificación en examen final: ${score}/100 (${correct} de 15 aciertos). Tu certificado oficial ha sido emitido.`);
-        openCertificate();
-    } else {
-        alert(`Calificación final: ${score}/100 (${correct} de 15 aciertos). Necesitas al menos 11 aciertos (70%) para acreditar.`);
-    }
-}
-
-function openCertificate() {
-    document.getElementById('cardLessonView').classList.add('d-none');
-    document.getElementById('cardModuleQuizView').classList.add('d-none');
-    document.getElementById('cardLockedView').classList.add('d-none');
-    document.getElementById('cardFinalQuizView').classList.add('d-none');
-    document.getElementById('cardCertificateView').classList.remove('d-none');
-}
-
-function updateProgressState() {
-    const total = 5;
-    const done = passedModules.length;
-    const pct = Math.round((done / total) * 100);
-
-    const pBar = document.getElementById('progressBar');
-    if (pBar) pBar.style.width = pct + '%';
-    const bText = document.getElementById('progressPercentBadge');
-    if (bText) bText.innerText = pct + '%';
-    const cCount = document.getElementById('completedItemsCount');
-    if (cCount) cCount.innerText = `${done} de ${total} módulos aprobados`;
-
-    ['m1', 'm2', 'm3', 'm4', 'm5'].forEach(k => {
-        const isPassed = passedModules.includes(k);
-        const b = document.getElementById('badge-' + k);
-        const qb = document.getElementById('quiz-status-' + k);
-        const lk = document.getElementById('lock-stat-' + k);
-
-        if (isPassed) {
-            if (b) { b.className = 'text-xs text-success fw-bold'; b.innerText = '✓ Aprobado'; }
-            if (qb) { qb.className = 'badge bg-success-subtle text-success'; qb.innerText = 'Aprobado'; }
-            if (lk) { lk.className = 'fw-semibold text-success'; lk.innerText = 'Aprobado ✓'; }
-        } else {
-            if (b) { b.className = 'text-xs text-muted'; b.innerText = 'Pendiente'; }
-            if (qb) { qb.className = 'badge bg-white border border-slate-300 text-slate-600'; qb.innerText = '10 preguntas'; }
-            if (lk) { lk.className = 'fw-semibold text-danger'; lk.innerText = 'Pendiente'; }
-        }
-    });
-
-    const isAll = done === 5;
-    const notice = document.getElementById('lockStatusNotice');
-    const fLockIcon = document.getElementById('finalLockIcon');
-    const fBadge = document.getElementById('finalQuizBadge');
-    const certBtn = document.getElementById('btnNavCert');
-    const certBadge = document.getElementById('finalCertBadge');
-
-    if (isAll) {
-        if (notice) notice.innerText = '🔓 Examen final desbloqueado (15 preguntas)';
-        if (fLockIcon) fLockIcon.innerText = '📝';
-        if (fBadge) { fBadge.className = 'badge bg-success text-white'; fBadge.innerText = 'Desbloqueada'; }
-        if (certBtn) certBtn.classList.remove('disabled');
-        if (certBadge) { certBadge.innerText = 'Disponible'; }
-    } else {
-        if (notice) notice.innerText = '🔒 Examen final bloqueado (requiere 5 módulos)';
-        if (fLockIcon) fLockIcon.innerText = '🔒';
-        if (fBadge) { fBadge.className = 'badge bg-slate-200 text-slate-700'; fBadge.innerText = 'Bloqueada'; }
-    }
-}
-
-function navigateStep(delta) {
-    if (delta > 0) {
-        showModuleQuiz(currentModKey);
-    } else {
-        const keys = ['m1', 'm2', 'm3', 'm4', 'm5'];
-        const idx = keys.indexOf(currentModKey);
-        if (idx > 0) {
-            loadLesson(keys[idx - 1] + '_video');
-        }
-    }
-}
-
-const pdfFileMap = {
-    'm1': '<?= asset("pdf/fundamentos-modulo-1-algoritmos.pdf") ?>',
-    'm2': '<?= asset("pdf/fundamentos-modulo-2-variables.pdf") ?>',
-    'm3': '<?= asset("pdf/fundamentos-modulo-3-condicionales.pdf") ?>',
-    'm4': '<?= asset("pdf/fundamentos-modulo-4-ciclos.pdf") ?>',
-    'm5': '<?= asset("pdf/fundamentos-modulo-5-funciones.pdf") ?>'
-};
-
-function downloadPdfDoc() {
-    const fileUrl = pdfFileMap[currentModKey] || '<?= asset("pdf/fundamentos-modulo-1-algoritmos.pdf") ?>';
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = fileUrl.split('/').pop();
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-document.addEventListener('DOMContentLoaded', initProg);
-</script>
+<script src="<?= asset('js/programacion_fundamentos.js') ?>"></script>

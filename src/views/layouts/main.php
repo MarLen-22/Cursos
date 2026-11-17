@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" class="h-100" data-bs-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,18 +17,30 @@
     <link rel="stylesheet" href="<?= asset('css/alumno.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/calculo-diferencial.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/fisica.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/matematicas_discretas.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/fundamentos_programacion.css') ?>">
+
     <!-- Configuración de MathJax para renderizado nativo de fórmulas LaTeX ($...$ y $$...$$) -->
     <script>
         window.MathJax = {
             tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+                inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ],
+                displayMath: [
+                    ['$$', '$$'],
+                    ['\\[', '\\]']
+                ]
             },
-            svg: { fontCache: 'global' }
+            svg: {
+                fontCache: 'global'
+            }
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
+
 <body class="d-flex flex-column h-100 bg-slate-50 text-slate-900">
     <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
 
@@ -51,5 +64,8 @@
     <script src="<?= asset('js/alumno.js') ?>"></script>
     <script src="<?= asset('js/calculo-diferencial.js') ?>"></script>
     <script src="<?= asset('js/fisica.js') ?>"></script>
+    <script src="<?= asset('js/matematicas_discretas.js') ?>"></script>
+    <script src="<?= asset('js/fundamentos_programacion.js') ?>"></script>
 </body>
+
 </html>

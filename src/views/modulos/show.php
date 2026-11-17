@@ -16,6 +16,24 @@ if ($esFisica) {
     require __DIR__ . '/fisica.php';
     return;
 }
+
+$esMatematicasDiscretas = in_array($modulo->slug, ['matematicas-discretas', 'matematicas-discretas-logica-estructuras-y-simulacion'], true)
+    || str_contains(mb_strtolower($modulo->titulo), 'discretas')
+    || str_contains(mb_strtolower($modulo->titulo), 'discreta');
+
+if ($esMatematicasDiscretas) {
+    require __DIR__ . '/matematicas-discretas.php';
+    return;
+}
+
+$esFundamentosDeProgramacion = in_array($modulo->slug, ['fundamentos-programacion', 'fundamentos-de-programacion', 'programacion'], true)
+    || str_contains(mb_strtolower($modulo->titulo), 'programación')
+    || str_contains(mb_strtolower($modulo->titulo), 'programacion');
+
+if ($esFundamentosDeProgramacion) {
+    require __DIR__ . '/fundamentos-de-programacion.php';
+    return;
+}
 ?>
 <section class="py-5 bg-navy text-white position-relative">
     <div class="bg-grid position-absolute top-0 start-0 w-100 h-100 pointer-events-none"></div>
