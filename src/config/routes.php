@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Controllers\AdminAprendizajeController;
 use App\Controllers\AdminController;
 use App\Controllers\AdminModuloController;
 use App\Controllers\AprendizajeController;
@@ -36,7 +37,7 @@ return static function (Router $r): void {
     $r->post('/registro', [AuthController::class, 'registro'], ['guest']);
     $r->post('/logout', [AuthController::class, 'logout'], ['auth']);
 
-    // Área del alumno
+    // Área del alumno y aprendizaje
     $slug = '{slug:[a-z0-9]+(?:-[a-z0-9]+)*}';
     $r->get('/mi-aprendizaje', [AprendizajeController::class, 'index'], ['auth']);
     $r->get('/mi-aprendizaje/{id:\d+}/constancia', [AprendizajeController::class, 'constancia'], ['auth']);
@@ -48,17 +49,39 @@ return static function (Router $r): void {
 
     // Administración (solo usuarios presentes en la tabla administrador)
     $r->get('/admin', [AdminController::class, 'dashboard'], ['admin']);
-    $r->get('/admin/usuarios', [AdminController::class, 'usuarios'], ['admin']);
-    $r->post('/admin/usuarios/{id:\d+}/estado', [AdminController::class, 'estado'], ['admin']);
-    $r->post('/admin/usuarios/{id:\d+}/otorgar', [AdminController::class, 'otorgar'], ['superadmin']);
-    $r->post('/admin/usuarios/{id:\d+}/revocar', [AdminController::class, 'revocar'], ['superadmin']);
 
+    // Usuarios y Permisos (RBAC + Añadir/Editar Estudiantes, Jefes de Curso, Admins y Superadmins)
+    $r->get('/admin/usuarios', [AdminController::class, 'usuarios'], ['admin']);
+    $r->get('/admin/usuarios/nuevo', [AdminController::class, 'createUsuario'], ['admin']);
+    $r->post('/admin/usuarios', [AdminController::class, 'storeUsuario'], ['admin']);
+    $r->get('/admin/usuarios/{id:\d+}/editar', [AdminController::class, 'editUsuario'], ['admin']);
+    $r->post('/admin/usuarios/{id:\d+}', [AdminController::class, 'updateUsuario'], ['admin']);
+    $r->post('/admin/usuarios/{id:\d+}/rol', [AdminController::class, 'cambiarRol'], ['admin']);
+    $r->post('/admin/usuarios/{id:\d+}/estado', [AdminController::class, 'estado'], ['admin']);
+    $r->post('/admin/usuarios/{id:\d+}/otorgar', [AdminController::class, 'otorgar'], ['admin']);
+    $r->post('/admin/usuarios/{id:\d+}/revocar', [AdminController::class, 'revocar'], ['admin']);
+    $r->post('/admin/usuarios/{id:\d+}/eliminar', [AdminController::class, 'eliminarUsuario'], ['admin']);
+
+    // Módulos Interactivos (CRUD Completo: Crear, Ver, Editar, Ocultar/Publicar y Eliminar)
     $r->get('/admin/modulos', [AdminModuloController::class, 'index'], ['admin']);
     $r->get('/admin/modulos/nuevo', [AdminModuloController::class, 'create'], ['admin']);
     $r->post('/admin/modulos', [AdminModuloController::class, 'store'], ['admin']);
     $r->get('/admin/modulos/{id:\d+}/editar', [AdminModuloController::class, 'edit'], ['admin']);
     $r->post('/admin/modulos/{id:\d+}', [AdminModuloController::class, 'update'], ['admin']);
     $r->post('/admin/modulos/{id:\d+}/estado', [AdminModuloController::class, 'estado'], ['admin']);
+    $r->post('/admin/modulos/{id:\d+}/eliminar', [AdminModuloController::class, 'destroy'], ['admin']);
+
+    // Nueva pestaña: Aprendizaje, Becas (TecVictoria y TECNM), Inscripciones y Metodología ABP
+    $r->get('/admin/aprendizaje', [AdminAprendizajeController::class, 'index'], ['admin']);
+    $r->post('/admin/aprendizaje/becas', [AdminAprendizajeController::class, 'storeBeca'], ['admin']);
+    $r->post('/admin/aprendizaje/becas/{id:\d+}', [AdminAprendizajeController::class, 'updateBeca'], ['admin']);
+    $r->post('/admin/aprendizaje/becas/{id:\d+}/estado', [AdminAprendizajeController::class, 'estadoBeca'], ['admin']);
+    $r->post('/admin/aprendizaje/becas/{id:\d+}/eliminar', [AdminAprendizajeController::class, 'destroyBeca'], ['admin']);
+    $r->post('/admin/aprendizaje/inscripciones', [AdminAprendizajeController::class, 'inscribirUsuario'], ['admin']);
+    $r->post('/admin/aprendizaje/inscripciones/{id:\d+}/avance', [AdminAprendizajeController::class, 'actualizarInscripcion'], ['admin']);
+    $r->post('/admin/aprendizaje/inscripciones/{id:\d+}/eliminar', [AdminAprendizajeController::class, 'eliminarInscripcion'], ['admin']);
+    $r->post('/admin/aprendizaje/etapas/{id:\d+}', [AdminAprendizajeController::class, 'actualizarEtapaAbp'], ['admin']);
+    $r->post('/admin/aprendizaje/evaluaciones/{id:\d+}', [AdminAprendizajeController::class, 'actualizarEvaluacion'], ['admin']);
 
     // Bootstrap vive fuera de public/ (carpeta BootStrap/); se sirve con caché larga.
     $r->get('/vendor/bootstrap/{path:(?:css|js)/[a-z0-9.]+}', [AssetController::class, 'bootstrap']);

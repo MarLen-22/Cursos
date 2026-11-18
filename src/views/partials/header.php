@@ -8,6 +8,8 @@ $activeNav = $activeNav ?? '';
 $authAware = $authAware ?? true;
 $usuario = $authAware ? Auth::user() : null;
 $esAdmin = $authAware && Auth::isAdmin();
+$adminObj = $authAware ? Auth::admin() : null;
+$etiquetaRol = $adminObj?->nivel->etiqueta() ?? 'Administrador';
 
 // Popular modules for the "Explora" menu. Never let the menu break a page.
 $populares = [];
@@ -49,7 +51,7 @@ $q = isset($_GET['q']) && is_string($_GET['q']) ? mb_substr(trim($_GET['q']), 0,
                                     <div class="fw-semibold text-truncate"><?= e($usuario->nombre) ?></div>
                                     <div class="small text-body-secondary text-truncate"><?= e($usuario->email) ?></div>
                                     <?php if ($esAdmin): ?>
-                                        <span class="badge bg-cyan text-navy mt-1"><?= Auth::isSuperAdmin() ? 'Superadministrador' : 'Administrador' ?></span>
+                                        <span class="badge bg-cyan text-navy mt-1"><?= e($etiquetaRol) ?></span>
                                     <?php endif; ?>
                                 </div>
                             </li>
@@ -68,6 +70,7 @@ $q = isset($_GET['q']) && is_string($_GET['q']) ? mb_substr(trim($_GET['q']), 0,
                                 <li><a class="dropdown-item profile-item" href="<?= url('/admin') ?>"><?= icon('settings') ?> <span>Panel de control</span></a></li>
                                 <li><a class="dropdown-item profile-item" href="<?= url('/admin/usuarios') ?>"><?= icon('user') ?> <span>Usuarios y permisos</span></a></li>
                                 <li><a class="dropdown-item profile-item" href="<?= url('/admin/modulos') ?>"><?= icon('school') ?> <span>Gestión de módulos</span></a></li>
+                                <li><a class="dropdown-item profile-item" href="<?= url('/admin/aprendizaje') ?>"><?= icon('award') ?> <span>Aprendizaje y Becas</span></a></li>
                             <?php endif; ?>
                             <li><hr class="dropdown-divider"></li>
                             <li>
@@ -110,6 +113,10 @@ $q = isset($_GET['q']) && is_string($_GET['q']) ? mb_substr(trim($_GET['q']), 0,
                                     <a href="<?= url('/metodologia') ?>" class="explora-item" data-explora-panel="panel-iniciativas">
                                         <span>Iniciativas destacadas</span><?= icon('chevron-right', 'icon-sm') ?>
                                     </a>
+
+                                    <p class="explora-label mt-4 mb-2">Becas e Iniciativas Oficiales</p>
+                                    <a href="https://cdvictoria.tecnm.mx/alumnos/becas.html" target="_blank" rel="noopener" class="explora-link">🎓 Becas TecVictoria ↗</a>
+                                    <a href="https://www.tecnm.mx/?vista=Becas" target="_blank" rel="noopener" class="explora-link">🏛️ Becas TECNM ↗</a>
 
                                     <p class="explora-label mt-4 mb-2">Enlaces de interés</p>
                                     <a href="<?= url('/blog') ?>" class="explora-link">Blog</a>

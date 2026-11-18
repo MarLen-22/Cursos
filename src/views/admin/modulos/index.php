@@ -1,8 +1,10 @@
 <div class="card border-0 rounded-4 shadow-sm p-4 bg-white">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-            <h1 class="h4 fw-bold mb-1">Catálogo de Módulos Interactivos</h1>
-            <p class="text-slate-500 small mb-0">Administra los simuladores y retos ABP disponibles para los estudiantes.</p>
+            <h1 class="h4 fw-bold mb-1">Catálogo de Módulos Interactivos (CRUD)</h1>
+            <p class="text-slate-500 small mb-0">
+                Administra los simuladores y retos ABP disponibles para los estudiantes: crear, ver, editar, ocultar/publicar y eliminar cursos.
+            </p>
         </div>
         <a href="<?= url('/admin/modulos/nuevo') ?>" class="btn btn-cyan fw-bold d-flex align-items-center gap-1 shadow-cyan">
             <span>➕</span>
@@ -19,12 +21,14 @@
                     <th>Identificador (Slug)</th>
                     <th>Nivel</th>
                     <th>Color</th>
+                    <th>Inscritos</th>
                     <th>Estado</th>
-                    <th class="text-end">Acciones</th>
+                    <th class="text-end">Acciones (CRUD)</th>
                 </tr>
             </thead>
             <tbody class="small">
                 <?php foreach ($modulos as $m): ?>
+                    <?php $numInscritos = (int) ($inscritosPorModulo[$m->id] ?? 0); ?>
                     <tr>
                         <td class="fw-bold text-slate-400"><?= $m->orden ?></td>
                         <td>
@@ -46,22 +50,41 @@
                             </span>
                         </td>
                         <td>
+                            <span class="badge bg-light text-slate-700 border">
+                                👥 <?= $numInscritos ?>
+                            </span>
+                        </td>
+                        <td>
                             <span class="badge <?= $m->activo ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' ?>">
                                 <?= $m->activo ? 'Visible' : 'Oculto' ?>
                             </span>
                         </td>
                         <td class="text-end">
-                            <div class="d-inline-flex gap-1">
+                            <div class="d-inline-flex align-items-center gap-1">
+                                <!-- Ver -->
                                 <a href="<?= url('/modulos/' . e($m->slug)) ?>" target="_blank" class="btn btn-xs btn-outline-secondary" title="Ver en el sitio">
                                     👁️
                                 </a>
+
+                                <!-- Editar -->
                                 <a href="<?= url('/admin/modulos/' . $m->id . '/editar') ?>" class="btn btn-xs btn-outline-primary">
                                     Editar
                                 </a>
+
+                                <!-- Ocultar / Publicar -->
                                 <form action="<?= url('/admin/modulos/' . $m->id . '/estado') ?>" method="POST" class="d-inline">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-xs <?= $m->activo ? 'btn-outline-warning' : 'btn-outline-success' ?>">
                                         <?= $m->activo ? 'Ocultar' : 'Publicar' ?>
+                                    </button>
+                                </form>
+
+                                <!-- Eliminar (CRUD Delete) -->
+                                <form action="<?= url('/admin/modulos/' . $m->id . '/eliminar') ?>" method="POST" class="d-inline"
+                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar permanentemente el curso «<?= e(addslashes($m->titulo)) ?>»? Esta acción no se puede deshacer.');">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="btn btn-xs btn-outline-danger" title="Eliminar curso permanentemente">
+                                        Eliminar
                                     </button>
                                 </form>
                             </div>

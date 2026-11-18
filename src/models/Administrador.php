@@ -12,6 +12,8 @@ final class Administrador
         public readonly NivelAdmin $nivel,
         public readonly ?int $otorgadoPor,
         public readonly string $creadoEn,
+        public readonly ?string $cargo = null,
+        public readonly ?string $departamento = null,
     ) {
     }
 
@@ -24,6 +26,8 @@ final class Administrador
             NivelAdmin::from((string) $row['nivel']),
             $row['otorgado_por'] !== null ? (int) $row['otorgado_por'] : null,
             (string) $row['creado_en'],
+            isset($row['cargo']) && $row['cargo'] !== '' ? (string) $row['cargo'] : null,
+            isset($row['departamento']) && $row['departamento'] !== '' ? (string) $row['departamento'] : null,
         );
     }
 }

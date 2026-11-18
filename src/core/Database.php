@@ -51,6 +51,7 @@ final class Database
 
         try {
             self::$connection = new PDO($dsn, $config['username'], $config['password'], $options);
+            SchemaEnsurer::ensure(self::$connection);
         } catch (PDOException $e) {
             // Never expose the DSN or credentials to the client.
             error_log('[Database] Conexión fallida: ' . $e->getMessage());

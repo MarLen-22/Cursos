@@ -30,4 +30,23 @@ final class EvaluacionRepository
 
         return $row !== false ? Evaluacion::fromRow($row) : null;
     }
+
+    public function update(int $id, string $titulo, string $etapa, string $descripcion, string $icono): void
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE evaluacion
+                SET titulo = :titulo,
+                    etapa = :etapa,
+                    descripcion = :descripcion,
+                    icono = :icono
+              WHERE id_evaluacion = :id'
+        );
+        $stmt->execute([
+            'titulo'      => $titulo,
+            'etapa'       => $etapa,
+            'descripcion' => $descripcion,
+            'icono'       => $icono,
+            'id'          => $id,
+        ]);
+    }
 }

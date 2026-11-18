@@ -15,11 +15,13 @@ final class AdminModuloController extends Controller
     {
         $repo = new ModuloRepository($this->db());
         $modulos = $repo->listAll();
+        $inscritosPorModulo = $repo->countEnrollmentsByModulo();
 
         $this->render('admin/modulos/index', [
-            'title'     => 'Gestión de Módulos | Panel Administrativo',
-            'activeNav' => 'admin_modulos',
-            'modulos'   => $modulos,
+            'title'              => 'Gestión de Módulos (CRUD) | Panel Administrativo',
+            'activeNav'          => 'admin_modulos',
+            'modulos'            => $modulos,
+            'inscritosPorModulo' => $inscritosPorModulo,
         ], 'layouts/admin');
     }
 
@@ -46,7 +48,7 @@ final class AdminModuloController extends Controller
             $this->backWithErrors('/admin/modulos/nuevo', $errores, $input);
         }
 
-        $id = $repo->create($datos);
+        $repo->create($datos);
 
         $this->flash('success', 'Módulo interactivo creado exitosamente.');
         $this->redirect('/admin/modulos');
@@ -109,7 +111,24 @@ final class AdminModuloController extends Controller
         $nuevo = !$modulo->activo;
         $repo->setActivo($moduloId, $nuevo);
 
-        $this->flash('success', sprintf('El módulo "%s" fue %s.', $modulo->titulo, $nuevo ? 'activado' : 'desactivado'));
+        $this->flash('success', sprintf('El módulo "%s" fue %s.', $modulo->titulo, $nuevo ? 'publicado' : 'ocultado'));
+        $this->redirect('/admin/modulos');
+    }
+
+    public function destroy(string $id): void
+    {
+        $moduloId = $this->intParam($id);
+        $repo = new ModuloRepository($this->db());
+        $modulo = $repo->findById($moduloId);
+
+        if ($modulo === null) {
+            $this->flash('error', 'El módulo que intentas eliminar no existe.');
+            $this->redirect('/admin/modulos');
+        }
+
+        $repo->delete($moduloId);
+
+        $this->flash('success', sprintf('El módulo "%s" (%s) fue eliminado permanentemente del catálogo.', $modulo->titulo, $modulo->slug));
         $this->redirect('/admin/modulos');
     }
 }

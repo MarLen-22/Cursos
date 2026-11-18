@@ -21,4 +21,14 @@ final class EtapaAbpRepository
 
         return array_map(EtapaAbp::fromRow(...), $stmt->fetchAll());
     }
+
+    public function update(int $id, string $nombre, string $descripcion): void
+    {
+        $stmt = $this->db->prepare('UPDATE etapa_abp SET nombre = :nombre, descripcion = :descripcion WHERE id_etapa = :id');
+        $stmt->execute([
+            'nombre'      => $nombre,
+            'descripcion' => $descripcion,
+            'id'          => $id,
+        ]);
+    }
 }

@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const text = row.textContent.toLowerCase();
 
                 const matchTipo = !selectedTipo || tipo.includes(selectedTipo);
-                const matchEstado = !selectedEstado || estado === selectedEstado;
+                const matchEstado = !selectedEstado || estado === selectedEstado || (selectedTipo === 'beca' && estado === 'disponible');
                 const matchQuery = !query || text.includes(query);
 
                 if (matchTipo && matchEstado && matchQuery) {

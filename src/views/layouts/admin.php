@@ -3,7 +3,9 @@
 use App\Core\Auth;
 
 $usuario = Auth::user();
+$adminActual = Auth::admin();
 $esSuperAdmin = Auth::isSuperAdmin();
+$etiquetaRolAdmin = $adminActual?->nivel->etiqueta() ?? ($esSuperAdmin ? 'Superadministrador' : 'Administrador');
 $activeNav = $activeNav ?? '';
 ?>
 <!DOCTYPE html>
@@ -28,11 +30,15 @@ $activeNav = $activeNav ?? '';
                     <span class="fw-bold fs-6">Lógica Visual · Panel Administrativo</span>
                 </a>
                 <span class="badge bg-cyan text-navy fw-bold d-none d-sm-inline">
-                    <?= $esSuperAdmin ? 'Superadministrador' : 'Administrador' ?>
+                    <?= e($etiquetaRolAdmin) ?>
                 </span>
             </div>
 
             <div class="d-flex align-items-center gap-2">
+                <a href="<?= url('/mi-aprendizaje') ?>" class="btn btn-sm btn-outline-cyan d-none d-md-inline-flex align-items-center gap-1">
+                    <span>📚</span>
+                    <span>Mi Aprendizaje y Becas</span>
+                </a>
                 <a href="<?= url('/') ?>" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
                     <span>↗</span>
                     <span class="d-none d-md-inline">Ver Sitio Web</span>
@@ -43,7 +49,17 @@ $activeNav = $activeNav ?? '';
                         <span class="d-none d-lg-inline"><?= e($usuario?->nombre) ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-2 dropdown-dark">
-                        <li class="px-3 py-1 small text-slate-400"><?= e($usuario?->email) ?></li>
+                        <li class="px-3 py-1 small text-slate-400">
+                            <div class="fw-semibold text-white"><?= e($usuario?->nombre) ?></div>
+                            <div><?= e($usuario?->email) ?></div>
+                            <span class="badge bg-cyan text-navy mt-1"><?= e($etiquetaRolAdmin) ?></span>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item py-2" href="<?= url('/mi-aprendizaje') ?>">📚 Mi aprendizaje y Becas</a></li>
+                        <li><a class="dropdown-item py-2" href="<?= url('/mi-cuenta') ?>">👤 Mi cuenta</a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item py-2" href="https://cdvictoria.tecnm.mx/alumnos/becas.html" target="_blank" rel="noopener">🎓 Becas TecVictoria ↗</a></li>
+                        <li><a class="dropdown-item py-2" href="https://www.tecnm.mx/?vista=Becas" target="_blank" rel="noopener">🏛️ Becas TECNM ↗</a></li>
                         <li><hr class="dropdown-divider my-1"></li>
                         <li>
                             <form action="<?= url('/logout') ?>" method="POST" class="m-0">
@@ -59,16 +75,30 @@ $activeNav = $activeNav ?? '';
 
     <!-- Navegación secundaria para panel admin -->
     <nav class="admin-subnav bg-white border-bottom shadow-sm px-3 px-md-4 py-2">
-        <div class="container-fluid d-flex flex-wrap gap-2 align-items-center">
-            <a href="<?= url('/admin') ?>" class="btn btn-sm <?= $activeNav === 'admin_dashboard' ? 'btn-primary' : 'btn-light' ?>">
-                📊 Resumen
-            </a>
-            <a href="<?= url('/admin/usuarios') ?>" class="btn btn-sm <?= $activeNav === 'admin_usuarios' ? 'btn-primary' : 'btn-light' ?>">
-                👥 Usuarios y Permisos
-            </a>
-            <a href="<?= url('/admin/modulos') ?>" class="btn btn-sm <?= $activeNav === 'admin_modulos' ? 'btn-primary' : 'btn-light' ?>">
-                🧩 Módulos Interactivos
-            </a>
+        <div class="container-fluid d-flex flex-wrap gap-2 align-items-center justify-content-between">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <a href="<?= url('/admin') ?>" class="btn btn-sm <?= $activeNav === 'admin_dashboard' ? 'btn-primary' : 'btn-light' ?>">
+                    📊 Resumen
+                </a>
+                <a href="<?= url('/admin/usuarios') ?>" class="btn btn-sm <?= $activeNav === 'admin_usuarios' ? 'btn-primary' : 'btn-light' ?>">
+                    👥 Usuarios y Permisos
+                </a>
+                <a href="<?= url('/admin/modulos') ?>" class="btn btn-sm <?= $activeNav === 'admin_modulos' ? 'btn-primary' : 'btn-light' ?>">
+                    🧩 Módulos Interactivos
+                </a>
+                <a href="<?= url('/admin/aprendizaje') ?>" class="btn btn-sm <?= $activeNav === 'admin_aprendizaje' ? 'btn-primary' : 'btn-light' ?>">
+                    🎓 Aprendizaje, Becas y ABP
+                </a>
+            </div>
+            <div class="d-none d-xl-flex align-items-center gap-2 small">
+                <span class="text-slate-400">Accesos directos Becas:</span>
+                <a href="https://cdvictoria.tecnm.mx/alumnos/becas.html" target="_blank" rel="noopener" class="badge bg-cyan-subtle text-navy text-decoration-none px-2 py-1">
+                    🎓 TecVictoria ↗
+                </a>
+                <a href="https://www.tecnm.mx/?vista=Becas" target="_blank" rel="noopener" class="badge bg-indigo-subtle text-indigo text-decoration-none px-2 py-1">
+                    🏛️ TECNM ↗
+                </a>
+            </div>
         </div>
     </nav>
 

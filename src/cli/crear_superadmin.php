@@ -47,7 +47,7 @@ if (!$nombre || !$email || !$password) {
     $password = trim((string) fgets(STDIN));
 }
 
-$email = strtolower($email);
+$email = trim($email);
 
 if (mb_strlen($nombre) < 3) {
     fwrite(STDERR, "Error: El nombre debe tener al menos 3 caracteres.\n");

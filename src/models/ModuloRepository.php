@@ -76,6 +76,15 @@ final class ModuloRepository
         return $row !== false ? Modulo::fromRow($row) : null;
     }
 
+    public function findBySlug(string $slug): ?Modulo
+    {
+        $stmt = $this->db->prepare('SELECT ' . self::COLUMNS . ' FROM modulo WHERE slug = :slug');
+        $stmt->execute(['slug' => $slug]);
+        $row = $stmt->fetch();
+
+        return $row !== false ? Modulo::fromRow($row) : null;
+    }
+
     public function findById(int $id): ?Modulo
     {
         $stmt = $this->db->prepare('SELECT ' . self::COLUMNS . ' FROM modulo WHERE id_modulo = :id');
@@ -121,9 +130,29 @@ final class ModuloRepository
         $stmt->execute(['activo' => (int) $activo, 'id' => $id]);
     }
 
+    public function delete(int $id): bool
+    {
+        $stmt = $this->db->prepare('DELETE FROM modulo WHERE id_modulo = :id');
+        $stmt->execute(['id' => $id]);
+
+        return $stmt->rowCount() === 1;
+    }
+
     public function countActive(): int
     {
         return (int) $this->db->query('SELECT COUNT(*) FROM modulo WHERE activo = 1')->fetchColumn();
+    }
+
+    /** @return array<int, int> */
+    public function countEnrollmentsByModulo(): array
+    {
+        $counts = [];
+        $rows = $this->db->query('SELECT id_modulo, COUNT(*) AS total FROM inscripcion GROUP BY id_modulo')->fetchAll();
+        foreach ($rows as $r) {
+            $counts[(int) $r['id_modulo']] = (int) $r['total'];
+        }
+
+        return $counts;
     }
 
     /** @return array<string, string|int|null> */

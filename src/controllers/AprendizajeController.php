@@ -7,23 +7,27 @@ namespace App\Controllers;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\HttpException;
+use App\Models\BecaRepository;
 use App\Models\EstadoInscripcion;
 use App\Models\Inscripcion;
 use App\Models\InscripcionRepository;
 use App\Models\Modulo;
 use App\Models\ModuloRepository;
+use App\Models\UsuarioRepository;
 
-/** "Mi aprendizaje": enrollments, progress and completion certificates. */
+/** "Mi aprendizaje": enrollments, progress, scholarships (TecVictoria & TECNM) and completion certificates. */
 final class AprendizajeController extends Controller
 {
     public function index(): void
     {
+        $db = $this->db();
         $usuario = Auth::user();
-        $inscripciones = (new InscripcionRepository($this->db()))->listForUsuario($usuario->id);
+        $inscripciones = (new InscripcionRepository($db))->listForUsuario($usuario->id);
+        $becas = (new BecaRepository($db))->listActive();
 
         $inscritos = array_map(static fn (Inscripcion $i): int => $i->idModulo, $inscripciones);
         $recomendados = array_values(array_filter(
-            (new ModuloRepository($this->db()))->listActive(),
+            (new ModuloRepository($db))->listActive(),
             static fn (Modulo $m): bool => !in_array($m->id, $inscritos, true),
         ));
 
@@ -36,8 +40,10 @@ final class AprendizajeController extends Controller
             'title'         => 'Mi aprendizaje | Lógica Visual ABP',
             'activeNav'     => 'aprendizaje',
             'inscripciones' => $inscripciones,
+            'becas'         => $becas,
             'recomendados'  => array_slice($recomendados, 0, 3),
             'resumen'       => $resumen,
+            'esAdmin'       => Auth::isAdmin(),
         ]);
     }
 
@@ -84,8 +90,21 @@ final class AprendizajeController extends Controller
 
     public function constancia(string $id): void
     {
-        $usuario = Auth::user();
-        $inscripcion = (new InscripcionRepository($this->db()))->findForUsuario($usuario->id, $this->intParam($id));
+        $db = $this->db();
+        $usuarioActual = Auth::user();
+        $idInscripcion = $this->intParam($id);
+        $repo = new InscripcionRepository($db);
+
+        $inscripcion = $repo->findForUsuario($usuarioActual->id, $idInscripcion);
+        $usuarioConstancia = $usuarioActual;
+
+        if ($inscripcion === null && Auth::isAdmin()) {
+            $inscripcion = $repo->findById($idInscripcion);
+            $idPropietario = $repo->findUsuarioIdByInscripcion($idInscripcion);
+            if ($idPropietario !== null) {
+                $usuarioConstancia = (new UsuarioRepository($db))->findById($idPropietario) ?? $usuarioActual;
+            }
+        }
 
         if ($inscripcion === null || !$inscripcion->finalizado()) {
             throw new HttpException(404, 'La constancia solo está disponible para módulos finalizados.');
@@ -93,9 +112,9 @@ final class AprendizajeController extends Controller
 
         $this->render('aprendizaje/constancia', [
             'title'       => 'Constancia · ' . $inscripcion->titulo,
-            'usuario'     => $usuario,
+            'usuario'     => $usuarioConstancia,
             'inscripcion' => $inscripcion,
-            'folio'       => sprintf('LV-%05d-%04d', $inscripcion->id, $usuario->id),
+            'folio'       => sprintf('LV-%05d-%04d', $inscripcion->id, $usuarioConstancia->id),
         ], null);
     }
 

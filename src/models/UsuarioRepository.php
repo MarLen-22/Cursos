@@ -26,29 +26,55 @@ final class UsuarioRepository
 
     public function findByEmail(string $email): ?Usuario
     {
-        $stmt = $this->db->prepare('SELECT ' . self::COLUMNS . ' FROM usuario WHERE email = :email');
-        $stmt->execute(['email' => $email]);
+        $stmt = $this->db->prepare('SELECT ' . self::COLUMNS . ' FROM usuario WHERE LOWER(email) = LOWER(:email)');
+        $stmt->execute(['email' => trim($email)]);
         $row = $stmt->fetch();
 
         return $row !== false ? Usuario::fromRow($row) : null;
     }
 
-    public function emailExists(string $email): bool
+    public function emailExists(string $email, int $exceptId = 0): bool
     {
-        $stmt = $this->db->prepare('SELECT 1 FROM usuario WHERE email = :email');
-        $stmt->execute(['email' => $email]);
+        $stmt = $this->db->prepare('SELECT 1 FROM usuario WHERE LOWER(email) = LOWER(:email) AND id_usuario <> :id');
+        $stmt->execute(['email' => trim($email), 'id' => $exceptId]);
 
         return $stmt->fetchColumn() !== false;
     }
 
-    public function create(string $nombre, string $email, string $passwordHash): int
+    public function create(string $nombre, string $email, string $passwordHash, bool $activo = true): int
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO usuario (nombre, email, password_hash) VALUES (:nombre, :email, :hash)'
+            'INSERT INTO usuario (nombre, email, password_hash, activo) VALUES (:nombre, :email, :hash, :activo)'
         );
-        $stmt->execute(['nombre' => $nombre, 'email' => $email, 'hash' => $passwordHash]);
+        $stmt->execute([
+            'nombre' => $nombre,
+            'email'  => $email,
+            'hash'   => $passwordHash,
+            'activo' => (int) $activo,
+        ]);
 
         return (int) $this->db->lastInsertId();
+    }
+
+    public function updateDatosCuenta(int $id, string $nombre, string $email, bool $activo): void
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE usuario SET nombre = :nombre, email = :email, activo = :activo WHERE id_usuario = :id'
+        );
+        $stmt->execute([
+            'nombre' => $nombre,
+            'email'  => $email,
+            'activo' => (int) $activo,
+            'id'     => $id,
+        ]);
+    }
+
+    public function delete(int $id): bool
+    {
+        $stmt = $this->db->prepare('DELETE FROM usuario WHERE id_usuario = :id');
+        $stmt->execute(['id' => $id]);
+
+        return $stmt->rowCount() === 1;
     }
 
     /**
@@ -103,14 +129,28 @@ final class UsuarioRepository
         return (int) $this->db->query('SELECT COUNT(*) FROM usuario')->fetchColumn();
     }
 
+    public function countActive(): int
+    {
+        return (int) $this->db->query('SELECT COUNT(*) FROM usuario WHERE activo = 1')->fetchColumn();
+    }
+
     /** @return list<UsuarioResumen> */
     public function paginateWithRole(int $page, int $perPage): array
     {
         $stmt = $this->db->prepare(
-            "SELECT u.id_usuario, u.nombre, u.email, u.activo, u.ultimo_acceso, u.creado_en, a.nivel
+            "SELECT u.id_usuario, u.nombre, u.email, u.activo, u.ultimo_acceso, u.creado_en,
+                    a.nivel, a.cargo, a.departamento,
+                    p.numero_control, p.telefono, p.carrera, p.semestre, p.institucion,
+                    (SELECT COUNT(*) FROM inscripcion i WHERE i.id_usuario = u.id_usuario) AS total_inscripciones
                FROM usuario u
           LEFT JOIN administrador a ON a.id_usuario = u.id_usuario
-           ORDER BY CASE a.nivel WHEN 'superadmin' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, u.nombre
+          LEFT JOIN perfil_alumno p ON p.id_usuario = u.id_usuario
+           ORDER BY CASE a.nivel
+                        WHEN 'superadmin' THEN 0
+                        WHEN 'admin' THEN 1
+                        WHEN 'jefe_curso' THEN 2
+                        ELSE 3
+                    END, u.id_usuario ASC
               LIMIT :limit OFFSET :offset"
         );
         $stmt->bindValue('limit', $perPage, PDO::PARAM_INT);
@@ -118,5 +158,11 @@ final class UsuarioRepository
         $stmt->execute();
 
         return array_map(UsuarioResumen::fromRow(...), $stmt->fetchAll());
+    }
+
+    /** @return list<UsuarioResumen> */
+    public function listAllWithRole(): array
+    {
+        return $this->paginateWithRole(1, 500);
     }
 }

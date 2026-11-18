@@ -43,7 +43,9 @@ CREATE TABLE IF NOT EXISTS usuario (
 CREATE TABLE IF NOT EXISTS administrador (
     id_administrador   INT UNSIGNED NOT NULL AUTO_INCREMENT,
     id_usuario         INT UNSIGNED NOT NULL,
-    nivel              ENUM('admin', 'superadmin') NOT NULL DEFAULT 'admin',
+    nivel              ENUM('jefe_curso', 'admin', 'superadmin') NOT NULL DEFAULT 'admin',
+    cargo              VARCHAR(100) NULL,
+    departamento       VARCHAR(120) NULL,
     otorgado_por       INT UNSIGNED NULL,
     creado_en          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id_administrador),

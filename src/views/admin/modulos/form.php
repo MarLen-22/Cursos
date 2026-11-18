@@ -126,11 +126,27 @@ $val = function(string $campo, string $default = '') use ($modulo, $esEdicion): 
             <label class="form-check-label small fw-semibold" for="activo">Módulo visible para estudiantes en el catálogo público</label>
         </div>
 
-        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-            <a href="<?= url('/admin/modulos') ?>" class="btn btn-outline-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-cyan fw-bold px-4 shadow-cyan">
-                <?= $esEdicion ? 'Guardar Cambios' : 'Crear Módulo' ?>
-            </button>
+        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+            <div>
+                <?php if ($esEdicion): ?>
+                    <button type="submit" form="formDeleteModulo" class="btn btn-outline-danger btn-sm">
+                        🗑️ Eliminar Módulo
+                    </button>
+                <?php endif; ?>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="<?= url('/admin/modulos') ?>" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-cyan fw-bold px-4 shadow-cyan">
+                    <?= $esEdicion ? 'Guardar Cambios' : 'Crear Módulo' ?>
+                </button>
+            </div>
         </div>
     </form>
+
+    <?php if ($esEdicion): ?>
+        <form id="formDeleteModulo" action="<?= url('/admin/modulos/' . $modulo->id . '/eliminar') ?>" method="POST"
+              onsubmit="return confirm('¿Seguro que deseas eliminar permanentemente el curso «<?= e(addslashes($modulo->titulo)) ?>»?');">
+            <?= csrf_field() ?>
+        </form>
+    <?php endif; ?>
 </div>

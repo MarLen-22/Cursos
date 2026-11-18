@@ -41,3 +41,31 @@ INSERT INTO etapa_abp (orden, nombre, descripcion) VALUES
 (3, 'Experimenta', 'Prueba tu estrategia en el simulador y observa los resultados.'),
 (4, 'Reflexiona',  'Explica tu razonamiento, compara alternativas y mejora tu solución.')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
+
+CREATE TABLE IF NOT EXISTS beca (
+    id_beca        INT UNSIGNED      NOT NULL AUTO_INCREMENT,
+    clave          VARCHAR(60)       NOT NULL,
+    institucion    VARCHAR(120)      NOT NULL,
+    siglas         VARCHAR(40)       NOT NULL,
+    titulo         VARCHAR(150)      NOT NULL,
+    descripcion    VARCHAR(400)      NOT NULL,
+    url            VARCHAR(300)      NOT NULL,
+    estado         VARCHAR(40)       NOT NULL DEFAULT 'Abierta',
+    icono          VARCHAR(16)       NOT NULL DEFAULT '🎓',
+    orden          SMALLINT UNSIGNED NOT NULL DEFAULT 1,
+    activo         TINYINT(1)        NOT NULL DEFAULT 1,
+    actualizado_en DATETIME          NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_beca),
+    UNIQUE KEY uq_beca_clave (clave)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO beca (clave, institucion, siglas, titulo, descripcion, url, estado, icono, orden, activo) VALUES
+('becas-tecvictoria', 'Instituto Tecnológico de Ciudad Victoria', 'TecVictoria',
+ 'Portal de Becas y Apoyos Estudiantiles · TecVictoria',
+ 'Consulta convocatorias vigentes, becas alimenticias, apoyos institucionales y trámites para estudiantes del IT de Ciudad Victoria.',
+ 'https://cdvictoria.tecnm.mx/alumnos/becas.html', 'Convocatoria activa', '🎓', 1, 1),
+('becas-tecnm', 'Tecnológico Nacional de México', 'TECNM',
+ 'Convocatorias Nacionales de Becas · TECNM',
+ 'Portal oficial del Tecnológico Nacional de México con programas de becas académicas, movilidad, investigación y manutención federal.',
+ 'https://www.tecnm.mx/?vista=Becas', 'Convocatoria activa', '🏛️', 2, 1)
+ON DUPLICATE KEY UPDATE url = VALUES(url), titulo = VALUES(titulo);

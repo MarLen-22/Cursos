@@ -183,18 +183,18 @@ $pdfSimulacion = asset('pdf/El aprendizaje basado en simulacion y el aporte de l
                         <!-- Botón PDF con Modal y Enlace Directo -->
                         <div class="btn-group shadow-2xs">
                             <button type="button"
-                                    class="btn btn-cyan btn-sm rounded-start-pill px-3 fw-bold d-inline-flex align-items-center gap-2"
+                                    class="btn btn-outline-indigo btn-sm rounded-start-pill px-3 fw-bold d-inline-flex align-items-center gap-2"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalBlogPdf"
                                     data-blog-pdf="abp"
                                     id="btnPdfAbp">
                                 <span>📄 Ver PDF</span>
-                                <span class="badge bg-navy text-white rounded-pill">abp.pdf</span>
+                                <span class="badge bg-navy text-cyan rounded-pill">abp.pdf</span>
                             </button>
                             <a href="<?= e($pdfAbp) ?>"
                                target="_blank"
                                rel="noopener noreferrer"
-                               class="btn btn-outline-cyan btn-sm rounded-end-pill px-2 d-inline-flex align-items-center"
+                               class="btn btn-indigo btn-sm rounded-end-pill px-2 d-inline-flex align-items-center text-white"
                                title="Abrir abp.pdf en pestaña completa">
                                 <span class="small fw-bold">↗</span>
                             </a>
@@ -373,11 +373,12 @@ $pdfSimulacion = asset('pdf/El aprendizaje basado en simulacion y el aporte de l
                         <!-- Botón Dropdown para los 2 PDFs -->
                         <div class="dropdown shadow-2xs">
                             <button type="button"
-                                    class="btn btn-indigo btn-sm rounded-pill px-3 fw-bold text-white dropdown-toggle d-inline-flex align-items-center gap-2"
+                                    class="btn btn-outline-indigo btn-sm rounded-pill px-3 fw-bold dropdown-toggle d-inline-flex align-items-center gap-2"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
                                     id="btnDropdownPdfs">
                                 <span>📄 Ver PDFs (2)</span>
+                                <span class="badge bg-indigo text-white rounded-pill">PDF</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-md border-0 rounded-3" style="min-width: 320px;">
                                 <li><h6 class="dropdown-header text-uppercase fs-8 text-muted">Documento 1: Formación Docente</h6></li>

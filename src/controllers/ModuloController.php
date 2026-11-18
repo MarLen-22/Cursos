@@ -29,6 +29,11 @@ final class ModuloController extends Controller
         $repo = new ModuloRepository($this->db());
         $modulo = $repo->findActiveBySlug($slug);
 
+        // Allow admins to preview hidden modules from the admin panel
+        if ($modulo === null && Auth::isAdmin()) {
+            $modulo = $repo->findBySlug($slug);
+        }
+
         if ($modulo === null) {
             throw new HttpException(404, 'El módulo interactivo solicitado no existe o está deshabilitado.');
         }
